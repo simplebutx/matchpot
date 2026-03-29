@@ -30,9 +30,9 @@ public class Event {
     private Status status;    // 모집중/마감/종료
     private String imageKey;    // 이미지
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User author;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User author;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
