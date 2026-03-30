@@ -32,7 +32,7 @@ public class Event {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id", nullable = false)
-//    private User author;
+//    private User user;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
