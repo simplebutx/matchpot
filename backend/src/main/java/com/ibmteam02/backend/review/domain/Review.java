@@ -1,4 +1,4 @@
-package com.ibmteam02.backend.user.domain;
+package com.ibmteam02.backend.review.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,13 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor
-public class User {
+@Getter
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String userName;
-    private String password;
-    private String displayName;
+
 }
