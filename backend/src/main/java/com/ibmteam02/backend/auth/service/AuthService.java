@@ -1,5 +1,6 @@
 package com.ibmteam02.backend.auth.service;
 
+import com.ibmteam02.backend.auth.domain.CustomUserDetails;
 import com.ibmteam02.backend.auth.dto.JoinDto;
 import com.ibmteam02.backend.auth.dto.LoginDto;
 import com.ibmteam02.backend.auth.util.JwtUtil;
@@ -8,12 +9,15 @@ import com.ibmteam02.backend.global.exception.LoginFailedException;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +45,7 @@ public class AuthService implements UserDetailsService {
     }
 
     //로그인 메서드
+    @Transactional
     public String login(LoginDto loginDto){
         User user = userRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(()->new RuntimeException("아이디가 존재하지 않습니다"));
@@ -59,10 +64,6 @@ public class AuthService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(()->new UsernameNotFoundException("회원이 아닙니다"));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().replace("ROLE_", ""))
-                .build();
+        return new CustomUserDetails(user);
     }
 }
