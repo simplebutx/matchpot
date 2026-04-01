@@ -30,9 +30,9 @@ public class Event {
     private Status status;    // 모집중/마감/종료
     private String imageKey;    // 이미지
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -40,7 +40,7 @@ public class Event {
     private LocalDateTime updatedAt;
 
     public Event(String title, String description, String location, LocalDateTime startAt, LocalDateTime recruitStartAt,
-                 LocalDateTime recruitEndAt, Integer price, Status status, String imageKey)
+                 LocalDateTime recruitEndAt, Integer price, Status status, String imageKey, User user)
     {
         this.title = title;
         this.description = description;
@@ -51,7 +51,7 @@ public class Event {
         this.price = price;
         this.status = Status.RECRUITING;
         this.imageKey = imageKey;
-        // this.author = author;
+        this.user = user;
     }
 
     public void update(String title, String description, String location, LocalDateTime startAt, LocalDateTime recruitStartAt,

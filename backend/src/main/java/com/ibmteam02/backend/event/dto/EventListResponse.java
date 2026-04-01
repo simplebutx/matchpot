@@ -1,6 +1,7 @@
 package com.ibmteam02.backend.event.dto;
 
 import com.ibmteam02.backend.event.domain.Status;
+import com.ibmteam02.backend.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,4 +17,5 @@ public class EventListResponse {
     private Integer price;
     private Status status;
     private String imageKey;
+    private String authorName;
 }

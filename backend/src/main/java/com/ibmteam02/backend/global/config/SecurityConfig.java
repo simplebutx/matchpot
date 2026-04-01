@@ -28,6 +28,10 @@ public class SecurityConfig {
         return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
     }
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
     // 인증이 안된 사용자가 보호된 API에 접근 시
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
@@ -35,7 +39,7 @@ public class SecurityConfig {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setCharacterEncoding("UTF-8");
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            objectMapper.writeValue(response.getWriter(), new ErrorResponse(401, "인증이 필요합니다."));
+            objectMapper.writeValue(response.getWriter(), new ErrorResponse(401, "로그인이 필요합니다."));
         };
     }
 
