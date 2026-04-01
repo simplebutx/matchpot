@@ -12,8 +12,11 @@ import java.time.LocalDateTime;
 public class EventListResponse {
     private Long id;
     private String title;
+    private String description;
     private String location;
     private LocalDateTime startAt;
+    private LocalDateTime recruitStartAt;
+    private LocalDateTime recruitEndAt;
     private Integer price;
     private Status status;
     private String imageKey;

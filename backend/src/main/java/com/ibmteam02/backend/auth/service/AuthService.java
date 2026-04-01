@@ -9,15 +9,12 @@ import com.ibmteam02.backend.global.exception.LoginFailedException;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,9 +24,9 @@ public class AuthService implements UserDetailsService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    //회원가입 메서드
+    // 회원가입 메서드
     @Transactional
-    public void signup (JoinDto joinDto){
+    public void signup(JoinDto joinDto) {
         if (userRepository.existsByEmail(joinDto.getEmail())) {
             throw new DuplicateEmailException();
         }
@@ -44,25 +41,23 @@ public class AuthService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    //로그인 메서드
+    // 로그인 메서드
     @Transactional
-    public String login(LoginDto loginDto){
+    public String login(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(()->new RuntimeException("아이디가 존재하지 않습니다"));
+                .orElseThrow(() -> new RuntimeException("아이디가 존재하지 않습니다."));
 
-        if(!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())){
-            throw new LoginFailedException("비밀번호가 일치하지 않습니다");
+        if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new LoginFailedException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail(),user.getRole());
-
-        return token;
+        return jwtUtil.generateToken(user.getEmail(), user.getRole());
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)
-                .orElseThrow(()->new UsernameNotFoundException("회원이 아닙니다"));
+                .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다."));
 
         return new CustomUserDetails(user);
     }

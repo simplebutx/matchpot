@@ -5,5 +5,7 @@ public class NoPermissionException extends RuntimeException {
         super(message);
     }
 
-    public NoPermissionException() {super("권한이 없습니다.");}
+    public NoPermissionException() {
+        super("권한이 없습니다.");
+    }
 }
