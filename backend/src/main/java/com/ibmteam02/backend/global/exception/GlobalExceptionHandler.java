@@ -14,6 +14,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(404, e.getMessage()));
     }
 
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateEmail(DuplicateEmailException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(409, e.getMessage()));
+    }
+
     //로그인 실패 에러
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<ErrorResponse> handleLoginFailedException(LoginFailedException e){
