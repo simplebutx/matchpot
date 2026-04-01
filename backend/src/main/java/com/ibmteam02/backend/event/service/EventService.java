@@ -11,7 +11,6 @@ import com.ibmteam02.backend.global.exception.UserNotFoundException;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +27,7 @@ public class EventService {
     @Transactional
     public void createEvent(EventCreateRequest dto, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(()->new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         Event event = new Event(dto.title(), dto.description(), dto.location(),
                 dto.startAt(), dto.recruitStartAt(), dto.recruitEndAt(),
@@ -42,11 +41,14 @@ public class EventService {
     public List<EventListResponse> getEventList(Long userId) {
         List<Event> events = eventRepository.findAllByUserId(userId);
 
-           return events.stream().map(event -> new EventListResponse(
+        return events.stream().map(event -> new EventListResponse(
                         event.getId(),
                         event.getTitle(),
+                        event.getDescription(),
                         event.getLocation(),
                         event.getStartAt(),
+                        event.getRecruitStartAt(),
+                        event.getRecruitEndAt(),
                         event.getPrice(),
                         event.getStatus(),
                         event.getImageKey(),
@@ -59,9 +61,9 @@ public class EventService {
     @Transactional
     public void updateEvent(Long eventId, EventUpdateRequest dto, Long userId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(()->new EventNotFoundException());
+                .orElseThrow(EventNotFoundException::new);
 
-        if(!event.getUser().getId().equals(userId)) {
+        if (!event.getUser().getId().equals(userId)) {
             throw new NoPermissionException("작성자만 수정할 수 있습니다.");
         }
 
@@ -74,9 +76,9 @@ public class EventService {
     @Transactional
     public void deleteEvent(Long eventId, Long userId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(()->new EventNotFoundException());
+                .orElseThrow(EventNotFoundException::new);
 
-        if(!event.getUser().getId().equals(userId)) {
+        if (!event.getUser().getId().equals(userId)) {
             throw new NoPermissionException("작성자만 삭제할 수 있습니다.");
         }
 

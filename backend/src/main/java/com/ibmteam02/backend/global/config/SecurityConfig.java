@@ -1,8 +1,8 @@
 package com.ibmteam02.backend.global.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibmteam02.backend.auth.util.JwtFilter;
 import com.ibmteam02.backend.global.exception.ErrorResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -32,7 +32,8 @@ public class SecurityConfig {
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
-    // 인증이 안된 사용자가 보호된 API에 접근 시
+
+    // 인증되지 않은 사용자의 보호된 API 접근 처리
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
         return (request, response, authException) -> {
