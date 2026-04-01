@@ -3,6 +3,7 @@ package com.ibmteam02.backend.auth.service;
 import com.ibmteam02.backend.auth.dto.JoinDto;
 import com.ibmteam02.backend.auth.dto.LoginDto;
 import com.ibmteam02.backend.auth.util.JwtUtil;
+import com.ibmteam02.backend.global.exception.DuplicateEmailException;
 import com.ibmteam02.backend.global.exception.LoginFailedException;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
@@ -24,13 +25,13 @@ public class AuthService implements UserDetailsService {
 
     //회원가입 메서드
     @Transactional
-    public void singup (JoinDto joinDto){
-        if (userRepository.existsByUserName(joinDto.getUserName())) {
-            throw new RuntimeException("이미 존재하는 아이디입니다");
+    public void signup (JoinDto joinDto){
+        if (userRepository.existsByEmail(joinDto.getEmail())) {
+            throw new DuplicateEmailException();
         }
 
         User user = User.builder()
-                .userName(joinDto.getUserName())
+                .email(joinDto.getEmail())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .displayName(joinDto.getDisplayName())
                 .role("ROLE_USER")
@@ -41,25 +42,25 @@ public class AuthService implements UserDetailsService {
 
     //로그인 메서드
     public String login(LoginDto loginDto){
-        User user = userRepository.findByUserName(loginDto.getUserName())
+        User user = userRepository.findByEmail(loginDto.getEmail())
                 .orElseThrow(()->new RuntimeException("아이디가 존재하지 않습니다"));
 
         if(!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())){
             throw new LoginFailedException("비밀번호가 일치하지 않습니다");
         }
 
-        String token = jwtUtil.generateToken(user.getUserName(),user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(),user.getRole());
 
         return token;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(()->new UsernameNotFoundException("회원이 아닙니다"));
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getUserName())
+                .username(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().replace("ROLE_", ""))
                 .build();

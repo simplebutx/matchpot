@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JoinDto {
-    private String userName;
+    private String email;
     private String password;
     private String displayName;
 }
