@@ -8,12 +8,15 @@ import com.ibmteam02.backend.event.repository.EventRepository;
 import com.ibmteam02.backend.global.exception.EventNotFoundException;
 import com.ibmteam02.backend.global.exception.NoPermissionException;
 import com.ibmteam02.backend.global.exception.UserNotFoundException;
+import com.ibmteam02.backend.global.service.S3Service;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -22,16 +25,28 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final S3Service s3Service;
 
     // 이벤트 생성
     @Transactional
-    public void createEvent(EventCreateRequest dto, Long userId) {
+    public void createEvent(EventCreateRequest dto, Long userId, MultipartFile image) throws IOException {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
-        Event event = new Event(dto.title(), dto.description(), dto.location(),
-                dto.startAt(), dto.recruitStartAt(), dto.recruitEndAt(),
-                dto.price(), dto.status(), dto.imageKey(), user);
+        String imageKey = s3Service.uploadImage(image);
+
+        Event event = new Event(
+                dto.title(),
+                dto.description(),
+                dto.location(),
+                dto.startAt(),
+                dto.recruitStartAt(),
+                dto.recruitEndAt(),
+                dto.price(),
+                dto.status(),
+                imageKey,
+                user
+        );
 
         eventRepository.save(event);
     }
