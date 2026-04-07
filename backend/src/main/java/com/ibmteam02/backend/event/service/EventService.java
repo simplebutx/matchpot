@@ -49,6 +49,7 @@ public class EventService {
         );
 
         eventRepository.save(event);
+        System.out.println("########## 저장 명령 직후! ##########");
     }
 
     // 이벤트 목록 불러오기

@@ -1,15 +1,20 @@
 package com.ibmteam02.backend.event.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.domain.Status;
-import com.ibmteam02.backend.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class EventListResponse {
+
+
     private Long id;
     private String title;
     private String description;
@@ -21,4 +26,22 @@ public class EventListResponse {
     private Status status;
     private String imageKey;
     private String authorName;
+
+    private static final String S3_BUCKET_URL = "https://ibmteam2-s3-admin.s3.ap-northeast-2.amazonaws.com/";
+
+    public static EventListResponse from(Event event) {
+        return new EventListResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getLocation(),
+                event.getStartAt(),
+                event.getRecruitStartAt(),
+                event.getRecruitEndAt(),
+                event.getPrice(),
+                event.getStatus(),
+                event.getImageKey() != null ? S3_BUCKET_URL + event.getImageKey() : null,
+                event.getUser().getDisplayName()
+        );
+    }
 }
