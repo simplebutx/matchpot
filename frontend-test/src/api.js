@@ -119,3 +119,26 @@ export function deleteEvent(eventId) {
   });
 }
 
+
+//티켓 구매하기
+export async function buyTicket(eventId, quantity) {
+  const token = getToken();
+  if (!token) throw new Error("로그인이 필요합니다.");
+
+  const response = await fetch(`/api/events/${eventId}/tickets?quantity=${quantity}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+ if (!response.ok) {
+    const errorJson = await response.json(); 
+    throw new Error(errorJson.message); 
+  }
+
+  return response.ok;
+}
+
+
+

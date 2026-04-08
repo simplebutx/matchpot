@@ -12,6 +12,7 @@ public record EventUpdateRequest(
         LocalDateTime recruitStartAt,
         LocalDateTime recruitEndAt,
         Integer price,
+        Integer maxTickets,
         Status status,
         String imageKey
 ) {

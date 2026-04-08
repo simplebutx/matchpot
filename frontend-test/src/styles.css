@@ -52,6 +52,10 @@ button:disabled {
   background: #b91c1c;
 }
 
+.buy-button {
+  background: skyblue;
+}
+
 .app-shell {
   max-width: 1200px;
   margin: 0 auto;
@@ -212,6 +216,7 @@ label {
 }
 
 @media (max-width: 900px) {
+
   .hero,
   .event-item {
     flex-direction: column;
@@ -223,4 +228,3 @@ label {
     grid-template-columns: 1fr;
   }
 }
-
