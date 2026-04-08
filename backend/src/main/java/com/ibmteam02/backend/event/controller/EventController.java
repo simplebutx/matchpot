@@ -6,11 +6,15 @@ import com.ibmteam02.backend.event.dto.EventListResponse;
 import com.ibmteam02.backend.event.dto.EventUpdateRequest;
 import com.ibmteam02.backend.event.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,11 +23,17 @@ public class EventController {
 
     private final EventService eventService;
 
-    @PostMapping("/api/organizer/events")
-    public ResponseEntity<Void> createEvent(@RequestBody EventCreateRequest dto,
-                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        eventService.createEvent(dto, userDetails.getId());
-        return ResponseEntity.status(201).build();
+    @PostMapping(value = "/api/organizer/events", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createEvent(
+            @RequestPart("dto") EventCreateRequest dto,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+
+        Long userId = userDetails.getId();
+
+        eventService.createEvent(dto, userId, image);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/api/organizer/events")

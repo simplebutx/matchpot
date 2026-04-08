@@ -68,12 +68,43 @@ export function getEvents() {
   return request("/api/organizer/events");
 }
 
-export function createEvent(form) {
-  return request("/api/organizer/events", {
+
+export async function createEvent(form, imageFile) {
+  const formData = new FormData();
+  
+  // 1. DTO 추가
+  formData.append(
+    "dto",
+    new Blob([JSON.stringify(form)], { type: "application/json" })
+  );
+
+  // 2. 이미지 추가
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  // 3. 토큰 가져오기 (App.js에서 사용하는 키 이름 "authToken"으로 맞춤)
+  const token = localStorage.getItem("authToken")?.replace(/^"|"$/g, '');
+
+  // 4. ⭐ request 함수를 쓰지 말고 직접 fetch를 호출하세요!
+  // request 함수는 강제로 Content-Type을 JSON으로 바꿔버려서 오류가 납니다.
+  const response = await fetch("/api/organizer/events", {
     method: "POST",
-    body: JSON.stringify(form)
+    headers: {
+      "Authorization": `Bearer ${token}`
+      // ⚠️ 여기서 Content-Type을 절대 적으면 안 됩니다! 브라우저가 자동 생성해야 함.
+    },
+    body: formData,
   });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "이벤트 생성에 실패했습니다.");
+  }
+
+  return response.status === 201 ? {} : await response.json();
 }
+
 
 export function updateEvent(eventId, form) {
   return request(`/api/organizer/events/${eventId}`, {

@@ -1,0 +1,17 @@
+# 의존성 라이브러리 (용량이 너무 커서 올리면 안 됨)
+node_modules/
+
+# 빌드 결과물
+dist/
+build/
+
+# 환경 변수 파일 (API 주소나 키값)
+.env
+.env.local
+
+# 에러 로그
+npm-debug.log*
+yarn-error.log*
+
+# OS 관련
+.DS_Store

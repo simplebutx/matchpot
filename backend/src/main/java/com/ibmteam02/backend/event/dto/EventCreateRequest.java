@@ -8,9 +8,16 @@ public record EventCreateRequest(
         String title,
         String description,
         String location,
-        LocalDateTime startAt,
-        LocalDateTime recruitStartAt,
-        LocalDateTime recruitEndAt,
+
+        @com.fasterxml.jackson.annotation.JsonFormat(shape = com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        java.time.LocalDateTime startAt,
+
+        @com.fasterxml.jackson.annotation.JsonFormat(shape = com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        java.time.LocalDateTime recruitStartAt,
+
+        @com.fasterxml.jackson.annotation.JsonFormat(shape = com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        java.time.LocalDateTime recruitEndAt,
+
         Integer price,
         Status status,
         String imageKey

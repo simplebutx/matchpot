@@ -60,6 +60,7 @@ export default function App() {
   const [message, setMessage] = useState("백엔드 API 연결을 기다리는 중입니다.");
   const [loading, setLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(Boolean(getToken()));
+  const [selectedFile, setSelectedFile] = useState(null); // 사진 파일을 담을 상태
 
   async function refreshUserData() {
     if (!getToken()) {
@@ -168,6 +169,7 @@ export default function App() {
     event.preventDefault();
     setLoading(true);
 
+    // 1. 기존에 있던 날짜 변환 로직 (이건 그대로 둬야 백엔드가 날짜를 읽어요!)
     const payload = {
       ...eventForm,
       startAt: toApiDateTime(eventForm.startAt),
@@ -180,12 +182,14 @@ export default function App() {
         await updateEvent(editingId, payload);
         setMessage("이벤트를 수정했습니다.");
       } else {
-        await createEvent(payload);
+        // 2. 👈 여기서 selectedFile(사진 파일)을 두 번째 인자로 넘겨줍니다!
+        await createEvent(payload, selectedFile);
         setMessage("이벤트를 생성했습니다.");
       }
 
       setEventForm(emptyEvent);
       setEditingId(null);
+      setSelectedFile(null); // 파일 선택 초기화
       await refreshUserData();
     } catch (error) {
       setMessage(error.message);
@@ -359,12 +363,14 @@ export default function App() {
               onChange={handleEventChange}
               rows="4"
             />
-            <input
-              name="imageKey"
-              placeholder="이미지 키"
-              value={eventForm.imageKey}
-              onChange={handleEventChange}
-            />
+            <label className="file-input-label">
+              이벤트 대표 이미지
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSelectedFile(e.target.files[0])}
+              />
+            </label>
             <label>
               시작 일시
               <input
@@ -431,10 +437,12 @@ export default function App() {
             ) : (
               events.map((eventItem) => (
                 <article className="event-item" key={eventItem.id}>
+                  {eventItem.imageKey && <img src={eventItem.imageKey} alt="img" style={{ width: '100%', height: '150px', objectFit: 'cover' }} />}
                   <div>
                     <p className="event-status">{eventItem.status}</p>
                     <h3>{eventItem.title}</h3>
                     <p>{eventItem.location}</p>
+                    <p>{eventItem.description}</p>
                     <p>시작: {eventItem.startAt}</p>
                     <p>가격: {eventItem.price}원</p>
                     <p>작성자: {eventItem.authorName}</p>
