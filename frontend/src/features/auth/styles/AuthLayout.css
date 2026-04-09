@@ -1,0 +1,112 @@
+.auth-layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(420px, 620px);
+  background:
+    radial-gradient(circle at left top, rgba(79, 70, 229, 0.2), transparent 32%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 38%, #eff6ff 38%, #f8fafc 100%);
+}
+
+.auth-layout__branding,
+.auth-layout__panel {
+  padding: 48px;
+}
+
+.auth-layout__branding {
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-layout__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  width: fit-content;
+  font-weight: 900;
+}
+
+.auth-layout__eyebrow {
+  margin: 28px 0 10px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.auth-layout__branding h1 {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 56px);
+  line-height: 1.06;
+}
+
+.auth-layout__description {
+  max-width: 520px;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.auth-layout__highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.auth-layout__highlights span {
+  padding: 12px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.auth-layout__panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-layout__panel-header p {
+  margin: 12px 0 0;
+  color: #64748b;
+}
+
+.auth-layout__panel-header h2 {
+  margin: 12px 0 0;
+  font-size: 36px;
+}
+
+.auth-layout__home-link {
+  color: #4f46e5;
+  font-weight: 800;
+}
+
+.auth-layout__footer {
+  margin-top: 24px;
+  color: #64748b;
+}
+
+.auth-layout__footer a {
+  color: #4f46e5;
+  font-weight: 800;
+}
+
+@media (max-width: 960px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+    background:
+      radial-gradient(circle at top left, rgba(79, 70, 229, 0.16), transparent 35%),
+      linear-gradient(180deg, #0f172a 0%, #172554 36%, #eff6ff 36%, #f8fafc 100%);
+  }
+
+  .auth-layout__branding,
+  .auth-layout__panel {
+    padding: 32px 24px;
+  }
+}

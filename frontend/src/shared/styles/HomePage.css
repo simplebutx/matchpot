@@ -1,0 +1,37 @@
+.home-page {
+  display: flex;
+  min-height: 100vh;
+  color: #0f172a;
+}
+
+.home-page__main {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+.home-page__content {
+  animation: home-fade-in 180ms ease-out;
+}
+
+@keyframes home-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1100px) {
+  .home-page {
+    flex-direction: column;
+  }
+
+  .home-page__main {
+    padding: 24px;
+  }
+}

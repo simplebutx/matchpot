@@ -1,0 +1,106 @@
+.expo-sidebar {
+  width: 288px;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border-right: 1px solid rgba(148, 163, 184, 0.2);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.expo-sidebar__logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.expo-sidebar__logo-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #4f46e5, #1d4ed8);
+  color: #fff;
+}
+
+.expo-sidebar__logo h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.expo-sidebar__logo p {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.expo-sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.expo-sidebar__item {
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  color: #64748b;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.expo-sidebar__item:hover,
+.expo-sidebar__item.is-active {
+  background: #eef2ff;
+  color: #312e81;
+  border-color: rgba(79, 70, 229, 0.12);
+}
+
+.expo-sidebar__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expo-sidebar__mypage,
+.expo-sidebar__toggle {
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.expo-sidebar__mypage {
+  background: #0f172a;
+  color: #fff;
+}
+
+.expo-sidebar__toggle {
+  border: none;
+  background: #f1f5f9;
+  color: #475569;
+  cursor: pointer;
+}
+
+@media (max-width: 1100px) {
+  .expo-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  }
+}

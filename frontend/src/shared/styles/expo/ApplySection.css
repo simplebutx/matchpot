@@ -1,0 +1,126 @@
+.expo-apply {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 28px;
+}
+
+.expo-apply__hero-group,
+.expo-apply__info-group {
+  display: grid;
+  gap: 22px;
+}
+
+.expo-apply__hero-card,
+.expo-apply__text-card,
+.expo-apply__progress-card,
+.expo-apply__meta-card {
+  border-radius: 36px;
+  padding: 32px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+}
+
+.expo-apply__hero-card {
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+  color: #fff;
+}
+
+.expo-apply__hero-chip {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+
+.expo-apply__hero-card h3,
+.expo-apply__text-card h3,
+.expo-apply__progress-card h3 {
+  margin: 18px 0 0;
+  font-size: clamp(34px, 5vw, 48px);
+  line-height: 1;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.expo-apply__hero-card p {
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.expo-apply__text-card,
+.expo-apply__meta-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.expo-apply__text-card span {
+  color: #4f46e5;
+}
+
+.expo-apply__text-card p {
+  margin: 18px 0 0;
+  color: #64748b;
+  max-width: 480px;
+}
+
+.expo-apply__progress-card {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: #fff;
+}
+
+.expo-apply__progress-card p {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  opacity: 0.78;
+  font-weight: 700;
+}
+
+.expo-apply__progress-card div {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  gap: 12px;
+}
+
+.expo-apply__progress-card div div {
+  margin: 0;
+  padding: 0;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.expo-apply__meta-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.expo-apply__meta-card p {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.expo-apply__meta-card strong {
+  font-size: 18px;
+}
+
+@media (max-width: 1000px) {
+  .expo-apply {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .expo-apply__meta-card {
+    flex-direction: column;
+  }
+}

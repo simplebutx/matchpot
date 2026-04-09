@@ -1,0 +1,69 @@
+.expo-dashboard {
+  display: grid;
+  gap: 24px;
+}
+
+.expo-dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.expo-dashboard__stat-card,
+.expo-dashboard__chart-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 28px;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+}
+
+.expo-dashboard__stat-card {
+  padding: 28px;
+}
+
+.expo-dashboard__stat-card p {
+  margin: 0 0 14px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.expo-dashboard__stat-card div {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.expo-dashboard__stat-card h4 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.expo-dashboard__stat-card span {
+  color: #10b981;
+  font-weight: 900;
+}
+
+.expo-dashboard__chart-card {
+  padding: 32px;
+}
+
+.expo-dashboard__chart-card h3 {
+  margin: 0 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+}
+
+.expo-dashboard__chart {
+  height: 260px;
+}
+
+@media (max-width: 900px) {
+  .expo-dashboard__stats {
+    grid-template-columns: 1fr;
+  }
+}
