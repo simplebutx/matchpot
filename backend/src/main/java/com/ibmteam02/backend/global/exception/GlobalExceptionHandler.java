@@ -53,5 +53,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 
+    //티켓 품절 에러
+    @ExceptionHandler(TicketStockEmptyException.class)
+    public ResponseEntity<ErrorResponse> handleTicketStockEmpty(TicketStockEmptyException e) {
+        ErrorResponse errorResponse = new ErrorResponse(400, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
 
 }

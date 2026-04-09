@@ -23,6 +23,7 @@ public class EventController {
 
     private final EventService eventService;
 
+    //행사 등록
     @PostMapping(value = "/api/organizer/events", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createEvent(
             @RequestPart("dto") EventCreateRequest dto,
@@ -30,7 +31,6 @@ public class EventController {
             @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
 
         Long userId = userDetails.getId();
-
         eventService.createEvent(dto, userId, image);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();

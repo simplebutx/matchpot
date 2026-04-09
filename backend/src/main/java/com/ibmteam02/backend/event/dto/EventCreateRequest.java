@@ -19,6 +19,7 @@ public record EventCreateRequest(
         java.time.LocalDateTime recruitEndAt,
 
         Integer price,
+        Integer maxTickets,
         Status status,
         String imageKey
 ) {

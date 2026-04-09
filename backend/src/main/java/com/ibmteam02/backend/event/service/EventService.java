@@ -9,6 +9,7 @@ import com.ibmteam02.backend.global.exception.EventNotFoundException;
 import com.ibmteam02.backend.global.exception.NoPermissionException;
 import com.ibmteam02.backend.global.exception.UserNotFoundException;
 import com.ibmteam02.backend.global.service.S3Service;
+import com.ibmteam02.backend.ticket.repository.TicketRepository;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class EventService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
     private final S3Service s3Service;
+    private final TicketRepository ticketRepository;
 
     // 이벤트 생성
     @Transactional
@@ -43,13 +45,13 @@ public class EventService {
                 dto.recruitStartAt(),
                 dto.recruitEndAt(),
                 dto.price(),
+                dto.maxTickets(),
                 dto.status(),
                 imageKey,
                 user
         );
 
         eventRepository.save(event);
-        System.out.println("########## 저장 명령 직후! ##########");
     }
 
     // 이벤트 목록 불러오기
@@ -57,7 +59,15 @@ public class EventService {
     public List<EventListResponse> getEventList(Long userId) {
         List<Event> events = eventRepository.findAllByUserId(userId);
 
-        return events.stream().map(event -> new EventListResponse(
+    return events.stream().map(event -> {
+
+        Integer soldcount = ticketRepository.sumQuantityByEventId(event.getId());
+        if(soldcount==null) soldcount=0;
+
+        int max = (event.getMaxTickets() !=null)? event.getMaxTickets():0;
+        int remaining = max - soldcount;
+
+            return new EventListResponse(
                         event.getId(),
                         event.getTitle(),
                         event.getDescription(),
@@ -66,11 +76,13 @@ public class EventService {
                         event.getRecruitStartAt(),
                         event.getRecruitEndAt(),
                         event.getPrice(),
+                        event.getMaxTickets(),
+                        remaining,
                         event.getStatus(),
                         event.getImageKey(),
                         event.getUser().getDisplayName()
-                ))
-                .toList();
+            );
+                }).toList();
     }
 
     // 이벤트 수정
@@ -85,7 +97,7 @@ public class EventService {
 
         event.update(dto.title(), dto.description(), dto.location(),
                 dto.startAt(), dto.recruitStartAt(), dto.recruitEndAt(),
-                dto.price(), dto.status(), dto.imageKey());
+                dto.price(),dto.maxTickets(), dto.status(), dto.imageKey());
     }
 
     // 이벤트 삭제

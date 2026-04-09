@@ -1,15 +1,7 @@
 package com.ibmteam02.backend.event.domain;
 
 import com.ibmteam02.backend.user.domain.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +25,9 @@ public class Event {
     private LocalDateTime recruitEndAt;    // 행사 모집 마감 시간
     private Integer price;
 
+    @Column(nullable = true)
+    private Integer maxTickets; // 등록 티켓 수량
+
     @Enumerated(EnumType.STRING)
     private Status status;    // 모집중/마감/종료
     private String imageKey;    // 이미지
@@ -48,7 +43,7 @@ public class Event {
     private LocalDateTime updatedAt;
 
     public Event(String title, String description, String location, LocalDateTime startAt, LocalDateTime recruitStartAt,
-                 LocalDateTime recruitEndAt, Integer price, Status status, String imageKey, User user) {
+                 LocalDateTime recruitEndAt, Integer price,Integer maxTickets, Status status, String imageKey, User user) {
         this.title = title;
         this.description = description;
         this.location = location;
@@ -56,13 +51,14 @@ public class Event {
         this.recruitStartAt = recruitStartAt;
         this.recruitEndAt = recruitEndAt;
         this.price = price;
+        this.maxTickets = maxTickets;
         this.status = status;
         this.imageKey = imageKey;
         this.user = user;
     }
 
     public void update(String title, String description, String location, LocalDateTime startAt, LocalDateTime recruitStartAt,
-                       LocalDateTime recruitEndAt, Integer price, Status status, String imageKey) {
+                       LocalDateTime recruitEndAt, Integer price,Integer maxTickets, Status status, String imageKey) {
         this.title = title;
         this.description = description;
         this.location = location;
@@ -70,6 +66,7 @@ public class Event {
         this.recruitStartAt = recruitStartAt;
         this.recruitEndAt = recruitEndAt;
         this.price = price;
+        this.maxTickets = maxTickets;
         this.status = status;
         this.imageKey = imageKey;
     }

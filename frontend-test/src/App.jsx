@@ -8,7 +8,8 @@ import {
   getToken,
   login,
   signup,
-  updateEvent
+  updateEvent,
+  buyTicket
 } from "./api";
 
 const emptySignup = {
@@ -193,6 +194,26 @@ export default function App() {
       await refreshUserData();
     } catch (error) {
       setMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  //티켓 구매하기
+  async function handleBuyTicket(eventId) {
+    const quantity = prompt("구매하실 티켓 수량을 입력하세요.", "1");
+
+    if (!quantity || isNaN(quantity) || quantity <= 0) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await buyTicket(eventId, Number(quantity));
+      alert("티켓 구매가 완료되었습니다!");
+      await refreshUserData();
+    } catch (error) {
+      alert(error.message);
     } finally {
       setLoading(false);
     }
@@ -413,6 +434,17 @@ export default function App() {
               />
             </label>
             <label>
+              티켓수량
+              <input
+                name="maxTickets"
+                type="number"
+                min="0"
+                value={eventForm.maxTickets}
+                onChange={handleEventChange}
+                required
+              />
+            </label>
+            <label>
               상태
               <select name="status" value={eventForm.status} onChange={handleEventChange}>
                 <option value="RECRUITING">RECRUITING</option>
@@ -445,6 +477,8 @@ export default function App() {
                     <p>{eventItem.description}</p>
                     <p>시작: {eventItem.startAt}</p>
                     <p>가격: {eventItem.price}원</p>
+                    <p>티켓 수량: {eventItem.maxTickets}개</p>
+                    <p>남은 티켓 : {eventItem.remainingTickets}개</p>
                     <p>작성자: {eventItem.authorName}</p>
                   </div>
                   <div className="event-actions">
@@ -457,6 +491,13 @@ export default function App() {
                       onClick={() => handleDelete(eventItem.id)}
                     >
                       삭제
+                    </button>
+                    <button
+                      type="button"
+                      className="buy-button"
+                      onClick={() => handleBuyTicket(eventItem.id)}
+                    >
+                      티켓 구매하기
                     </button>
                   </div>
                 </article>
