@@ -17,7 +17,7 @@ public class UserController {
     // 마이페이지
     @GetMapping("/api/me")
     public MyPageResponse getMyPage(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return new MyPageResponse(userDetails.getUsername());
+        return userService.getMyPageInfo(userDetails.getDisplayName(), userDetails.getUsername());
     }
 
 //    // 예매 구매한 티켓 목록

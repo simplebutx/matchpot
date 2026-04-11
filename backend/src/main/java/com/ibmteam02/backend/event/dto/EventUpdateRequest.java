@@ -9,6 +9,7 @@ public record EventUpdateRequest(
         String description,
         String location,
         LocalDateTime startAt,
+        LocalDateTime endAt,
         LocalDateTime recruitStartAt,
         LocalDateTime recruitEndAt,
         Integer price,

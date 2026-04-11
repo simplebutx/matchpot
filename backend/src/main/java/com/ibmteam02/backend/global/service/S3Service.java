@@ -29,7 +29,7 @@ public class S3Service {
 
             amazonS3.putObject(bucket,fileName,image.getInputStream(),metadata);
 
-            return amazonS3.getUrl(bucket, fileName).toString();
+            return fileName;
 
         }catch (IOException e){
             throw new RuntimeException("사진 업로드 중 에러 발생", e);

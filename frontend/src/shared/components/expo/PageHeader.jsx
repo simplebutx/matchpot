@@ -5,7 +5,7 @@ function PageHeader({ title, showApplyButton, onApply }) {
   return (
     <header className="expo-header">
       <div>
-        <span className="expo-header__eyebrow">Beyond LLM: The Era of Agents</span>
+        <span className="expo-header__eyebrow">EXPO APPLY</span>
         <h2 className="expo-header__title">{title}</h2>
       </div>
       {showApplyButton && (

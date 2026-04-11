@@ -32,6 +32,9 @@ public class CustomUserDetails implements UserDetails {
         return user.getEmail();
     }
 
+
+    public String getDisplayName(){return  user.getDisplayName();}
+
     public Long getId() {
         return user.getId();
     }

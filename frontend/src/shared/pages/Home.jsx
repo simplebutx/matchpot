@@ -3,6 +3,7 @@ import Sidebar from '@/shared/components/expo/Sidebar';
 import PageHeader from '@/shared/components/expo/PageHeader';
 import DashboardSection from '@/shared/components/expo/DashboardSection';
 import ApplySection from '@/shared/components/expo/ApplySection';
+import AddEventSection from '@/shared/components/expo/AddEventSection';
 import BoothSection from '@/shared/components/expo/BoothSection';
 import VoteSection from '@/shared/components/expo/VoteSection';
 import BoardSection from '@/shared/components/expo/BoardSection';
@@ -13,7 +14,7 @@ import {
   inferenceData,
   menuItems,
   stats,
-  voteItems,
+  voteItems
 } from '@/shared/data/expoData';
 import '@/shared/styles/HomePage.css';
 
@@ -44,6 +45,10 @@ function Home() {
 
     if (activeTab === 'board') {
       return <BoardSection boardPosts={boardPosts} />;
+    }
+
+    if (activeTab === 'createEvent' && isAdmin) {
+      return <AddEventSection />;
     }
 
     return <ApplySection />;

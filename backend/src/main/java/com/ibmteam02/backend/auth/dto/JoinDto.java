@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class JoinDto {
     private String email;
     private String password;
-    private String displayName;
+    private String displayName; //이름
 }

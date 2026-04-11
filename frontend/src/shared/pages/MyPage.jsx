@@ -2,20 +2,38 @@ import { Link } from 'react-router-dom';
 import { CalendarDays, CreditCard, ShieldCheck, Ticket } from 'lucide-react';
 import { myPageActivities } from '@/shared/data/expoData';
 import '@/shared/styles/MyPage.css';
+import { useEffect, useState } from 'react';
+import { getMyPage } from '@/shared/api/authApi';
 
 function MyPage() {
+
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getMyPage();
+        setUserInfo(data);
+      } catch (error) {
+        console.error("정보 로드 실패:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <div className="mypage">
       <section className="mypage__hero">
         <div className="mypage__hero-copy">
           <p className="mypage__eyebrow">MY AGENT EXPO</p>
-          <h1>참가 정보와 활동 내역을 한 번에 관리하세요.</h1>
+          <h1>My page</h1>
           <p className="mypage__description">
-            등록 상태, 예약한 세션, 투표 참여 내역까지 같은 톤으로 정리된 개인 대시보드입니다.
+            행사관리
           </p>
           <div className="mypage__actions">
             <Link to="/" className="mypage__primary-link">
-              홈으로 돌아가기
+              메인 홈
             </Link>
             <Link to="/login" className="mypage__secondary-link">
               계정 다시 확인
@@ -27,8 +45,9 @@ function MyPage() {
           <div className="mypage__avatar">KS</div>
           <div>
             <p className="mypage__role">ATTENDEE PROFILE</p>
-            <h2>김서연</h2>
-            <span>AI Product Designer</span>
+            <h2>{userInfo?.displayName || "로딩 중..."}</h2>
+            <h2>email : {userInfo?.username || "로딩 중..."}</h2>
+            <span>권한 :</span>
           </div>
           <ul>
             <li>

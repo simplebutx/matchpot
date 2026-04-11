@@ -1,8 +1,34 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '@/features/auth/components/AuthLayout';
+import { login } from '@/shared/api/authApi';
 import '@/features/auth/styles/Login.css';
 
+
 function Login() {
+
+  const navigate = useNavigate(); //
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await login({ email, password }); // response 전체를 받음
+
+      // 백엔드 응답 구조에 따라 다르지만 보통 response.accessToken 혹은 response에 토큰이 옴
+      if (response) {
+        alert('로그인 성공');
+        localStorage.setItem('token', response);
+        navigate('/');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+    }
+  };
+
+
   return (
     <AuthLayout
       title="로그인"
@@ -12,14 +38,14 @@ function Login() {
       footerText="아직 계정이 없나요?"
       footerLink={{ to: '/signup', label: '회원가입' }}
     >
-      <form className="auth-form">
+      <form className="auth-form" onSubmit={handleSubmit}>
         <label>
           이메일
-          <input type="email" placeholder="agent@expo.com" />
+          <input type="email" placeholder="agent@expo.com" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         <label>
           비밀번호
-          <input type="password" placeholder="비밀번호를 입력하세요" />
+          <input type="password" placeholder="비밀번호를 입력하세요" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
         <div className="auth-form__row">
           <label className="auth-form__check">
