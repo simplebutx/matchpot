@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { ChevronRight } from 'lucide-react';
 import Sidebar, { getSidebarTitle } from '@/shared/components/Sidebar';
 import RegistrationModal from '@/archive/RegistrationModal';
@@ -48,7 +49,7 @@ function Home() {
         <RegistrationModal
           onClose={() => setIsModalOpen(false)}
           onConfirm={() => {
-            window.alert('참가 신청이 접수되었습니다.');
+            toast.success('참가 신청이 접수되었습니다.');
             setIsModalOpen(false);
           }}
         />

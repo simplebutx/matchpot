@@ -1,5 +1,6 @@
 import '@/features/events/styles/AddEventSection.css';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { createEvent, getEvents } from '@/shared/api/eventApi';
 
 function AddEventSection() {
@@ -62,13 +63,13 @@ function AddEventSection() {
 
     // 간단한 유효성 검사
     if (!form.title || !form.startAt) {
-      alert("행사명과 시작 시간은 필수입니다.");
+      toast.error('행사명과 시작 시간은 필수입니다.');
       return;
     }
 
     try {
       await createEvent(formattedForm, imageFile);
-      alert('행사 등록 완료');
+      toast.success('행사 등록 완료');
 
       fetchMyEvents();
 
@@ -79,7 +80,7 @@ function AddEventSection() {
       setImageFile(null);
     } catch (error) {
       console.error(error);
-      alert('행사 등록 실패: ' + error.message);
+      toast.error(`행사 등록 실패: ${error.message}`);
     }
   };
 

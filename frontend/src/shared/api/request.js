@@ -1,4 +1,5 @@
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 // 1. axios 인스턴스 생성
 const request = axios.create({
@@ -27,8 +28,9 @@ request.interceptors.response.use(
   (response) => response.data, // 전처리: 항상 data만 리턴하게 하면 편리함
   (error) => {
     if (error.response?.status === 401) {
-      alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+      toast.error('세션이 만료되었습니다. 다시 로그인해주세요.');
       localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
       window.location.href = '/login';
     }
     return Promise.reject(error);
