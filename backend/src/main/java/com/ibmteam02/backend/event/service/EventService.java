@@ -42,6 +42,7 @@ public class EventService {
                 dto.description(),
                 dto.location(),
                 dto.startAt(),
+                dto.endAt(),
                 dto.recruitStartAt(),
                 dto.recruitEndAt(),
                 dto.price(),
@@ -54,18 +55,21 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    // 이벤트 목록 불러오기
+    // 나의 이벤트 목록 불러오기
     @Transactional(readOnly = true)
     public List<EventListResponse> getEventList(Long userId) {
         List<Event> events = eventRepository.findAllByUserId(userId);
 
-    return events.stream().map(event -> {
+        String s3BaseUrl = "https://ibmteam2-s3-admin.s3.ap-northeast-2.amazonaws.com/";
 
+    return events.stream().map(event -> {
         Integer soldcount = ticketRepository.sumQuantityByEventId(event.getId());
         if(soldcount==null) soldcount=0;
 
         int max = (event.getMaxTickets() !=null)? event.getMaxTickets():0;
         int remaining = max - soldcount;
+
+        String fullImageUrl = (event.getImageKey() != null) ? s3BaseUrl + event.getImageKey() : null;
 
             return new EventListResponse(
                         event.getId(),
@@ -73,16 +77,24 @@ public class EventService {
                         event.getDescription(),
                         event.getLocation(),
                         event.getStartAt(),
+                        event.getEndAt(),
                         event.getRecruitStartAt(),
                         event.getRecruitEndAt(),
                         event.getPrice(),
                         event.getMaxTickets(),
                         remaining,
                         event.getStatus(),
-                        event.getImageKey(),
+                        fullImageUrl,
                         event.getUser().getDisplayName()
             );
                 }).toList();
+    }
+
+    //전체 이벤트 목록 불러오기
+    public List<EventListResponse> getAllEvents() {
+        return eventRepository.findAllByOrderByCreatedAtDesc().stream()
+                .map(EventListResponse::new)
+                .toList();
     }
 
     // 이벤트 수정
@@ -96,7 +108,7 @@ public class EventService {
         }
 
         event.update(dto.title(), dto.description(), dto.location(),
-                dto.startAt(), dto.recruitStartAt(), dto.recruitEndAt(),
+                dto.startAt(),dto.endAt(), dto.recruitStartAt(), dto.recruitEndAt(),
                 dto.price(),dto.maxTickets(), dto.status(), dto.imageKey());
     }
 

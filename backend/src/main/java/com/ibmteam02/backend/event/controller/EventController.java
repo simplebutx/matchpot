@@ -36,11 +36,19 @@ public class EventController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    //나의 이벤트 목록 불러오기(주최자)
     @GetMapping("/api/organizer/events")
     public List<EventListResponse> getEvents(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return eventService.getEventList(userDetails.getId());
     }
 
+    // 고객용: 모든 주최자의 행사 전체 조회 (로그인 필요 없음)
+    @GetMapping("/api/events")
+    public List<EventListResponse> getAllEvents() {
+        return eventService.getAllEvents();
+    }
+
+    //이벤트 수정하기
     @PutMapping("/api/organizer/events/{eventId}")
     public ResponseEntity<Void> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest dto,
                                             @AuthenticationPrincipal CustomUserDetails userDetails) {

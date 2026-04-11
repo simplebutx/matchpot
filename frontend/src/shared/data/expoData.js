@@ -5,7 +5,7 @@ import {
   Cpu,
   LayoutDashboard,
   MessageSquare,
-  Vote,
+  Vote
 } from 'lucide-react';
 
 export const inferenceData = [
@@ -18,10 +18,11 @@ export const inferenceData = [
 
 export const menuItems = [
   { id: 'dashboard', label: '실시간 운영 모니터링', icon: LayoutDashboard, adminOnly: true },
-  { id: 'apply', label: '행사 정보 및 참가 신청', icon: Calendar, adminOnly: false },
+  { id: 'apply', label: '행사 목록 및 정보', icon: Calendar, adminOnly: false },
   { id: 'booth', label: '에이전트 부스 배치', icon: Cpu, adminOnly: true },
-  { id: 'vote', label: 'Best Agent 어워즈 투표', icon: Vote, adminOnly: false },
+  { id: 'vote', label: '행사 리뷰', icon: Vote, adminOnly: false },
   { id: 'board', label: '개발자 네트워킹 보드', icon: MessageSquare, adminOnly: false },
+  { id: 'createEvent', label: '행사 등록&관리(주최자용)', icon: Calendar, adminOnly: true }
 ];
 
 export const stats = [

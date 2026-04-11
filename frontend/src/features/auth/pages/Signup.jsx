@@ -1,7 +1,36 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signup } from '@/shared/api/authApi'; // 방금 만든 API 가져오기
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import '@/features/auth/styles/Signup.css';
 
 function Signup() {
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    displayName: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      await signup(formData);
+      alert('회원가입이 완료!');
+      navigate('/login');
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      alert('회원가입에 실패했습니다.');
+    }
+  };
+
   return (
     <AuthLayout
       title="회원가입"
@@ -11,33 +40,54 @@ function Signup() {
       footerText="이미 계정이 있나요?"
       footerLink={{ to: '/login', label: '로그인' }}
     >
-      <form className="signup-form">
+      <form className="signup-form" onSubmit={handleSubmit}>
         <div className="signup-form__grid">
           <label>
             이름
-            <input type="text" placeholder="홍길동" />
+            <input 
+              name="displayName" 
+              type="text" 
+              placeholder="홍길동" 
+              value={formData.displayName} 
+              onChange={handleChange} 
+              required 
+            />
           </label>
-          <label>
-            직무
+          {/* <label>
+            직무 (현재 DTO에는 없음)
             <input type="text" placeholder="AI Engineer" />
-          </label>
+          </label> */}
         </div>
         <label>
           이메일
-          <input type="email" placeholder="agent@expo.com" />
+          <input 
+            name="email" 
+            type="email" 
+            placeholder="agent@expo.com" 
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+          />
         </label>
         <label>
           비밀번호
-          <input type="password" placeholder="8자 이상 입력하세요" />
+          <input 
+            name="password" 
+            type="password" 
+            placeholder="8자 이상 입력하세요" 
+            value={formData.password} 
+            onChange={handleChange} 
+            required 
+          />
         </label>
-        <label>
-          관심 분야
+        {/* <label>
+          관심 분야 (현재 DTO에는 없음)
           <select defaultValue="agent-platform">
             <option value="agent-platform">Agent Platform</option>
             <option value="llm-ops">LLM Ops</option>
             <option value="workflow-automation">Workflow Automation</option>
           </select>
-        </label>
+        </label> */}
         <button type="submit" className="signup-form__submit">
           회원가입하고 신청 시작하기
         </button>

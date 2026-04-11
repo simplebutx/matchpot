@@ -21,6 +21,7 @@ public class Event {
     private String description;   // 행사 설명(내용)
     private String location;     // 행사 위치
     private LocalDateTime startAt;     // 행사 시작 시간
+    private LocalDateTime endAt;     // 행사 시작 시간
     private LocalDateTime recruitStartAt;   // 행사 모집 시작 시간
     private LocalDateTime recruitEndAt;    // 행사 모집 마감 시간
     private Integer price;
@@ -42,12 +43,13 @@ public class Event {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Event(String title, String description, String location, LocalDateTime startAt, LocalDateTime recruitStartAt,
+    public Event(String title, String description, String location, LocalDateTime startAt, LocalDateTime endAt, LocalDateTime recruitStartAt,
                  LocalDateTime recruitEndAt, Integer price,Integer maxTickets, Status status, String imageKey, User user) {
         this.title = title;
         this.description = description;
         this.location = location;
         this.startAt = startAt;
+        this.endAt = endAt;
         this.recruitStartAt = recruitStartAt;
         this.recruitEndAt = recruitEndAt;
         this.price = price;
@@ -57,12 +59,13 @@ public class Event {
         this.user = user;
     }
 
-    public void update(String title, String description, String location, LocalDateTime startAt, LocalDateTime recruitStartAt,
+    public void update(String title, String description, String location, LocalDateTime startAt,LocalDateTime endAt, LocalDateTime recruitStartAt,
                        LocalDateTime recruitEndAt, Integer price,Integer maxTickets, Status status, String imageKey) {
         this.title = title;
         this.description = description;
         this.location = location;
         this.startAt = startAt;
+        this.endAt = endAt;
         this.recruitStartAt = recruitStartAt;
         this.recruitEndAt = recruitEndAt;
         this.price = price;

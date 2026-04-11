@@ -1,58 +1,64 @@
 import '@/shared/styles/expo/ApplySection.css';
+import { useEffect, useState } from 'react';
+import { getAllEvents } from '@/shared/api/eventApi';
 
 function ApplySection() {
+
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    const fetchEventList = async () => {
+      try {
+        const data = await getAllEvents();
+        setEvents(data);
+      } catch (error) {
+        console.error("이벤트 로드 실패 ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventList();
+  }, []);
+
+  if (loading) return <div>로딩 중...</div>;
+
   return (
     <section className="expo-apply">
-      <div className="expo-apply__hero-group">
-        <article className="expo-apply__hero-card">
-          <span className="expo-apply__hero-chip">AI AGENT FESTIVAL</span>
-          <h3>
-            THE NEXT
-            <br />
-            INTELLIGENCE
-          </h3>
-          <p>LIVE: 2026.05.12 - 05.17</p>
-        </article>
+      <div className="expo-apply__list">
+        {events.length === 0 ? (
+          <p>등록된 행사가 없습니다.</p>
+        ) : (
+          events.map((event) => (
+            <article className="expo-event-card" key={event.id}>
+              <div className="expo-event-card__link">
+                <div className="expo-event-card__img-wrapper">
+                  <img
+                    // 백엔드에서 이미지 URL 처리를 했으므로 그대로 사용
+                    src={event.imageKey || "https://via.placeholder.com/150"}
+                    alt={event.title}
+                    className="expo-event-card__img"
+                  />
+                  <span className="expo-event-card__chip">{event.status}</span>
+                </div>
 
-        <article className="expo-apply__text-card">
-          <h3>
-            AUTONOMOUS
-            <br />
-            <span>AGENT WORKFLOWS</span>
-          </h3>
-          <p>
-            단순한 체험형 전시를 넘어, 실제로 계획하고 도구를 활용하며 업무를 수행하는
-            에이전트 경험을 만나보세요.
-          </p>
-        </article>
-      </div>
+                <div className="expo-event-card__content">
+                  <div className="expo-event-card__title_top">
+                    <h3 className="expo-event-card__title">{event.title}</h3>
+                  </div>
 
-      <div className="expo-apply__info-group">
-        <article className="expo-apply__progress-card">
-          <p>REGISTRATION PROGRESS</p>
-          <h3>NEURAL LINK: 94%</h3>
-          <div>
-            <div>
-              <span>일반 컨퍼런스 패스</span>
-              <strong>1,120 / 1,200</strong>
-            </div>
-            <div>
-              <span>기업 전시 및 스폰서십</span>
-              <strong>42 / 50</strong>
-            </div>
-          </div>
-        </article>
-
-        <article className="expo-apply__meta-card">
-          <div>
-            <p>DATE</p>
-            <strong>2026.05.12 - 05.17</strong>
-          </div>
-          <div>
-            <p>LOCATION</p>
-            <strong>COEX GRAND BALLROOM</strong>
-          </div>
-        </article>
+                  <div className="expo-event-card__meta">
+                    <p className="expo-event-card__date">일시: {event.startAt}</p>
+                    <p className="expo-event-card__location">장소: {event.location}</p>
+                    <p className="expo-event-card__date">남은 티켓: {event.remainingTickets}개</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        )}
       </div>
     </section>
   );

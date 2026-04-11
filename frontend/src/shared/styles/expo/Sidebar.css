@@ -1,5 +1,7 @@
 .expo-sidebar {
   width: 288px;
+  height: 100vh;
+  position: sticky;
   padding: 24px;
   background: rgba(255, 255, 255, 0.92);
   border-right: 1px solid rgba(148, 163, 184, 0.2);
@@ -43,8 +45,10 @@
 .expo-sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;
+  gap: 6px; 
+  flex: 1; 
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .expo-sidebar__item {
@@ -72,6 +76,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.1);
 }
 
 .expo-sidebar__mypage,
