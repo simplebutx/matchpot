@@ -1,4 +1,4 @@
-import '@/shared/styles/expo/RegistrationModal.css';
+import '@/archive/RegistrationModal.css';
 
 function RegistrationModal({ onClose, onConfirm }) {
   return (

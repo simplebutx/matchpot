@@ -1,4 +1,4 @@
-import '@/shared/styles/expo/AddEventSection.css';
+import '@/features/events/styles/AddEventSection.css';
 import { useEffect, useState } from 'react';
 import { createEvent, getEvents } from '@/shared/api/eventApi';
 

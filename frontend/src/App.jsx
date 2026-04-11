@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from '@/shared/pages/Home';
 import Login from '@/features/auth/pages/Login';
 import Signup from '@/features/auth/pages/Signup';
-import MyPage from '@/shared/pages/MyPage';
+import MyPage from '@/features/mypage/pages/MyPage';
 
 function App() {
   return (

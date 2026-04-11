@@ -2,6 +2,7 @@ package com.ibmteam02.backend.event.service;
 
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.dto.EventCreateRequest;
+import com.ibmteam02.backend.event.dto.EventDetailResponse;
 import com.ibmteam02.backend.event.dto.EventListResponse;
 import com.ibmteam02.backend.event.dto.EventUpdateRequest;
 import com.ibmteam02.backend.event.repository.EventRepository;
@@ -90,13 +91,6 @@ public class EventService {
                 }).toList();
     }
 
-    //전체 이벤트 목록 불러오기
-    public List<EventListResponse> getAllEvents() {
-        return eventRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(EventListResponse::new)
-                .toList();
-    }
-
     // 이벤트 수정
     @Transactional
     public void updateEvent(Long eventId, EventUpdateRequest dto, Long userId) {
@@ -123,5 +117,21 @@ public class EventService {
         }
 
         eventRepository.delete(event);
+    }
+
+
+    //전체 이벤트 목록 불러오기
+    public List<EventListResponse> getAllEvents() {
+        return eventRepository.findAllByOrderByCreatedAtDesc().stream()
+                .map(EventListResponse::new)
+                .toList();
+    }
+
+    // 이벤트 상세페이지
+    public EventDetailResponse getEventDetail(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(EventNotFoundException::new);
+
+        return new EventDetailResponse(event);
     }
 }

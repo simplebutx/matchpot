@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { CalendarDays, CreditCard, ShieldCheck, Ticket } from 'lucide-react';
-import { myPageActivities } from '@/shared/data/expoData';
-import '@/shared/styles/MyPage.css';
+import { myPageActivities } from '@/archive/expoData';
+import '@/features/mypage/styles/MyPage.css';
 import { useEffect, useState } from 'react';
 import { getMyPage } from '@/shared/api/authApi';
 
@@ -22,6 +22,12 @@ function MyPage() {
     fetchUserData();
   }, []);
 
+  
+  function logout() {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("role");
+  }
+
   return (
     <div className="mypage">
       <section className="mypage__hero">
@@ -35,9 +41,7 @@ function MyPage() {
             <Link to="/" className="mypage__primary-link">
               메인 홈
             </Link>
-            <Link to="/login" className="mypage__secondary-link">
-              계정 다시 확인
-            </Link>
+            <button onClick={()=> logout}>fff</button>
           </div>
         </div>
 
