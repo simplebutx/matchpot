@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import { login } from '@/shared/api/authApi';
@@ -18,13 +19,13 @@ function Login() {
 
       // 백엔드 응답 구조에 따라 다르지만 보통 response.accessToken 혹은 response에 토큰이 옴
       if (response) {
-        alert('로그인 성공');
+        toast.success('로그인 성공');
         localStorage.setItem('token', response);
         navigate('/');
       }
     } catch (error) {
       console.error(error);
-      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+      toast.error('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
     }
   };
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { signup } from '@/shared/api/authApi'; // 방금 만든 API 가져오기
 import AuthLayout from '@/features/auth/components/AuthLayout';
@@ -23,11 +24,11 @@ function Signup() {
     
     try {
       await signup(formData);
-      alert('회원가입이 완료!');
+      toast.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (error) {
       console.error('회원가입 실패:', error);
-      alert('회원가입에 실패했습니다.');
+      toast.error('회원가입에 실패했습니다.');
     }
   };
 

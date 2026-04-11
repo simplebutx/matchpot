@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CalendarDays, CreditCard, ShieldCheck, Ticket } from 'lucide-react';
 import { myPageActivities } from '@/archive/expoData';
 import '@/features/mypage/styles/MyPage.css';
 import { useEffect, useState } from 'react';
 import { getMyPage } from '@/shared/api/authApi';
+import toast from 'react-hot-toast';
 
 function MyPage() {
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState(null);
 
@@ -24,8 +26,11 @@ function MyPage() {
 
   
   function logout() {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("role");
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/login');
+    toast.success("로그아웃 성공")
   }
 
   return (
@@ -41,7 +46,7 @@ function MyPage() {
             <Link to="/" className="mypage__primary-link">
               메인 홈
             </Link>
-            <button onClick={()=> logout}>fff</button>
+            <button type="button" onClick={logout}>로그아웃</button>
           </div>
         </div>
 
