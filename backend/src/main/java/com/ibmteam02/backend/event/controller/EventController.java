@@ -2,6 +2,7 @@ package com.ibmteam02.backend.event.controller;
 
 import com.ibmteam02.backend.auth.domain.CustomUserDetails;
 import com.ibmteam02.backend.event.dto.EventCreateRequest;
+import com.ibmteam02.backend.event.dto.EventDetailResponse;
 import com.ibmteam02.backend.event.dto.EventListResponse;
 import com.ibmteam02.backend.event.dto.EventUpdateRequest;
 import com.ibmteam02.backend.event.service.EventService;
@@ -42,12 +43,6 @@ public class EventController {
         return eventService.getEventList(userDetails.getId());
     }
 
-    // 고객용: 모든 주최자의 행사 전체 조회 (로그인 필요 없음)
-    @GetMapping("/api/events")
-    public List<EventListResponse> getAllEvents() {
-        return eventService.getAllEvents();
-    }
-
     //이벤트 수정하기
     @PutMapping("/api/organizer/events/{eventId}")
     public ResponseEntity<Void> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest dto,
@@ -61,5 +56,17 @@ public class EventController {
                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
         eventService.deleteEvent(eventId, userDetails.getId());
         return ResponseEntity.noContent().build();
+    }
+
+
+    // 고객용: 모든 주최자의 행사 전체 조회 (로그인 필요 없음)
+    @GetMapping("/api/events")
+    public List<EventListResponse> getAllEvents() {
+        return eventService.getAllEvents();
+    }
+
+    @GetMapping("/api/events/{eventId}")
+    public EventDetailResponse getEventDetail(@PathVariable Long eventId) {
+        return eventService.getEventDetail(eventId);
     }
 }
