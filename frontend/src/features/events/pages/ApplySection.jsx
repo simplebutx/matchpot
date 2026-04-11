@@ -1,4 +1,4 @@
-import '@/shared/styles/expo/ApplySection.css';
+import '@/features/events/styles/ApplySection.css';
 import { useEffect, useState } from 'react';
 import { getAllEvents } from '@/shared/api/eventApi';
 
