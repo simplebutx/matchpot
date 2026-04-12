@@ -1,13 +1,44 @@
+import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '@/features/events/styles/EventDetailPage.css';
 import ReviewComponent from '@/features/events/components/ReviewComponent';
+import toast from 'react-hot-toast';
+import { buyTicket } from '@/shared/api/eventApi';
 
 function EventDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { eventId } = useParams();
-
   const event = location.state?.event;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reserveQuantity, setReserveQuantity] = useState(1);
+
+  const handleQuantity = (type) => {
+    if (type === 'plus') {
+      if (reserveQuantity >= event?.remainingTickets) {
+        toast.error('잔여 수량을 초과할 수 없습니다.');
+        return;
+      }
+      setReserveQuantity(prev => prev + 1);
+    } else {
+      if (reserveQuantity <= 1) return;
+      setReserveQuantity(prev => prev - 1);
+    }
+  };
+
+  const handleReserveSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await buyTicket(eventId, reserveQuantity);
+      toast.success('티켓 구매 완료');
+      setIsModalOpen(false);
+      navigate('/mypage');
+    } catch (error) {
+      toast.error('구매 실패');
+      console.log(error);
+    }
+  };
 
   return (
     <section className="event-detail">
@@ -60,8 +91,13 @@ function EventDetailPage() {
           </div>
 
           <div className="event-detail__actions">
-            <button type="button" className="event-detail__reserve-button">
-              예약하기
+            <button
+              type="button"
+              className="event-detail__reserve-button"
+              onClick={() => setIsModalOpen(true)}
+              disabled={event?.remainingTickets <= 0}
+            >
+              {event?.remainingTickets <= 0 ? 'SOLD OUT' : '티켓 예약하기'}
             </button>
             <button
               type="button"
@@ -75,6 +111,30 @@ function EventDetailPage() {
       </div>
 
       <ReviewComponent />
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="reserve-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>티켓 구매 확인</h3>
+            <p className="reserve-modal__event-title">{event?.title}</p>
+
+            <div className="quantity-selector">
+              <button onClick={() => handleQuantity('minus')}>-</button>
+              <span className="quantity-number">{reserveQuantity}</span>
+              <button onClick={() => handleQuantity('plus')}>+</button>
+            </div>
+
+            <div className="reserve-total">
+              <span>총 결제 금액</span>
+              <strong>₩{(event?.price * reserveQuantity).toLocaleString()}</strong>
+            </div>
+
+            <div className="modal-actions">
+              <button className="confirm-btn" onClick={handleReserveSubmit}>예약하기</button>
+              <button className="cancel-btn" onClick={() => setIsModalOpen(false)}>취소</button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
