@@ -1,44 +1,70 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '@/features/events/styles/EventDetailPage.css';
 import ReviewComponent from '@/features/events/components/ReviewComponent';
 import toast from 'react-hot-toast';
-import { buyTicket } from '@/shared/api/eventApi';
+import { buyTicket, getEventDetail } from '@/shared/api/eventApi';
 
 function EventDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { eventId } = useParams();
-  const event = location.state?.event;
 
+  const [event, setEvent] = useState(location.state?.event ?? null);
+  const [isLoading, setIsLoading] = useState(!location.state?.event);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reserveQuantity, setReserveQuantity] = useState(1);
 
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const data = await getEventDetail(eventId);
+        setEvent(data);
+      } catch (error) {
+        console.error(error);
+        toast.error('이벤트 상세 정보를 불러오지 못했습니다.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvent();
+  }, [eventId]);
+
+  const remainingTickets = event?.remainingTickets;
+  const isSoldOut = remainingTickets != null && remainingTickets <= 0;
+
   const handleQuantity = (type) => {
     if (type === 'plus') {
-      if (reserveQuantity >= event?.remainingTickets) {
-        toast.error('잔여 수량을 초과할 수 없습니다.');
+      if (remainingTickets != null && reserveQuantity >= remainingTickets) {
+        toast.error('잔여 티켓 수를 초과할 수 없습니다.');
         return;
       }
-      setReserveQuantity(prev => prev + 1);
-    } else {
-      if (reserveQuantity <= 1) return;
-      setReserveQuantity(prev => prev - 1);
+      setReserveQuantity((prev) => prev + 1);
+      return;
     }
+
+    if (reserveQuantity <= 1) return;
+    setReserveQuantity((prev) => prev - 1);
   };
 
   const handleReserveSubmit = async (e) => {
     e.preventDefault();
+
     try {
       await buyTicket(eventId, reserveQuantity);
-      toast.success('티켓 구매 완료');
+      toast.success('티켓 구매가 완료되었습니다.');
       setIsModalOpen(false);
       navigate('/mypage');
     } catch (error) {
-      toast.error('구매 실패');
-      console.log(error);
+      toast.error('티켓 구매에 실패했습니다.');
+      console.error(error);
     }
   };
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
     <section className="event-detail">
@@ -47,7 +73,7 @@ function EventDetailPage() {
         className="event-detail__back"
         onClick={() => navigate(-1)}
       >
-        목록으로
+        목록으로 돌아가기
       </button>
 
       <div className="event-detail__card">
@@ -66,27 +92,22 @@ function EventDetailPage() {
           <div className="event-detail__info">
             <p>
               <strong>일시</strong>
-              <span>{event?.startAt || '일정 정보 준비 중'}</span>
+              <span>{event?.startAt || '일정 정보가 아직 없습니다.'}</span>
             </p>
             <p>
               <strong>장소</strong>
-              <span>{event?.location || '장소 정보 준비 중'}</span>
+              <span>{event?.location || '장소 정보가 아직 없습니다.'}</span>
             </p>
             <p>
               <strong>잔여 좌석</strong>
-              <span>
-                {event?.remainingTickets != null
-                  ? `${event.remainingTickets}개`
-                  : '좌석 정보 준비 중'}
-              </span>
+              <span>{remainingTickets != null ? `${remainingTickets}개` : '확인 불가'}</span>
             </p>
           </div>
 
           <div className="event-detail__description">
             <h2>이벤트 소개</h2>
             <p>
-              {event?.description ||
-                '이벤트 상세 설명은 아직 등록되지 않았습니다. 추후 더 많은 정보를 이 영역에 연결할 수 있습니다.'}
+              {event?.description || '이벤트 상세 설명이 아직 등록되지 않았습니다.'}
             </p>
           </div>
 
@@ -95,9 +116,9 @@ function EventDetailPage() {
               type="button"
               className="event-detail__reserve-button"
               onClick={() => setIsModalOpen(true)}
-              disabled={event?.remainingTickets <= 0}
+              disabled={isSoldOut}
             >
-              {event?.remainingTickets <= 0 ? 'SOLD OUT' : '티켓 예약하기'}
+              {isSoldOut ? 'SOLD OUT' : '티켓 예약하기'}
             </button>
             <button
               type="button"
@@ -118,14 +139,14 @@ function EventDetailPage() {
             <p className="reserve-modal__event-title">{event?.title}</p>
 
             <div className="quantity-selector">
-              <button onClick={() => handleQuantity('minus')}>-</button>
+              <button type="button" onClick={() => handleQuantity('minus')}>-</button>
               <span className="quantity-number">{reserveQuantity}</span>
-              <button onClick={() => handleQuantity('plus')}>+</button>
+              <button type="button" onClick={() => handleQuantity('plus')}>+</button>
             </div>
 
             <div className="reserve-total">
               <span>총 결제 금액</span>
-              <strong>₩{(event?.price * reserveQuantity).toLocaleString()}</strong>
+              <strong>{((event?.price ?? 0) * reserveQuantity).toLocaleString()}원</strong>
             </div>
 
             <div className="modal-actions">

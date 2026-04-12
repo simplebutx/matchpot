@@ -21,6 +21,10 @@ export const getAllEvents = () => {
   return request.get('/api/events');
 };
 
+export const getEventDetail = (eventId) => {
+  return request.get(`/api/events/${eventId}`);
+};
+
 //이벤트 등록 (이미지 + 데이터)
 export const createEvent = (formData, imageFile) => {
   const data = new FormData();
@@ -54,4 +58,8 @@ export const buyTicket = (eventId, quantity) => {
 //티켓 조회 (참가자용)
 export const getMyTickets = () => {
   return request.get('/api/me/tickets');
+};
+
+export const cancelTicket = (ticketId) => {
+  return request.delete(`/api/me/tickets/${ticketId}`);
 };

@@ -3,6 +3,8 @@ package com.ibmteam02.backend.ticket.service;
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.repository.EventRepository;
 import com.ibmteam02.backend.global.exception.EventNotFoundException;
+import com.ibmteam02.backend.global.exception.NoPermissionException;
+import com.ibmteam02.backend.global.exception.TicketNotFoundException;
 import com.ibmteam02.backend.global.exception.TicketStockEmptyException;
 import com.ibmteam02.backend.global.exception.UserNotFoundException;
 import com.ibmteam02.backend.ticket.domain.Ticket;
@@ -72,6 +74,18 @@ public class TicketService {
                     return new TicketListResponse(ticket, fullImageUrl);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void cancelTicket(Long userId, Long ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(TicketNotFoundException::new);
+
+        if (!ticket.getUser().getId().equals(userId)) {
+            throw new NoPermissionException("본인이 구매한 티켓만 취소할 수 있습니다.");
+        }
+
+        ticketRepository.delete(ticket);
     }
 
     private String buildImageUrl(String imageKey) {

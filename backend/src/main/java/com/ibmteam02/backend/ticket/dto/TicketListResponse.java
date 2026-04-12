@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TicketListResponse {
     private Long ticketId;
+    private Long eventId;
     private String eventTitle;
     private String eventLocation;
     private LocalDateTime eventStartAt;
@@ -18,6 +19,7 @@ public class TicketListResponse {
 
     public TicketListResponse(Ticket ticket) {
         this.ticketId = ticket.getId();
+        this.eventId = ticket.getEvent().getId();
         this.eventTitle = ticket.getEvent().getTitle();
         this.eventLocation = ticket.getEvent().getLocation();
         this.eventStartAt = ticket.getEvent().getStartAt();
@@ -26,6 +28,7 @@ public class TicketListResponse {
 
     public TicketListResponse(Ticket ticket, String fullImageUrl) {
         this.ticketId = ticket.getId();
+        this.eventId = ticket.getEvent().getId();
         this.eventTitle = ticket.getEvent().getTitle();
         this.eventLocation = ticket.getEvent().getLocation();
         this.eventStartAt = ticket.getEvent().getStartAt();

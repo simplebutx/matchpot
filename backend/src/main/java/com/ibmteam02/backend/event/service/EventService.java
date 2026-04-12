@@ -152,6 +152,14 @@ public class EventService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
 
+        Integer soldCount = ticketRepository.sumQuantityByEventId(event.getId());
+        if (soldCount == null) {
+            soldCount = 0;
+        }
+
+        int maxTickets = event.getMaxTickets() != null ? event.getMaxTickets() : 0;
+        int remainingTickets = maxTickets - soldCount;
+
         return new EventDetailResponse(
                 event.getId(),
                 event.getTitle(),
@@ -163,7 +171,7 @@ public class EventService {
                 event.getRecruitEndAt(),
                 event.getPrice(),
                 event.getMaxTickets(),
-                event.getMaxTickets(),
+                remainingTickets,
                 event.getStatus(),
                 buildImageUrl(event.getImageKey()),
                 event.getUser().getDisplayName()
