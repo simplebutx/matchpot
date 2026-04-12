@@ -1,14 +1,14 @@
 import '@/features/events/styles/AddEventPage.css';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { createEvent, getEvents } from '@/shared/api/eventApi';
+import { createEvent, getEvents, updateEvent, deleteEvent } from '@/shared/api/eventApi';
 
 function AddEventPage() {
   const [form, setForm] = useState({
     title: '',
     startDate: '',
     endDate: '',
-    content: '',
+    description: '',
     location: '',
     totalTickets: '',
     startAt: '',
@@ -17,6 +17,9 @@ function AddEventPage() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [myEvents, setMyEvents] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +31,7 @@ function AddEventPage() {
   const fetchMyEvents = async () => {
     try {
       // GET /api/organizer/events 호출
-      const data = await getEvents(); 
+      const data = await getEvents();
       setMyEvents(data);
     } catch (error) {
       console.error("목록 로드 실패:", error);
@@ -74,13 +77,46 @@ function AddEventPage() {
       fetchMyEvents();
 
       setForm({
-        title: '', date: '', content: '', location: '',
+        title: '', date: '', description: '', location: '',
         totalTickets: '', startAt: '', endAt: '', imageFile: ''
       });
       setImageFile(null);
     } catch (error) {
       console.error(error);
       toast.error(`행사 등록 실패: ${error.message}`);
+    }
+  };
+
+  //이벤트 수정하기 모달창 open
+  const handleEditClick = (event) => {
+    setEditingEvent({ ...event });
+    setIsModalOpen(true);
+  };
+
+  //이벤트 수정하기
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await updateEvent(editingEvent.id, editingEvent);
+      toast.success("수정 완료");
+      setIsModalOpen(false);
+      fetchMyEvents();
+    } catch (error) {
+      toast.error("수정 실패");
+    }
+  };
+
+  // 이벤트 삭제하기 함수 수정
+  const handleDeleteClick = async (eventId) => {
+    if (!window.confirm(`행사를 삭제하시겠습니까?`)) return;
+
+    try {
+      await deleteEvent(eventId);
+      toast.success('삭제 완료');
+      fetchMyEvents();
+    } catch (error) {
+      console.error("삭제 실패 상세 정보:", error.response?.data || error.message);
+      toast.error('삭제에 실패했습니다');
     }
   };
 
@@ -127,7 +163,7 @@ function AddEventPage() {
 
           <div className="form-group">
             <label>상세 설명</label>
-            <textarea name="content" value={form.content} onChange={handleChange} placeholder="참가자들에게 행사를 상세히 설명해 주세요" rows="5" />
+            <textarea name="description" value={form.description} onChange={handleChange} placeholder="참가자들에게 행사를 상세히 설명해 주세요" rows="5" />
           </div>
 
           <div className="form-row">
@@ -198,8 +234,8 @@ function AddEventPage() {
                       </span>
                     </td>
                     <td className="actions-cell">
-                      <button className="edit-link">수정</button>
-                      <button className="delete-link">삭제</button>
+                      <button className="edit-link" onClick={() => handleEditClick(event)}>수정</button>
+                      <button className="delete-link" onClick={() => handleDeleteClick(event.id, event.title)}>삭제</button>
                     </td>
                   </tr>
                 ))
@@ -210,10 +246,104 @@ function AddEventPage() {
               )}
             </tbody>
           </table>
+
+
         </div>
       </section>
 
+      {isModalOpen && editingEvent && (
+        <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+          <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>행사 정보 수정</h3>
+            <form onSubmit={handleUpdateSubmit} className="edit-modal__form">
+              <div className="form-group">
+                <label>행사명</label>
+                <input
+                  value={editingEvent.title || ''}
+                  onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
+                />
+              </div>
 
+              <div className="form-row">
+                <div className="form-group">
+                  <label>행사 시작</label>
+                  <input
+                    type="datetime-local"
+                    value={editingEvent.startAt?.substring(0, 16) || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, startAt: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>행사 종료</label>
+                  <input
+                    type="datetime-local"
+                    value={editingEvent.endAt?.substring(0, 16) || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, endAt: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>장소</label>
+                <input
+                  type="text"
+                  value={editingEvent.location || ''}
+                  onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
+                />
+              </div>
+              <div className="form-group">
+                <label>설명</label>
+                <textarea
+                  type="text"
+                  value={editingEvent.description || ''}
+                  onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>가격</label>
+                  <input
+                    type="number"
+                    value={editingEvent.price || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, price: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>판매 티켓 수</label>
+                  <input
+                    type="number"
+                    value={editingEvent.maxTickets || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, maxTickets: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>모집 시작</label>
+                  <input
+                    type="datetime-local"
+                    value={editingEvent.recruitStartAt?.substring(0, 16) || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, recruitStartAt: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>모집 종료</label>
+                  <input
+                    type="datetime-local"
+                    value={editingEvent.recruitEndAt?.substring(0, 16) || ''}
+                    onChange={(e) => setEditingEvent({ ...editingEvent, recruitEndAt: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="save-btn">수정 완료</button>
+                <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>취소</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
 
 

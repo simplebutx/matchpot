@@ -4,12 +4,27 @@ import { myPageActivities } from '@/archive/expoData';
 import '@/features/mypage/styles/MyPage.css';
 import { useEffect, useState } from 'react';
 import { getMyPage } from '@/shared/api/authApi';
+import { getMyTickets } from '@/shared/api/eventApi';
 import toast from 'react-hot-toast';
 
 function MyPage() {
   const navigate = useNavigate();
-
   const [userInfo, setUserInfo] = useState(null);
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  //내 티켓 조회
+  const fetchTickets = async () => {
+    try {
+      const data = await getMyTickets();
+      setTickets(data);
+    } catch (error) {
+      console.error(error);
+      toast.error('티켓 목록을 불러오지 못했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,9 +37,10 @@ function MyPage() {
     };
 
     fetchUserData();
+    fetchTickets();
   }, []);
 
-  
+
   function logout() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('token');
@@ -71,22 +87,29 @@ function MyPage() {
         </article>
       </section>
 
-      <section className="mypage__summary-grid">
-        <article className="mypage__summary-card">
-          <CalendarDays size={20} />
-          <p>예약한 세션</p>
-          <strong>04</strong>
-        </article>
-        <article className="mypage__summary-card">
-          <Ticket size={20} />
-          <p>보유 티켓</p>
-          <strong>2 PASS</strong>
-        </article>
-        <article className="mypage__summary-card">
-          <CreditCard size={20} />
-          <p>결제 상태</p>
-          <strong>정상 완료</strong>
-        </article>
+      <section className="reserved-tickets">
+        <h3>내가 예약한 티켓</h3>
+        {tickets.length > 0 ? (
+          <div className="ticket-list">
+            {tickets.map((ticket) => (
+              <div key={ticket.id} className="ticket-card">
+                <div className="ticket-card__image">
+                  <img src={ticket.imageKey || '/default.png'} alt="행사 이미지" />
+                </div>
+                <div className="ticket-card__info">
+                  <h4>{ticket.eventTitle}</h4>
+                  <p>일시: {ticket.eventStartAt}</p>
+                  <p>장소: {ticket.eventLocation}</p>
+                  <div className="ticket-card__quantity">
+                    구매 수량: <strong>{ticket.quantity}매</strong>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="no-data">예약한 티켓이 없습니다.</p>
+        )}
       </section>
 
       <section className="mypage__content-grid">

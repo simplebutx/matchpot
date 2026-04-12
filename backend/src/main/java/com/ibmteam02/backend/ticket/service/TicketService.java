@@ -6,12 +6,17 @@ import com.ibmteam02.backend.global.exception.EventNotFoundException;
 import com.ibmteam02.backend.global.exception.TicketStockEmptyException;
 import com.ibmteam02.backend.global.exception.UserNotFoundException;
 import com.ibmteam02.backend.ticket.domain.Ticket;
+import com.ibmteam02.backend.ticket.dto.TicketListResponse;
 import com.ibmteam02.backend.ticket.repository.TicketRepository;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -21,6 +26,9 @@ public class TicketService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
+
+    @Value("${cloud.aws.s3.base-url}")
+    private String s3BaseUrl;
 
     //사용자 티켓 구매
     @Transactional
@@ -49,6 +57,31 @@ public class TicketService {
 
         ticketRepository.save(ticket);
 
+    }
+
+    //티켓 내역 조회
+    @Transactional(readOnly = true)
+    public List<TicketListResponse> getMyTickets(Long userId) {
+        List<Ticket> tickets = ticketRepository.findAllByUserId(userId);
+        return tickets.stream()
+                .map(ticket -> {
+                    String imageKey = ticket.getEvent().getImageKey();
+
+                    String fullImageUrl = buildImageUrl(imageKey);
+
+                    return new TicketListResponse(ticket, fullImageUrl);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private String buildImageUrl(String imageKey) {
+        if (imageKey == null || imageKey.isBlank()) {
+            return null;
+        }
+        if (imageKey.startsWith("http://") || imageKey.startsWith("https://")) {
+            return imageKey;
+        }
+        return s3BaseUrl + imageKey; // @Value("${cloud.aws.s3.url}") 등으로 주입받은 값
     }
 
 }
