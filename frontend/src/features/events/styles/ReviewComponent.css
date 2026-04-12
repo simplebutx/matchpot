@@ -1,0 +1,128 @@
+.review-list {
+  margin-top: 40px;
+  padding: 28px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.review-list__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.review-list__eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.review-list__title {
+  margin: 0;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.review-list__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.review-list__items {
+  display: grid;
+  gap: 16px;
+}
+
+.review-list__item {
+  padding: 20px 22px;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  background: #ffffff;
+}
+
+.review-list__meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.review-list__author {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.review-list__rating {
+  display: flex;
+  gap: 4px;
+}
+
+.review-list__star {
+  color: #cbd5e1;
+  font-size: 18px;
+}
+
+.review-list__star.is-filled {
+  color: #f59e0b;
+}
+
+.review-list__date {
+  color: #64748b;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.review-list__content {
+  margin: 0;
+  color: #334155;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.review-list__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 22px;
+  color: #64748b;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 768px) {
+  .review-list {
+    margin-top: 28px;
+    padding: 22px 18px;
+  }
+
+  .review-list__header,
+  .review-list__meta {
+    flex-direction: column;
+  }
+
+  .review-list__date {
+    white-space: normal;
+  }
+}

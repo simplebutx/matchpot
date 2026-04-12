@@ -3,8 +3,8 @@ import toast from 'react-hot-toast';
 import { ChevronRight } from 'lucide-react';
 import Sidebar, { getSidebarTitle } from '@/shared/components/Sidebar';
 import RegistrationModal from '@/archive/RegistrationModal';
-import ApplySection from '@/features/events/pages/ApplySection';
-import AddEventSection from '@/features/events/pages/AddEventSection';
+import EventListPage from '@/features/events/pages/EventListPage';
+import AddEventPage from '@/features/events/pages/AddEventPage';
 import '@/shared/styles/HomePage.css';
 
 function Home() {
@@ -15,10 +15,10 @@ function Home() {
 
   const renderSection = () => {
     if (activeTab === 'createEvent') {
-      return <AddEventSection />;
+      return <AddEventPage />;
     }
 
-    return <ApplySection />;
+    return <EventListPage />;
   };
 
   return (
@@ -31,7 +31,7 @@ function Home() {
             <span className="expo-header__eyebrow">EXPO APPLY</span>
             <h2 className="expo-header__title">{pageTitle}</h2>
           </div>
-          {activeTab === 'apply' && (
+          {/* {activeTab === 'apply' && (
             <button
               type="button"
               className="expo-header__button"
@@ -40,7 +40,7 @@ function Home() {
               행사 참가 신청
               <ChevronRight size={18} />
             </button>
-          )}
+          )} */}
         </header>
         <div className="home-page__content">{renderSection()}</div>
       </main>

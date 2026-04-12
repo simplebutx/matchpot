@@ -1,16 +1,13 @@
 package com.ibmteam02.backend.event.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.domain.Status;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class EventListResponse {
 
@@ -24,12 +21,42 @@ public class EventListResponse {
     private LocalDateTime recruitEndAt;
     private Integer price;
     private Integer maxTickets;
-    private Integer remainingTickets; //남음 티켓 수량
+    private Integer remainingTickets;
     private Status status;
     private String imageKey;
     private String authorName;
 
-    private static final String S3_BUCKET_URL = "https://ibmteam2-s3-admin.s3.ap-northeast-2.amazonaws.com/";
+    public EventListResponse(
+            Long id,
+            String title,
+            String description,
+            String location,
+            LocalDateTime startAt,
+            LocalDateTime endAt,
+            LocalDateTime recruitStartAt,
+            LocalDateTime recruitEndAt,
+            Integer price,
+            Integer maxTickets,
+            Integer remainingTickets,
+            Status status,
+            String imageKey,
+            String authorName
+    ) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.recruitStartAt = recruitStartAt;
+        this.recruitEndAt = recruitEndAt;
+        this.price = price;
+        this.maxTickets = maxTickets;
+        this.remainingTickets = remainingTickets;
+        this.status = status;
+        this.imageKey = imageKey;
+        this.authorName = authorName;
+    }
 
     public EventListResponse(Event event) {
         this.id = event.getId();
@@ -44,26 +71,13 @@ public class EventListResponse {
         this.maxTickets = event.getMaxTickets();
         this.remainingTickets = event.getMaxTickets();
         this.status = event.getStatus();
-        this.imageKey = event.getImageKey() != null ? S3_BUCKET_URL + event.getImageKey() : null;
+        this.imageKey = event.getImageKey();
         this.authorName = event.getUser().getDisplayName();
     }
 
-    public static EventListResponse from(Event event,Integer remainingTickets) {
-        return new EventListResponse(
-                event.getId(),
-                event.getTitle(),
-                event.getDescription(),
-                event.getLocation(),
-                event.getStartAt(),
-                event.getEndAt(),
-                event.getRecruitStartAt(),
-                event.getRecruitEndAt(),
-                event.getPrice(),
-                event.getMaxTickets(),
-                remainingTickets,
-                event.getStatus(),
-                event.getImageKey() != null ? S3_BUCKET_URL + event.getImageKey() : null,
-                event.getUser().getDisplayName()
-        );
+    public static EventListResponse from(Event event, Integer remainingTickets) {
+        EventListResponse response = new EventListResponse(event);
+        response.remainingTickets = remainingTickets;
+        return response;
     }
 }

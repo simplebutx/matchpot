@@ -1,20 +1,19 @@
-import '@/features/events/styles/ApplySection.css';
+import '@/features/events/styles/EventListPage.css';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getAllEvents } from '@/shared/api/eventApi';
 
-function ApplySection() {
-
+function EventListPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     const fetchEventList = async () => {
       try {
         const data = await getAllEvents();
         setEvents(data);
       } catch (error) {
-        console.error("이벤트 로드 실패 ", error);
+        console.error('이벤트 목록 로드 실패', error);
       } finally {
         setLoading(false);
       }
@@ -29,15 +28,18 @@ function ApplySection() {
     <section className="expo-apply">
       <div className="expo-apply__list">
         {events.length === 0 ? (
-          <p>등록된 행사가 없습니다.</p>
+          <p>등록된 이벤트가 없습니다.</p>
         ) : (
           events.map((event) => (
             <article className="expo-event-card" key={event.id}>
-              <div className="expo-event-card__link">
+              <Link
+                to={`/events/${event.id}`}
+                state={{ event }}
+                className="expo-event-card__link"
+              >
                 <div className="expo-event-card__img-wrapper">
                   <img
-                    // 백엔드에서 이미지 URL 처리를 했으므로 그대로 사용
-                    src={event.imageKey || "https://via.placeholder.com/150"}
+                    src={event.imageKey || 'https://via.placeholder.com/150'}
                     alt={event.title}
                     className="expo-event-card__img"
                   />
@@ -52,10 +54,12 @@ function ApplySection() {
                   <div className="expo-event-card__meta">
                     <p className="expo-event-card__date">일시: {event.startAt}</p>
                     <p className="expo-event-card__location">장소: {event.location}</p>
-                    <p className="expo-event-card__date">남은 티켓: {event.remainingTickets}개</p>
+                    <p className="expo-event-card__date">
+                      잔여 좌석: {event.remainingTickets}개
+                    </p>
                   </div>
                 </div>
-              </div>
+              </Link>
             </article>
           ))
         )}
@@ -64,4 +68,4 @@ function ApplySection() {
   );
 }
 
-export default ApplySection;
+export default EventListPage;
