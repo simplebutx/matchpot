@@ -10,7 +10,8 @@ function AddEventPage() {
     endDate: '',
     description: '',
     location: '',
-    totalTickets: '',
+    maxTickets: '',
+    price: '',
     startAt: '',
     endAt: ''
   });
@@ -78,7 +79,7 @@ function AddEventPage() {
 
       setForm({
         title: '', date: '', description: '', location: '',
-        totalTickets: '', startAt: '', endAt: '', imageFile: ''
+        maxTickets: '', price: '', startAt: '', endAt: '', imageFile: ''
       });
       setImageFile(null);
     } catch (error) {
@@ -173,7 +174,7 @@ function AddEventPage() {
             </div>
             <div className="form-group">
               <label>판매 티켓 수</label>
-              <input name="quantity" type="number" value={form.quantity} onChange={handleChange} placeholder="0" />
+              <input name="maxTickets" type="number" value={form.maxTickets} onChange={handleChange} placeholder="0" />
             </div>
           </div>
 

@@ -41,4 +41,15 @@ public class TicketController {
         List<TicketListResponse> responses = ticketService.getMyTickets(userDetails.getId());
         return ResponseEntity.ok(responses);
     }
+
+//    // 티켓 구매 취소
+//    @DeleteMapping("/api/me/tickets/{ticketId}")
+    @DeleteMapping("/me/tickets/{ticketId}")
+    public ResponseEntity<Void> cancelTicket(
+            @PathVariable Long ticketId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        ticketService.cancelTicket(userDetails.getId(), ticketId);
+        return ResponseEntity.noContent().build();
+    }
 }

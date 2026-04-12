@@ -19,13 +19,4 @@ public class UserController {
     public MyPageResponse getMyPage(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return userService.getMyPageInfo(userDetails.getDisplayName(), userDetails.getUsername());
     }
-
-//    // 예매 구매한 티켓 목록
-//    @GetMapping("/api/me/tickets")
-//
-//    // 티켓 구매하기
-//    @PostMapping("/api/events/{eventId}/tickets")
-//
-//    // 티켓 구매 취소
-//    @DeleteMapping("/api/me/tickets/{ticketId}")
 }

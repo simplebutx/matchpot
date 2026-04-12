@@ -372,18 +372,18 @@
 
 
 /* 내가 예약한 티켓 */
-.reserved-tickets {
+.add-event .reserved-tickets {
   margin-top: 2rem;
 }
 
-.ticket-list {
+.add-event .ticket-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
   margin-top: 1rem;
 }
 
-.ticket-card {
+.add-event .ticket-card {
   display: flex;
   background: #fff;
   border-radius: 12px;
@@ -391,35 +391,35 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.ticket-card__image img {
+.add-event .ticket-card__image img {
   width: 100px;
   height: 100%;
   object-fit: cover;
 }
 
-.ticket-card__info {
+.add-event .ticket-card__info {
   padding: 1rem;
   flex: 1;
 }
 
-.ticket-card__info h4 {
+.add-event .ticket-card__info h4 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
 }
 
-.ticket-card__info p {
+.add-event .ticket-card__info p {
   font-size: 0.85rem;
   color: #666;
   margin: 2px 0;
 }
 
-.ticket-card__quantity {
+.add-event .ticket-card__quantity {
   margin-top: 10px;
   padding-top: 10px;
   border-top: 1px solid #eee;
   font-size: 0.9rem;
 }
 
-.ticket-card__quantity strong {
+.add-event .ticket-card__quantity strong {
   color: #007bff;
 }
