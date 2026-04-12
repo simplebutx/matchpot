@@ -1,9 +1,9 @@
-import '@/features/events/styles/AddEventSection.css';
+import '@/features/events/styles/AddEventPage.css';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { createEvent, getEvents } from '@/shared/api/eventApi';
 
-function AddEventSection() {
+function AddEventPage() {
   const [form, setForm] = useState({
     title: '',
     startDate: '',
@@ -222,4 +222,4 @@ function AddEventSection() {
   );
 }
 
-export default AddEventSection;
+export default AddEventPage;

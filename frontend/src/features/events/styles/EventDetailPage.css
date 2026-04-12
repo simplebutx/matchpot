@@ -1,0 +1,149 @@
+.event-detail {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 20px 56px;
+}
+
+.event-detail__back {
+  border: 0;
+  background: transparent;
+  color: #4b5563;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.event-detail__card {
+  overflow: hidden;
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.event-detail__image-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 7;
+  background: linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%);
+}
+
+.event-detail__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-detail__content {
+  padding: 32px;
+}
+
+.event-detail__status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.event-detail__title {
+  margin: 14px 0 24px;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.event-detail__info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.event-detail__info p {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.event-detail__info strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #475569;
+  font-size: 14px;
+}
+
+.event-detail__info span {
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.event-detail__description h2 {
+  margin: 0 0 12px;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.event-detail__description p {
+  margin: 0;
+  color: #475569;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.event-detail__actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.event-detail__reserve-button,
+.event-detail__review-button {
+  border: 0;
+  border-radius: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 16px 24px;
+  cursor: pointer;
+}
+
+.event-detail__reserve-button {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.event-detail__review-button {
+  background: #e0ecff;
+  color: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+  .event-detail {
+    padding: 20px 16px 40px;
+  }
+
+  .event-detail__content {
+    padding: 24px 20px;
+  }
+
+  .event-detail__info {
+    grid-template-columns: 1fr;
+  }
+
+  .event-detail__actions {
+    flex-direction: column;
+  }
+
+  .event-detail__reserve-button,
+  .event-detail__review-button {
+    width: 100%;
+  }
+}

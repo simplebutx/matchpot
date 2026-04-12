@@ -14,6 +14,7 @@ import com.ibmteam02.backend.ticket.repository.TicketRepository;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +31,9 @@ public class EventService {
     private final S3Service s3Service;
     private final TicketRepository ticketRepository;
 
-    // 이벤트 생성
+    @Value("${cloud.aws.s3.base-url}")
+    private String s3BaseUrl;
+
     @Transactional
     public void createEvent(EventCreateRequest dto, Long userId, MultipartFile image) throws IOException {
         User user = userRepository.findById(userId)
@@ -56,42 +59,38 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    // 나의 이벤트 목록 불러오기
     @Transactional(readOnly = true)
     public List<EventListResponse> getEventList(Long userId) {
         List<Event> events = eventRepository.findAllByUserId(userId);
 
-        String s3BaseUrl = "https://ibmteam2-s3-admin.s3.ap-northeast-2.amazonaws.com/";
+        return events.stream().map(event -> {
+            Integer soldCount = ticketRepository.sumQuantityByEventId(event.getId());
+            if (soldCount == null) {
+                soldCount = 0;
+            }
 
-    return events.stream().map(event -> {
-        Integer soldcount = ticketRepository.sumQuantityByEventId(event.getId());
-        if(soldcount==null) soldcount=0;
-
-        int max = (event.getMaxTickets() !=null)? event.getMaxTickets():0;
-        int remaining = max - soldcount;
-
-        String fullImageUrl = (event.getImageKey() != null) ? s3BaseUrl + event.getImageKey() : null;
+            int maxTickets = event.getMaxTickets() != null ? event.getMaxTickets() : 0;
+            int remainingTickets = maxTickets - soldCount;
 
             return new EventListResponse(
-                        event.getId(),
-                        event.getTitle(),
-                        event.getDescription(),
-                        event.getLocation(),
-                        event.getStartAt(),
-                        event.getEndAt(),
-                        event.getRecruitStartAt(),
-                        event.getRecruitEndAt(),
-                        event.getPrice(),
-                        event.getMaxTickets(),
-                        remaining,
-                        event.getStatus(),
-                        fullImageUrl,
-                        event.getUser().getDisplayName()
+                    event.getId(),
+                    event.getTitle(),
+                    event.getDescription(),
+                    event.getLocation(),
+                    event.getStartAt(),
+                    event.getEndAt(),
+                    event.getRecruitStartAt(),
+                    event.getRecruitEndAt(),
+                    event.getPrice(),
+                    event.getMaxTickets(),
+                    remainingTickets,
+                    event.getStatus(),
+                    buildImageUrl(event.getImageKey()),
+                    event.getUser().getDisplayName()
             );
-                }).toList();
+        }).toList();
     }
 
-    // 이벤트 수정
     @Transactional
     public void updateEvent(Long eventId, EventUpdateRequest dto, Long userId) {
         Event event = eventRepository.findById(eventId)
@@ -101,12 +100,21 @@ public class EventService {
             throw new NoPermissionException("작성자만 수정할 수 있습니다.");
         }
 
-        event.update(dto.title(), dto.description(), dto.location(),
-                dto.startAt(),dto.endAt(), dto.recruitStartAt(), dto.recruitEndAt(),
-                dto.price(),dto.maxTickets(), dto.status(), dto.imageKey());
+        event.update(
+                dto.title(),
+                dto.description(),
+                dto.location(),
+                dto.startAt(),
+                dto.endAt(),
+                dto.recruitStartAt(),
+                dto.recruitEndAt(),
+                dto.price(),
+                dto.maxTickets(),
+                dto.status(),
+                dto.imageKey()
+        );
     }
 
-    // 이벤트 삭제
     @Transactional
     public void deleteEvent(Long eventId, Long userId) {
         Event event = eventRepository.findById(eventId)
@@ -119,19 +127,58 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-
-    //전체 이벤트 목록 불러오기
     public List<EventListResponse> getAllEvents() {
         return eventRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(EventListResponse::new)
+                .map(event -> new EventListResponse(
+                        event.getId(),
+                        event.getTitle(),
+                        event.getDescription(),
+                        event.getLocation(),
+                        event.getStartAt(),
+                        event.getEndAt(),
+                        event.getRecruitStartAt(),
+                        event.getRecruitEndAt(),
+                        event.getPrice(),
+                        event.getMaxTickets(),
+                        event.getMaxTickets(),
+                        event.getStatus(),
+                        buildImageUrl(event.getImageKey()),
+                        event.getUser().getDisplayName()
+                ))
                 .toList();
     }
 
-    // 이벤트 상세페이지
     public EventDetailResponse getEventDetail(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
 
-        return new EventDetailResponse(event);
+        return new EventDetailResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getLocation(),
+                event.getStartAt(),
+                event.getEndAt(),
+                event.getRecruitStartAt(),
+                event.getRecruitEndAt(),
+                event.getPrice(),
+                event.getMaxTickets(),
+                event.getMaxTickets(),
+                event.getStatus(),
+                buildImageUrl(event.getImageKey()),
+                event.getUser().getDisplayName()
+        );
+    }
+
+    private String buildImageUrl(String imageKey) {
+        if (imageKey == null || imageKey.isBlank()) {
+            return null;
+        }
+
+        if (imageKey.startsWith("http://") || imageKey.startsWith("https://")) {
+            return imageKey;
+        }
+
+        return s3BaseUrl + imageKey;
     }
 }
