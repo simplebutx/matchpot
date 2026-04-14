@@ -15,6 +15,8 @@ import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -59,11 +61,12 @@ public class EventService {
         eventRepository.save(event);
     }
 
+    //본인 이벤트 리스트 조회
     @Transactional(readOnly = true)
-    public List<EventListResponse> getEventList(Long userId) {
-        List<Event> events = eventRepository.findAllByUserId(userId);
+    public Page<EventListResponse> getEventList(Long userId, Pageable pageable) {
+        Page<Event> eventPage = eventRepository.findAllByUserId(userId, pageable);
 
-        return events.stream().map(event -> {
+        return eventPage.map(event -> {
             Integer soldCount = ticketRepository.sumQuantityByEventId(event.getId());
             if (soldCount == null) {
                 soldCount = 0;
@@ -88,9 +91,10 @@ public class EventService {
                     buildImageUrl(event.getImageKey()),
                     event.getUser().getDisplayName()
             );
-        }).toList();
+        });
     }
 
+    //이벤트 수정
     @Transactional
     public void updateEvent(Long eventId, EventUpdateRequest dto, Long userId) {
         Event event = eventRepository.findById(eventId)
@@ -115,6 +119,7 @@ public class EventService {
         );
     }
 
+    //이벤트 삭제
     @Transactional
     public void deleteEvent(Long eventId, Long userId) {
         Event event = eventRepository.findById(eventId)
@@ -127,9 +132,11 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    public List<EventListResponse> getAllEvents() {
-        return eventRepository.findAllByOrderByCreatedAtDesc().stream()
-                .map(event -> new EventListResponse(
+    //모든 이벤트 조회
+    public Page<EventListResponse> getAllEvents(Pageable pageable) {
+        Page<Event> eventPage = eventRepository.findAllByOrderByCreatedAtDesc(pageable);
+
+        return eventPage.map(event -> new EventListResponse(
                         event.getId(),
                         event.getTitle(),
                         event.getDescription(),
@@ -144,10 +151,10 @@ public class EventService {
                         event.getStatus(),
                         buildImageUrl(event.getImageKey()),
                         event.getUser().getDisplayName()
-                ))
-                .toList();
+                ));
     }
 
+    //이벤트 상세보기
     public EventDetailResponse getEventDetail(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);

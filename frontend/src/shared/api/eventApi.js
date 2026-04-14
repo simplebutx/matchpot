@@ -1,4 +1,5 @@
 // src/shared/api/eventApi.js
+import axios from 'axios';
 import request from './request';
 
 // 1. 회원가입
@@ -17,10 +18,12 @@ export const getEvents = () => {
 };
 
 //전체 이벤트 목록 조회
-export const getAllEvents = () => {
-  return request.get('/api/events');
+export const getAllEvents = async (page = 0) => {
+  const response = await axios.get(`/api/events?page=${page}&size=8`);
+  return response.data;
 };
 
+//이벤트 상세 보기
 export const getEventDetail = (eventId) => {
   return request.get(`/api/events/${eventId}`);
 };

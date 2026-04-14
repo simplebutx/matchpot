@@ -253,3 +253,25 @@ form-display{
   margin-right: 10px;
   width: 35px;
 }
+
+.expo-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 30px;
+}
+.expo-pagination button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+}
+.expo-pagination button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.expo-pagination button:disabled {
+  background: #eee;
+  cursor: not-allowed;
+}

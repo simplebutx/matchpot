@@ -29,3 +29,18 @@ export const login = async (loginData) => {
 export const getMyPage = () => {
   return request.get('/api/me');
 };
+
+//이메일 인증번호 발송
+export const sendAuthEmail = async (email) => {
+  return await axios.post('/api/email-send', { 
+    email: email 
+  });
+};
+
+//인증번호 검증
+export const verifyAuthCode = async (email, code) => {
+  return await axios.post('/api/email-verify', { 
+    email: email, 
+    code: code 
+  });
+};

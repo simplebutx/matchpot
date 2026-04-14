@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { signup } from '@/shared/api/authApi'; // 방금 만든 API 가져오기
+import { signup, sendAuthEmail, verifyAuthCode } from '@/shared/api/authApi'; // 방금 만든 API 가져오기
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import '@/features/auth/styles/Signup.css';
 
 function Signup() {
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     displayName: '',
   });
+
+  const [code, setCode] = useState('');
+  const [isSent, setIsSent] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,7 +25,12 @@ function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    if (!isVerified) {
+      toast.error('이메일 인증을 먼저 완료해주세요.');
+      return;
+    }
+
     try {
       await signup(formData);
       toast.success('회원가입이 완료되었습니다.');
@@ -29,6 +38,30 @@ function Signup() {
     } catch (error) {
       console.error('회원가입 실패:', error);
       toast.error('회원가입에 실패했습니다.');
+    }
+  };
+
+
+  //이메일 인증번호 발송
+  const handleSendEmail = async () => {
+    if (!formData.email) return toast.error("이메일을 입력해주세요.");
+    try {
+      const response = await sendAuthEmail(formData.email);
+      setIsSent(true);
+      alert(response.data);
+    } catch (error) {
+      alert(error.response?.data || "메일 발송 실패");
+    }
+  };
+
+  //이메일 인증번호 검증
+  const handleVerifyCode = async () => {
+    try {
+      const response = await verifyAuthCode(formData.email, code);
+      setIsVerified(true); //
+      alert(response.data);
+    } catch (error) {
+      alert(error.response?.data || "인증 실패");
     }
   };
 
@@ -45,13 +78,13 @@ function Signup() {
         <div className="signup-form__grid">
           <label>
             이름
-            <input 
-              name="displayName" 
-              type="text" 
-              placeholder="홍길동" 
-              value={formData.displayName} 
-              onChange={handleChange} 
-              required 
+            <input
+              name="displayName"
+              type="text"
+              placeholder="홍길동"
+              value={formData.displayName}
+              onChange={handleChange}
+              required
             />
           </label>
           {/* <label>
@@ -61,24 +94,56 @@ function Signup() {
         </div>
         <label>
           이메일
-          <input 
-            name="email" 
-            type="email" 
-            placeholder="agent@expo.com" 
-            value={formData.email} 
-            onChange={handleChange} 
-            required 
+          <input
+            name="email"
+            type="email"
+            placeholder="agent@expo.com"
+            value={formData.email}
+            onChange={handleChange}
+            readOnly={isVerified}
+            required
           />
+          <button
+            type="button"
+            onClick={handleSendEmail}
+            disabled={isVerified}
+          >
+            {isSent ? "재발송" : "인증요청"}
+          </button>
         </label>
+
+        {isSent && !isVerified && (
+          <label>
+            인증번호
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                placeholder="6자리 인증번호"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={handleVerifyCode}
+                className="verify-button"
+              >
+                인증확인
+              </button>
+            </div>
+          </label>
+        )}
+        {isVerified && <p style={{ color: 'green', fontSize: '12px' }}>이메일 인증 완료</p>}
+
         <label>
           비밀번호
-          <input 
-            name="password" 
-            type="password" 
-            placeholder="8자 이상 입력하세요" 
-            value={formData.password} 
-            onChange={handleChange} 
-            required 
+          <input
+            name="password"
+            type="password"
+            placeholder="8자 이상 입력하세요"
+            value={formData.password}
+            onChange={handleChange}
+            required
           />
         </label>
         {/* <label>
