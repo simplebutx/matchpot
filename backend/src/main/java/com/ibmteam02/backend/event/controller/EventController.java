@@ -7,6 +7,10 @@ import com.ibmteam02.backend.event.dto.EventListResponse;
 import com.ibmteam02.backend.event.dto.EventUpdateRequest;
 import com.ibmteam02.backend.event.service.EventService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +43,11 @@ public class EventController {
 
     //나의 이벤트 목록 불러오기(주최자)
     @GetMapping("/api/organizer/events")
-    public List<EventListResponse> getEvents(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return eventService.getEventList(userDetails.getId());
+    public ResponseEntity<Page<EventListResponse>> getEvents(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PageableDefault(size = 8, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<EventListResponse> responses = eventService.getEventList(userDetails.getId(),pageable);
+        return ResponseEntity.ok(responses);
     }
 
     //이벤트 수정하기
@@ -61,8 +68,9 @@ public class EventController {
 
     // 고객용: 모든 주최자의 행사 전체 조회 (로그인 필요 없음)
     @GetMapping("/api/events")
-    public List<EventListResponse> getAllEvents() {
-        return eventService.getAllEvents();
+    public Page<EventListResponse> getAllEvents(
+            @PageableDefault(size = 8,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return eventService.getAllEvents(pageable);
     }
 
     @GetMapping("/api/events/{eventId}")

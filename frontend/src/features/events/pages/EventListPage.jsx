@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom';
 import { getAllEvents } from '@/shared/api/eventApi';
 
 function EventListPage() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState({ content: [], totalPages: 0, number: 0 });
   const [loading, setLoading] = useState(true);
+
+  const [page, setPage] = useState(0); 
 
   useEffect(() => {
     const fetchEventList = async () => {
       try {
-        const data = await getAllEvents();
+        const data = await getAllEvents(page);
         setEvents(data);
       } catch (error) {
         console.error('이벤트 목록 로드 실패', error);
@@ -20,17 +22,17 @@ function EventListPage() {
     };
 
     fetchEventList();
-  }, []);
+  }, [page]);
 
   if (loading) return <div>로딩 중...</div>;
 
   return (
     <section className="expo-apply">
       <div className="expo-apply__list">
-        {events.length === 0 ? (
+        {!events?.content || events.content.length === 0 ? (
           <p>등록된 이벤트가 없습니다.</p>
         ) : (
-          events.map((event) => (
+          events.content.map((event) => (
             <article className="expo-event-card" key={event.id}>
               <Link
                 to={`/events/${event.id}`}
@@ -64,6 +66,34 @@ function EventListPage() {
           ))
         )}
       </div>
+
+      {events.totalPages > 0 && (
+        <div className="expo-pagination">
+          <button
+            disabled={events.first}
+            onClick={() => setPage(prev => prev - 1)}
+          >
+            이전
+          </button>
+
+          {[...Array(events.totalPages).keys()].map((num) => (
+            <button
+              key={num}
+              className={events.number === num ? 'active' : ''}
+              onClick={() => setPage(num)}
+            >
+              {num + 1}
+            </button>
+          ))}
+
+          <button
+            disabled={events.last}
+            onClick={() => setPage(prev => prev + 1)}
+          >
+            다음
+          </button>
+        </div>
+      )}
     </section>
   );
 }
