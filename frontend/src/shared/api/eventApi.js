@@ -66,3 +66,11 @@ export const getMyTickets = () => {
 export const cancelTicket = (ticketId) => {
   return request.delete(`/api/me/tickets/${ticketId}`);
 };
+
+//이벤트 제목 검색
+export const searchEventTitle = async (keyword, page = 0) => {
+  const response = await axios.get(`/api/events/searchTitle`, {
+    params: { keyword, page, size: 10 }
+  });
+  return response.data;
+}

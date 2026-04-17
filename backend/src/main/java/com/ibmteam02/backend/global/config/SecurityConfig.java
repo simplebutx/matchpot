@@ -79,6 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/email-send", "/api/email-verify", "/api/login", "/api/signup").permitAll()
                         .requestMatchers("/api/me/**").authenticated()
                         .requestMatchers("/api/events").permitAll()
+                        .requestMatchers("/api/events/searchTitle").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -195,5 +196,31 @@ public class EventService {
         }
 
         return s3BaseUrl + imageKey;
+    }
+
+    //이벤트 제목 검색
+    public Page<EventListResponse> searchEventTitle(String keyword, Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        Page<Event> eventPage = eventRepository.searchByTitleLike(keyword, pageable);
+
+        return eventPage.map(event -> new EventListResponse(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getLocation(),
+                event.getStartAt(),
+                event.getEndAt(),
+                event.getRecruitStartAt(),
+                event.getRecruitEndAt(),
+                event.getPrice(),
+                event.getMaxTickets(),
+                event.getMaxTickets(),
+                event.getStatus(),
+                buildImageUrl(event.getImageKey()),
+                event.getUser().getDisplayName()
+        ));
     }
 }
