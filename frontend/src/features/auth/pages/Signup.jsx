@@ -5,6 +5,20 @@ import { signup, sendAuthEmail, verifyAuthCode } from '@/shared/api/authApi'; //
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import '@/features/auth/styles/Signup.css';
 
+const getErrorMessage = (error, fallbackMessage) => {
+  const data = error.response?.data;
+
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (typeof data?.message === 'string') {
+    return data.message;
+  }
+
+  return fallbackMessage;
+};
+
 function Signup() {
   const navigate = useNavigate();
 
@@ -46,22 +60,30 @@ function Signup() {
   const handleSendEmail = async () => {
     if (!formData.email) return toast.error("이메일을 입력해주세요.");
     try {
-      const response = await sendAuthEmail(formData.email);
+      const message = await sendAuthEmail(formData.email);
       setIsSent(true);
-      alert(response.data);
+      setIsVerified(false);
+      setCode('');
+      toast.success(message || '인증번호를 전송했습니다.');
     } catch (error) {
-      alert(error.response?.data || "메일 발송 실패");
+      toast.error(getErrorMessage(error, '메일 발송에 실패했습니다.'));
     }
   };
 
   //이메일 인증번호 검증
   const handleVerifyCode = async () => {
+    if (!code.trim()) {
+      toast.error('인증번호를 입력해주세요.');
+      return;
+    }
+
     try {
-      const response = await verifyAuthCode(formData.email, code);
-      setIsVerified(true); //
-      alert(response.data);
+      const message = await verifyAuthCode(formData.email, code);
+      setIsVerified(true);
+      toast.success(message || '이메일 인증이 완료되었습니다.');
     } catch (error) {
-      alert(error.response?.data || "인증 실패");
+      setIsVerified(false);
+      toast.error(getErrorMessage(error, '인증에 실패했습니다.'));
     }
   };
 
