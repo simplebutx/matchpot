@@ -1,6 +1,7 @@
 package com.ibmteam02.backend.event.controller;
 
 import com.ibmteam02.backend.auth.domain.CustomUserDetails;
+import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.dto.EventCreateRequest;
 import com.ibmteam02.backend.event.dto.EventDetailResponse;
 import com.ibmteam02.backend.event.dto.EventListResponse;
@@ -58,6 +59,7 @@ public class EventController {
         return ResponseEntity.noContent().build();
     }
 
+    //이벤트 삭제하기
     @DeleteMapping("/api/organizer/events/{eventId}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long eventId,
                                             @AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -66,7 +68,7 @@ public class EventController {
     }
 
 
-    // 고객용: 모든 주최자의 행사 전체 조회 (로그인 필요 없음)
+    // 모든 이벤트 목록 조회
     @GetMapping("/api/events")
     public Page<EventListResponse> getAllEvents(
             @PageableDefault(size = 8,sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -76,5 +78,13 @@ public class EventController {
     @GetMapping("/api/events/{eventId}")
     public EventDetailResponse getEventDetail(@PathVariable Long eventId) {
         return eventService.getEventDetail(eventId);
+    }
+
+    //이벤트 제목 검색
+    @GetMapping("/api/events/searchTitle")
+    public ResponseEntity<Page<EventListResponse>> searchEventTitle(
+            @RequestParam(value = "keyword", required = false) String keyword,Pageable pageable
+    ){
+        return ResponseEntity.ok(eventService.searchEventTitle(keyword, pageable));
     }
 }

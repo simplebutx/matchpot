@@ -1,18 +1,28 @@
 import '@/features/events/styles/EventListPage.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getAllEvents } from '@/shared/api/eventApi';
+import { getAllEvents, searchEventTitle } from '@/shared/api/eventApi';
 
 function EventListPage() {
   const [events, setEvents] = useState({ content: [], totalPages: 0, number: 0 });
   const [loading, setLoading] = useState(true);
 
-  const [page, setPage] = useState(0); 
+  const [page, setPage] = useState(0);
+  const [keyword, setKeyword] = useState("");
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     const fetchEventList = async () => {
       try {
-        const data = await getAllEvents(page);
+        setLoading(true);
+        let data;
+        if (keyword.trim()) {
+          data = await searchEventTitle(keyword, page)
+        }
+        else {
+          data = await getAllEvents(page);
+        }
+
         setEvents(data);
       } catch (error) {
         console.error('이벤트 목록 로드 실패', error);
@@ -22,12 +32,29 @@ function EventListPage() {
     };
 
     fetchEventList();
-  }, [page]);
+  }, [page, keyword]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setKeyword(inputValue);
+    setPage(0);
+  }
 
   if (loading) return <div>로딩 중...</div>;
 
   return (
     <section className="expo-apply">
+      <div className="expo-search-bar">
+        <form onSubmit={handleSearch}>
+          <input
+            type="text"
+            placeholder="제목을 검색해보세요"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <button type="submit">검색</button>
+        </form>
+      </div>
       <div className="expo-apply__list">
         {!events?.content || events.content.length === 0 ? (
           <p>등록된 이벤트가 없습니다.</p>
