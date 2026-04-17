@@ -1,9 +1,23 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { signup } from '@/shared/api/authApi';
+import { signup, sendAuthEmail, verifyAuthCode } from '@/shared/api/authApi';
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import '@/features/auth/styles/Signup.css';
+
+const getErrorMessage = (error, fallbackMessage) => {
+  const data = error.response?.data;
+
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (typeof data?.message === 'string') {
+    return data.message;
+  }
+
+  return fallbackMessage;
+};
 
 function Signup() {
   const navigate = useNavigate();
@@ -14,6 +28,10 @@ function Signup() {
     displayName: '',
   });
 
+  const [code, setCode] = useState('');
+  const [isSent, setIsSent] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -22,13 +40,51 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!isVerified) {
+      toast.error('이메일 인증을 먼저 완료해주세요.');
+      return;
+    }
+
     try {
       await signup(formData);
       toast.success('회원가입이 완료되었습니다.');
       navigate('/login');
     } catch (error) {
       console.error('회원가입 실패:', error);
-      toast.error(error.response?.data?.message || '회원가입에 실패했습니다.');
+      toast.error(getErrorMessage(error, '회원가입에 실패했습니다.'));
+    }
+  };
+
+  const handleSendEmail = async () => {
+    if (!formData.email) {
+      toast.error('이메일을 입력해주세요.');
+      return;
+    }
+
+    try {
+      const message = await sendAuthEmail(formData.email);
+      setIsSent(true);
+      setIsVerified(false);
+      setCode('');
+      toast.success(message || '인증번호를 전송했습니다.');
+    } catch (error) {
+      toast.error(getErrorMessage(error, '메일 발송에 실패했습니다.'));
+    }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!code.trim()) {
+      toast.error('인증번호를 입력해주세요.');
+      return;
+    }
+
+    try {
+      const message = await verifyAuthCode(formData.email, code);
+      setIsVerified(true);
+      toast.success(message || '이메일 인증이 완료되었습니다.');
+    } catch (error) {
+      setIsVerified(false);
+      toast.error(getErrorMessage(error, '인증에 실패했습니다.'));
     }
   };
 
@@ -64,9 +120,39 @@ function Signup() {
             placeholder="agent@expo.com"
             value={formData.email}
             onChange={handleChange}
+            readOnly={isVerified}
             required
           />
+          <button type="button" onClick={handleSendEmail} disabled={isVerified}>
+            {isSent ? '재발송' : '인증요청'}
+          </button>
         </label>
+
+        {isSent && !isVerified && (
+          <label>
+            인증번호
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                placeholder="6자리 인증번호"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={handleVerifyCode}
+                className="verify-button"
+              >
+                인증확인
+              </button>
+            </div>
+          </label>
+        )}
+
+        {isVerified && (
+          <p style={{ color: 'green', fontSize: '12px' }}>이메일 인증 완료</p>
+        )}
 
         <label>
           비밀번호
