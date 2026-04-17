@@ -5,7 +5,6 @@ import com.ibmteam02.backend.auth.dto.JoinDto;
 import com.ibmteam02.backend.auth.dto.LoginDto;
 import com.ibmteam02.backend.auth.util.JwtUtil;
 import com.ibmteam02.backend.global.exception.DuplicateEmailException;
-import com.ibmteam02.backend.global.exception.EmailNotVerifiedException;
 import com.ibmteam02.backend.global.exception.LoginFailedException;
 import com.ibmteam02.backend.user.domain.User;
 import com.ibmteam02.backend.user.repository.UserRepository;
@@ -24,17 +23,11 @@ public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
-    private final MailService mailService;
 
-    // 회원가입 메서드
     @Transactional
     public void signup(JoinDto joinDto) {
         if (userRepository.existsByEmail(joinDto.getEmail())) {
             throw new DuplicateEmailException();
-        }
-
-        if (!mailService.isVerified(joinDto.getEmail())) {
-            throw new EmailNotVerifiedException();
         }
 
         User user = User.builder()
@@ -47,7 +40,6 @@ public class AuthService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    // 로그인 메서드
     @Transactional
     public String login(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail())

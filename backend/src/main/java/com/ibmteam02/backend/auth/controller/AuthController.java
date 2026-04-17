@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -18,39 +16,25 @@ public class AuthController {
     private final AuthService authService;
     private final MailService mailService;
 
-    //회원가입
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody JoinDto joinDto){
         authService.signup(joinDto);
         return ResponseEntity.ok().build();
     }
 
-    //로그인
     @PostMapping("/login")
     public String login(@RequestBody LoginDto loginDto){
         return authService.login(loginDto);
     }
 
-
-    // 이메일 인증번호 발송
     @PostMapping("/email-send")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequestDto emailRequestDto) {
         mailService.sendAuthCode(emailRequestDto.getEmail());
-        return ResponseEntity.ok("인증번호가 발송되었습니다.");
+        return ResponseEntity.ok("이메일 인증은 현재 임시 비활성화 상태입니다.");
     }
 
-    // 이메일 인증번호 검증
     @PostMapping("/email-verify")
     public ResponseEntity<String> verifyEmail(@RequestBody EmailRequestDto emailRequestDto) {
-        boolean isVerified = mailService.verifyCode(emailRequestDto.getEmail(),emailRequestDto.getCode());
-
-        if (isVerified) {
-            mailService.setVerifiedFlag(emailRequestDto.getEmail());
-            return ResponseEntity.ok("이메일 인증 성공");
-        } else {
-            return ResponseEntity.status(400).body("인증번호가 일치하지 않습니다");
-        }
+        return ResponseEntity.ok("이메일 인증은 현재 임시 비활성화 상태입니다.");
     }
-
-
 }
