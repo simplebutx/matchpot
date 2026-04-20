@@ -1,22 +1,14 @@
-import axios from 'axios';
-import request, { API_BASE_URL } from './request';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
+import request from './request';
 
 export const signup = async (joinData) => {
-  const response = await api.post('/api/signup', joinData);
-  return response.data;
+  return request.post('/api/signup', joinData);
 };
 
 export const login = async (loginData) => {
-  const response = await api.post('/api/login', loginData);
-  const token = response.data;
+  const token = await request.post('/api/login', loginData);
 
   if (token) {
-    localStorage.setItem('accessToken', token);
-    api.defaults.headers.common.Authorization = `Bearer ${token}`;
+    localStorage.setItem('token', token);
   }
 
   return token;
@@ -27,11 +19,9 @@ export const getMyPage = () => {
 };
 
 export const sendAuthEmail = async (email) => {
-  const response = await api.post('/api/email-send', { email });
-  return response.data;
+  return request.post('/api/email-send', { email });
 };
 
 export const verifyAuthCode = async (email, code) => {
-  const response = await api.post('/api/email-verify', { email, code });
-  return response.data;
+  return request.post('/api/email-verify', { email, code });
 };

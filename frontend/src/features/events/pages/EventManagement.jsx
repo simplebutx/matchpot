@@ -12,8 +12,8 @@ function EventManagement() {
   const fetchMyEvents = async () => {
     try {
       const response = await getMyEvents();
-      if (response.data && response.data.content) {
-        setMyEvents(response.data.content);
+      if (response?.content) {
+        setMyEvents(response.content);
       }
     } catch (error) {
       console.error("목록 로드 실패:", error);
