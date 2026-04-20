@@ -84,7 +84,7 @@ export const searchEventTitle = async (keyword, page = 0) => {
   const response = await request.get(`/api/events/searchTitle`, {
     params: { keyword, page }
   })
-  return response;
+  return response.data;
 };
 
 // export const searchEventTitle = (keyword, page = 0) => {
