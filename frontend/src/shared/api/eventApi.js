@@ -1,6 +1,7 @@
 // src/shared/api/eventApi.js
 import axios from 'axios';
 import request from './request';
+import apiClient from './apiClient';
 
 // 1. 회원가입
 export const signup = (joinData) => {
@@ -12,15 +13,19 @@ export const login = (loginData) => {
   return request.post('/api/login', loginData);
 };
 
-//내 이벤트 목록 조회 (주최자용)
-export const getEvents = () => {
-  return request.get('/api/organizer/events');
-};
-
 //전체 이벤트 목록 조회
 export const getAllEvents = async (page = 0) => {
-  const response = await axios.get(`/api/events?page=${page}&size=8`);
+  const response = await axios.get(`/api/events`, {
+    params: { page, }
+  });
   return response.data;
+};
+
+//내 이벤트 목록 조회 (주최자용)
+export const getMyEvents = (page = 0) => {
+  return apiClient.get('/api/organizer/events', {
+    params: { page }
+  });
 };
 
 //이벤트 상세 보기
@@ -63,6 +68,7 @@ export const getMyTickets = () => {
   return request.get('/api/me/tickets');
 };
 
+//티켓 취소
 export const cancelTicket = (ticketId) => {
   return request.delete(`/api/me/tickets/${ticketId}`);
 };
@@ -70,7 +76,7 @@ export const cancelTicket = (ticketId) => {
 //이벤트 제목 검색
 export const searchEventTitle = async (keyword, page = 0) => {
   const response = await axios.get(`/api/events/searchTitle`, {
-    params: { keyword, page, size: 10 }
+    params: { keyword, page }
   });
   return response.data;
 }

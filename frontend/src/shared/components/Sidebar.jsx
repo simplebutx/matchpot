@@ -15,7 +15,7 @@ function Sidebar({ activeTab, onTabChange }) {
           <Brain size={24} />
         </div>
         <div>
-          <h1>AGENT EXPO</h1>
+          <h1>MatchPot</h1>
           <p>2026 GLOBAL EDITION</p>
         </div>
       </div>

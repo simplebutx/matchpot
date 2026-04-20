@@ -1,17 +1,18 @@
-.add-event{
+.add-event {
   background-color: #ffffff;
 }
 
 .add-event__form {
-    padding: 30px;
+  padding: 30px;
 }
+
 .expo-apply {
   display: grid;
   gap: 28px;
 }
 
 
-form-display{
+form-display {
   display: flex;
 }
 
@@ -167,7 +168,8 @@ form-display{
 .expo-event-card__img-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1; /* 코엑스 스타일의 정사각형 비율 */
+  aspect-ratio: 1 / 1;
+  /* 코엑스 스타일의 정사각형 비율 */
   background-color: #f5f5f5;
   overflow: hidden;
 }
@@ -189,7 +191,8 @@ form-display{
   top: 15px;
   left: 15px;
   padding: 6px 12px;
-  background-color: #ffffff; /* 코엑스 yellow 포인트 */
+  background-color: #ffffff;
+  /* 코엑스 yellow 포인트 */
   color: #000;
   font-size: 12px;
   font-weight: 700;
@@ -260,18 +263,75 @@ form-display{
   gap: 10px;
   margin-top: 30px;
 }
+
 .expo-pagination button {
   padding: 8px 12px;
   border: 1px solid #ddd;
   background: white;
   cursor: pointer;
 }
+
 .expo-pagination button.active {
   background: #007bff;
   color: white;
   border-color: #007bff;
 }
+
 .expo-pagination button:disabled {
   background: #eee;
   cursor: not-allowed;
+}
+
+/*이벤트 제목 검색*/
+/* 검색바 전체 컨테이너 */
+.expo-search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.expo-search-bar form {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  /* 너무 길지 않게 제한 */
+  position: relative;
+}
+
+/* 입력창 스타일 */
+.expo-search-bar input {
+  width: 100%;
+  padding: 12px 20px;
+  padding-right: 80px;
+  /* 버튼이 들어갈 공간 확보 */
+  border: 2px solid #e0e0e0;
+  border-radius: 30px;
+  /* 둥글게! */
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.expo-search-bar input:hover {
+  border-color: #000000;
+}
+
+/* 버튼 스타일 (인풋창 안으로 쏙!) */
+.expo-search-bar button {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  padding: 0 20px;
+  background-color: #e0e0e0;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.expo-search-bar button:hover {
+  background-color: #000000;
 }

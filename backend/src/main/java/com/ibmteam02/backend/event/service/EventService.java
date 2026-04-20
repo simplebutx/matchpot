@@ -62,9 +62,10 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    //본인 이벤트 리스트 조회
+    //나의 이벤트 리스트 조회
     @Transactional(readOnly = true)
     public Page<EventListResponse> getEventList(Long userId, Pageable pageable) {
+
         Page<Event> eventPage = eventRepository.findAllByUserId(userId, pageable);
 
         return eventPage.map(event -> {
