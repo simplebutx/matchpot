@@ -26,7 +26,6 @@ public class AuthService implements UserDetailsService {
     private final JwtUtil jwtUtil;
     private final MailService mailService;
 
-    // 회원가입 메서드
     @Transactional
     public void signup(JoinDto joinDto) {
         if (userRepository.existsByEmail(joinDto.getEmail())) {
@@ -47,7 +46,6 @@ public class AuthService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    // 로그인 메서드
     @Transactional
     public String login(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail())

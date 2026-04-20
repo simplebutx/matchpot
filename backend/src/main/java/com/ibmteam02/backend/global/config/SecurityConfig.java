@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibmteam02.backend.auth.util.JwtFilter;
 import com.ibmteam02.backend.global.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,8 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+
+    @Value("${app.frontend-url:http://localhost:5173}")
+    private String frontendUrl;
 
     @Bean
     public org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder passwordEncoder() {
@@ -37,7 +41,6 @@ public class SecurityConfig {
         return new ObjectMapper();
     }
 
-    // 인증되지 않은 사용자의 보호된 API 접근 처리
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
         return (request, response, authException) -> {
@@ -86,24 +89,14 @@ public class SecurityConfig {
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // 1. 프론트엔드 주소 허용
-        configuration.addAllowedOrigin("http://localhost:5173");
-
-        // 2. 모든 HTTP 메서드 허용 (GET, POST, PUT, DELETE, OPTIONS)
+        configuration.addAllowedOrigin(frontendUrl);
         configuration.addAllowedMethod("*");
-
-        // 3. 모든 헤더 허용 (Authorization 헤더가 통과되려면 필수!)
         configuration.addAllowedHeader("*");
-
-        // 4. 내보낼 헤더 설정 (Authorization 헤더를 프론트에서 읽을 수 있게)
         configuration.addExposedHeader("Authorization");
-
-        // 5. 쿠키/인증 정보 포함 허용
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

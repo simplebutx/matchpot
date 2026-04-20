@@ -1,14 +1,10 @@
-// src/shared/api/eventApi.js
-import axios from 'axios';
 import request from './request';
 import apiClient from './apiClient';
 
-// 1. 회원가입
 export const signup = (joinData) => {
   return request.post('/api/signup', joinData);
 };
 
-// 2. 로그인
 export const login = (loginData) => {
   return request.post('/api/login', loginData);
 };
@@ -29,41 +25,49 @@ export const getMyEvents = (page = 0) => {
 };
 
 //이벤트 상세 보기
+
+
+// export const getEvents = () => {
+//   return request.get('/api/organizer/events');
+// };
+
+// export const getAllEvents = (page = 0) => {
+//   return request.get('/api/events', {
+//     params: { page, size: 8 },
+//   });
+// };
+
 export const getEventDetail = (eventId) => {
   return request.get(`/api/events/${eventId}`);
 };
 
-//이벤트 등록 (이미지 + 데이터)
 export const createEvent = (formData, imageFile) => {
   const data = new FormData();
 
   data.append(
-    "dto",
-    new Blob([JSON.stringify(formData)], { type: "application/json" })
+    'dto',
+    new Blob([JSON.stringify(formData)], { type: 'application/json' })
   );
 
   if (imageFile) {
-    data.append("image", imageFile);
+    data.append('image', imageFile);
   }
+
   return request.post('/api/organizer/events', data);
 };
 
-//이벤트 수정
 export const updateEvent = (eventId, updateData) => {
   return request.put(`/api/organizer/events/${eventId}`, updateData);
 };
 
-//이벤트 삭제
 export const deleteEvent = (eventId) => {
   return request.delete(`/api/organizer/events/${eventId}`);
 };
 
-//티켓 구매 (참가자용)
 export const buyTicket = (eventId, quantity) => {
   return request.post(`/api/events/${eventId}/tickets`, { quantity });
 };
 
-//티켓 조회 (참가자용)
 export const getMyTickets = () => {
   return request.get('/api/me/tickets');
 };
@@ -73,10 +77,16 @@ export const cancelTicket = (ticketId) => {
   return request.delete(`/api/me/tickets/${ticketId}`);
 };
 
+
 //이벤트 제목 검색
 export const searchEventTitle = async (keyword, page = 0) => {
   const response = await axios.get(`/api/events/searchTitle`, {
     params: { keyword, page }
-  });
-  return response.data;
-}
+  })};
+
+// export const searchEventTitle = (keyword, page = 0) => {
+//   return request.get('/api/events/searchTitle', {
+//     params: { keyword, page, size: 10 },
+// >>>>>>> 941742c10d9d40d7bbc1e64fb1735da183539428
+
+// };

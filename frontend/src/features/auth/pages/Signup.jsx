@@ -1,9 +1,23 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { signup, sendAuthEmail, verifyAuthCode } from '@/shared/api/authApi'; // 방금 만든 API 가져오기
+import { signup, sendAuthEmail, verifyAuthCode } from '@/shared/api/authApi';
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import '@/features/auth/styles/Signup.css';
+
+const getErrorMessage = (error, fallbackMessage) => {
+  const data = error.response?.data;
+
+  if (typeof data === 'string') {
+    return data;
+  }
+
+  if (typeof data?.message === 'string') {
+    return data.message;
+  }
+
+  return fallbackMessage;
+};
 
 function Signup() {
   const navigate = useNavigate();
@@ -37,39 +51,48 @@ function Signup() {
       navigate('/login');
     } catch (error) {
       console.error('회원가입 실패:', error);
-      toast.error('회원가입에 실패했습니다.');
+      toast.error(getErrorMessage(error, '회원가입에 실패했습니다.'));
     }
   };
 
-
-  //이메일 인증번호 발송
   const handleSendEmail = async () => {
-    if (!formData.email) return toast.error("이메일을 입력해주세요.");
+    if (!formData.email) {
+      toast.error('이메일을 입력해주세요.');
+      return;
+    }
+
     try {
-      const response = await sendAuthEmail(formData.email);
+      const message = await sendAuthEmail(formData.email);
       setIsSent(true);
-      alert(response.data);
+      setIsVerified(false);
+      setCode('');
+      toast.success(message || '인증번호를 전송했습니다.');
     } catch (error) {
-      alert(error.response?.data || "메일 발송 실패");
+      toast.error(getErrorMessage(error, '메일 발송에 실패했습니다.'));
     }
   };
 
-  //이메일 인증번호 검증
   const handleVerifyCode = async () => {
+    if (!code.trim()) {
+      toast.error('인증번호를 입력해주세요.');
+      return;
+    }
+
     try {
-      const response = await verifyAuthCode(formData.email, code);
-      setIsVerified(true); //
-      alert(response.data);
+      const message = await verifyAuthCode(formData.email, code);
+      setIsVerified(true);
+      toast.success(message || '이메일 인증이 완료되었습니다.');
     } catch (error) {
-      alert(error.response?.data || "인증 실패");
+      setIsVerified(false);
+      toast.error(getErrorMessage(error, '인증에 실패했습니다.'));
     }
   };
 
   return (
     <AuthLayout
       title="회원가입"
-      description="Agent Expo 2026에 처음 오신다면 계정을 만들고 신청 흐름을 시작하세요."
-      asideTitle="AI 행사 경험을 위한 전용 프로필을 만들고 맞춤 일정을 받아보세요."
+      description="Agent Expo 2026에 처음 오셨다면 계정을 만들고 참가 신청을 시작해보세요."
+      asideTitle="AI 행사 경험을 위한 개인용 프로필을 만들고 맞춤 일정을 받아보세요."
       asideDescription="참가 목적, 관심 세션, 네트워킹 선호도를 기반으로 개인화된 추천을 받을 수 있습니다."
       footerText="이미 계정이 있나요?"
       footerLink={{ to: '/login', label: '로그인' }}
@@ -87,11 +110,8 @@ function Signup() {
               required
             />
           </label>
-          {/* <label>
-            직무 (현재 DTO에는 없음)
-            <input type="text" placeholder="AI Engineer" />
-          </label> */}
         </div>
+
         <label>
           이메일
           <input
@@ -103,12 +123,8 @@ function Signup() {
             readOnly={isVerified}
             required
           />
-          <button
-            type="button"
-            onClick={handleSendEmail}
-            disabled={isVerified}
-          >
-            {isSent ? "재발송" : "인증요청"}
+          <button type="button" onClick={handleSendEmail} disabled={isVerified}>
+            {isSent ? '재발송' : '인증요청'}
           </button>
         </label>
 
@@ -133,7 +149,10 @@ function Signup() {
             </div>
           </label>
         )}
-        {isVerified && <p style={{ color: 'green', fontSize: '12px' }}>이메일 인증 완료</p>}
+
+        {isVerified && (
+          <p style={{ color: 'green', fontSize: '12px' }}>이메일 인증 완료</p>
+        )}
 
         <label>
           비밀번호
@@ -146,14 +165,7 @@ function Signup() {
             required
           />
         </label>
-        {/* <label>
-          관심 분야 (현재 DTO에는 없음)
-          <select defaultValue="agent-platform">
-            <option value="agent-platform">Agent Platform</option>
-            <option value="llm-ops">LLM Ops</option>
-            <option value="workflow-automation">Workflow Automation</option>
-          </select>
-        </label> */}
+
         <button type="submit" className="signup-form__submit">
           회원가입하고 신청 시작하기
         </button>
