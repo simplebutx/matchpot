@@ -3,8 +3,16 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllEvents, searchEventTitle } from '@/shared/api/eventApi';
 
+const emptyEventsPage = {
+  content: [],
+  totalPages: 0,
+  number: 0,
+  first: true,
+  last: true,
+};
+
 function EventListPage() {
-  const [events, setEvents] = useState({ content: [], totalPages: 0, number: 0 });
+  const [events, setEvents] = useState(emptyEventsPage);
   const [loading, setLoading] = useState(true);
 
   const [page, setPage] = useState(0);
@@ -23,9 +31,10 @@ function EventListPage() {
           data = await getAllEvents(page);
         }
 
-        setEvents(data);
+        setEvents(data ?? emptyEventsPage);
       } catch (error) {
         console.error('이벤트 목록 로드 실패', error);
+        setEvents(emptyEventsPage);
       } finally {
         setLoading(false);
       }
@@ -94,7 +103,7 @@ function EventListPage() {
         )}
       </div>
 
-      {events.totalPages > 0 && (
+      {events?.totalPages > 0 && (
         <div className="expo-pagination">
           <button
             disabled={events.first}

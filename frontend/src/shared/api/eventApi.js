@@ -12,10 +12,9 @@ export const login = (loginData) => {
 
 //전체 이벤트 목록 조회
 export const getAllEvents = async (page = 0) => {
-  const response = await request.get(`/api/events`, {
+  return request.get(`/api/events`, {
     params: { page, }
   });
-  return response.data;
 };
 
 //내 이벤트 목록 조회 (주최자용)
@@ -81,9 +80,10 @@ export const cancelTicket = (ticketId) => {
 
 //이벤트 제목 검색
 export const searchEventTitle = async (keyword, page = 0) => {
-  const response = await request.get(`/api/events/searchTitle`, {
+  return request.get(`/api/events/searchTitle`, {
     params: { keyword, page }
-  })};
+  });
+};
 
 // export const searchEventTitle = (keyword, page = 0) => {
 //   return request.get('/api/events/searchTitle', {
