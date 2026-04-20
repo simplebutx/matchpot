@@ -1,5 +1,6 @@
 import request from './request';
 import apiClient from './apiClient';
+import axios from 'axios';
 
 export const signup = (joinData) => {
   return request.post('/api/signup', joinData);
@@ -11,7 +12,7 @@ export const login = (loginData) => {
 
 //전체 이벤트 목록 조회
 export const getAllEvents = async (page = 0) => {
-  const response = await axios.get(`/api/events`, {
+  const response = await request.get(`/api/events`, {
     params: { page, }
   });
   return response.data;
@@ -80,7 +81,7 @@ export const cancelTicket = (ticketId) => {
 
 //이벤트 제목 검색
 export const searchEventTitle = async (keyword, page = 0) => {
-  const response = await axios.get(`/api/events/searchTitle`, {
+  const response = await request.get(`/api/events/searchTitle`, {
     params: { keyword, page }
   })};
 
