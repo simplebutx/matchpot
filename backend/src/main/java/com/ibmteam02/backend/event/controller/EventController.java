@@ -44,9 +44,10 @@ public class EventController {
 
     //나의 이벤트 목록 불러오기(주최자)
     @GetMapping("/api/organizer/events")
-    public ResponseEntity<Page<EventListResponse>> getEvents(
+    public ResponseEntity<Page<EventListResponse>> getMyEvents(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(size = 8, sort = "createdAt",direction = Sort.Direction.DESC) Pageable pageable) {
+
         Page<EventListResponse> responses = eventService.getEventList(userDetails.getId(),pageable);
         return ResponseEntity.ok(responses);
     }
@@ -75,6 +76,7 @@ public class EventController {
         return eventService.getAllEvents(pageable);
     }
 
+    //이벤트 상세 조회
     @GetMapping("/api/events/{eventId}")
     public EventDetailResponse getEventDetail(@PathVariable Long eventId) {
         return eventService.getEventDetail(eventId);
@@ -83,7 +85,8 @@ public class EventController {
     //이벤트 제목 검색
     @GetMapping("/api/events/searchTitle")
     public ResponseEntity<Page<EventListResponse>> searchEventTitle(
-            @RequestParam(value = "keyword", required = false) String keyword,Pageable pageable
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @PageableDefault (size = 8, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
         return ResponseEntity.ok(eventService.searchEventTitle(keyword, pageable));
     }

@@ -5,6 +5,7 @@ import Sidebar, { getSidebarTitle } from '@/shared/components/Sidebar';
 import RegistrationModal from '@/archive/RegistrationModal';
 import EventListPage from '@/features/events/pages/EventListPage';
 import AddEventPage from '@/features/events/pages/AddEventPage';
+import EventManagement from '@/features/events/pages/EventManagement';
 import '@/shared/styles/HomePage.css';
 
 function Home() {
@@ -16,6 +17,10 @@ function Home() {
   const renderSection = () => {
     if (activeTab === 'createEvent') {
       return <AddEventPage />;
+    }
+
+    if (activeTab === 'eventManagement') {
+      return <EventManagement />;
     }
 
     return <EventListPage />;
