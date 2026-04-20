@@ -1,6 +1,7 @@
 import '@/features/events/styles/EventManagement.css';
 import { useEffect, useState } from 'react';
 import { getMyEvents, updateEvent, deleteEvent } from '@/shared/api/eventApi';
+import toast from 'react-hot-toast';
 
 function EventManagement() {
 
