@@ -83,7 +83,9 @@ export const cancelTicket = (ticketId) => {
 export const searchEventTitle = async (keyword, page = 0) => {
   const response = await request.get(`/api/events/searchTitle`, {
     params: { keyword, page }
-  })};
+  })
+  return response;
+};
 
 // export const searchEventTitle = (keyword, page = 0) => {
 //   return request.get('/api/events/searchTitle', {
