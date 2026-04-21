@@ -13,20 +13,16 @@ function ReviewCreatePage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (!content.trim()) {
       toast.error('리뷰 내용을 입력해주세요.');
       return;
     }
-
     try {
       setSubmitting(true);
-
       await request.post(`/api/events/${eventId}/reviews`, {
         rating,
         content: content.trim(),
       });
-
       toast.success('리뷰가 등록되었습니다.');
       navigate(`/events/${eventId}`);
     } catch (error) {

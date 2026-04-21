@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllEvents, searchEventTitle } from '@/shared/api/eventApi';
 
+
 const emptyEventsPage = {
   content: [],
   totalPages: 0,

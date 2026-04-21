@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080', // 백엔드 주소
+  baseURL: process.env.NODE_ENV === 'development'
+    ? 'http://localhost:8080'
+    : 'https://matchpot.onrender.com', // 백엔드 주소
   headers: {
     'Content-Type': 'application/json',
   },
