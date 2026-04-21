@@ -1,6 +1,4 @@
 import request from './request';
-import apiClient from './apiClient';
-import axios from 'axios';
 
 export const signup = (joinData) => {
   return request.post('/api/signup', joinData);
@@ -19,7 +17,7 @@ export const getAllEvents = async (page = 0) => {
 
 //내 이벤트 목록 조회 (주최자용)
 export const getMyEvents = (page = 0) => {
-  return apiClient.get('/api/organizer/events', {
+  return request.get('/api/organizer/events', {
     params: { page }
   });
 };
