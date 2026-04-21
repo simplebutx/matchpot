@@ -40,22 +40,18 @@ function EventManagement() {
     }
   };
   
-const handleDeleteClick = async (eventId) => {
-  if (!window.confirm(`행사를 삭제하시겠습니까?`)) return;
+  const handleDeleteClick = async (eventId, eventTitle) => {
+    if (!window.confirm(`'${eventTitle}' 행사를 정말 삭제하시겠습니까?`)) return;
 
-  try {
-    await deleteEvent(eventId); // 1. 삭제 실행
-    
-    // 2. toast 대신 alert 사용 (사용자가 확인을 누를 때까지 코드가 멈춤)
-    alert("삭제가 완료되었습니다."); 
-    
-    // 3. 확인을 누른 후 목록 조회 (이때는 DB 반영이 끝난 상태)
-    await fetchMyEvents(); 
-    
-  } catch (error) {
-    console.error("삭제 실패:", error);
-  }
-};
+    try {
+      await deleteEvent(eventId);
+      toast.success('행사가 성공적으로 삭제되었습니다.');
+      fetchMyEvents();
+    } catch (error) {
+      console.error('삭제 실패:', error);
+      toast.error('행사 삭제에 실패했습니다.');
+    }
+  };
 
   useEffect(() => {
     fetchMyEvents();
