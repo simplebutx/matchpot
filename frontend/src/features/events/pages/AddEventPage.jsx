@@ -2,6 +2,7 @@ import '@/features/events/styles/AddEventPage.css';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { createEvent } from '@/shared/api/eventApi';
+import PageSectionHeader from '@/shared/components/PageSectionHeader';
 
 function AddEventPage() {
   const [form, setForm] = useState({
@@ -73,7 +74,10 @@ function AddEventPage() {
 
   return (
     <div className="add-event">
-      <h2 className="add-event__title">행사 등록하기</h2>
+      <PageSectionHeader
+        title="행사 등록"
+        description="새로운 행사를 등록하고 일정, 장소, 티켓 정보를 한 번에 설정해보세요."
+      />
       <div className="add-event__wrapper">
         <aside className="add-event__image-section">
           <label className="form-group-label">대표 이미지</label>

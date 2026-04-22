@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllEvents, searchEventTitle } from '@/shared/api/eventApi';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import PageSectionHeader from '@/shared/components/PageSectionHeader';
 
 const emptyEventsPage = {
   content: [],
@@ -53,7 +54,12 @@ function EventListPage() {
   if (loading) return <div>로딩 중...</div>;
 
   return (
-    <section className="expo-apply">
+    <>
+      <PageSectionHeader
+        title="행사 목록"
+        description="현재 등록된 행사를 한눈에 확인하고 원하는 행사를 빠르게 찾아보세요."
+      />
+      <section className="expo-apply">
       <div className="expo-search-bar">
         <form onSubmit={handleSearch}>
           <input
@@ -131,7 +137,8 @@ function EventListPage() {
           </button>
         </div>
       )}
-    </section>
+      </section>
+    </>
   );
 }
 

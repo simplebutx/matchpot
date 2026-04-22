@@ -2,7 +2,6 @@ import '@/features/events/styles/DashBoardPage.css';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { adminapi } from '@/shared/api/authApi';
 
 function DashBoardPage() {
   const [isAdmin, setIsAdmin] = useState(false);

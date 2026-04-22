@@ -8,7 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    public MyPageResponse getMyPageInfo(String displayName,String username) {
-        return new MyPageResponse(displayName,username);
-    }
+
 }

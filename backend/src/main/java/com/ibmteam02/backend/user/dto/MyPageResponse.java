@@ -8,4 +8,5 @@ import lombok.Getter;
 public class MyPageResponse {
     private String displayName;
     private String username;
+    private String role;
 }
