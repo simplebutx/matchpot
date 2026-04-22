@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AiRequest {
-    private Long id;
+    private Long eventId;
+    private Long reviewId;
     private String content;
 }

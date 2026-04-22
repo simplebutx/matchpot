@@ -28,7 +28,7 @@ public class AiService {
         List<ReviewResponse> reviews = reviewService.getReviews(eventId);
 
         List<AiRequest> requestBody = reviews.stream()
-                .map(review -> new AiRequest(review.id(), review.content()))
+                .map(review -> new AiRequest(review.eventId(), review.id(), review.content()))
                 .toList();
 
         try {
