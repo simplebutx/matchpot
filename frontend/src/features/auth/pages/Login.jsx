@@ -5,6 +5,19 @@ import AuthLayout from '@/features/auth/components/AuthLayout';
 import { login } from '@/shared/api/authApi';
 import '@/features/auth/styles/Login.css';
 
+function parseJwtPayload(token) {
+  const payload = token.split('.')[1];
+  if (!payload) {
+    throw new Error('Invalid token payload');
+  }
+
+  const normalizedPayload = payload
+    .replace(/-/g, '+')
+    .replace(/_/g, '/')
+    .padEnd(Math.ceil(payload.length / 4) * 4, '=');
+
+  return JSON.parse(atob(normalizedPayload));
+}
 
 function Login() {
 
@@ -24,8 +37,7 @@ function Login() {
         
         // JWT 토큰(response)을 해독해서 role 정보를 localStorage에 함께 저장합니다.
         try {
-          const payloadBase64 = response.split('.')[1];
-          const decodedPayload = JSON.parse(atob(payloadBase64));
+          const decodedPayload = parseJwtPayload(response);
           localStorage.setItem('role', decodedPayload.role || 'ROLE_USER');
         } catch (e) {
           console.error('토큰 파싱 실패:', e);

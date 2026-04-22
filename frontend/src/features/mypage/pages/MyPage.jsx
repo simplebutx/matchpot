@@ -25,6 +25,16 @@ function formatTicketDate(value) {
   }).format(date);
 }
 
+function getRoleLabel(role) {
+  const roleLabelMap = {
+    ROLE_ADMIN: '관리자',
+    ROLE_USER: '회원',
+    ROLE_ORGANIZER: '주최자',
+  };
+
+  return roleLabelMap[role] || role || '로딩 중...';
+}
+
 function MyPage() {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState(null);
@@ -99,7 +109,7 @@ function MyPage() {
             <p className="mypage__role">ATTENDEE PROFILE</p>
             <h2>{userInfo?.displayName || '로딩 중...'}</h2>
             <h2>email : {userInfo?.username || '로딩 중...'}</h2>
-            <span>권한 : 참가자</span>
+            <span>{getRoleLabel(userInfo?.role)}</span>
           </div>
           <ul>
             <li>

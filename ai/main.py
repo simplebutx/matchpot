@@ -3,7 +3,7 @@ from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from ml_service import analyze_sentiment_reviews
+from sentiment.ml_service import analyze_sentiment_reviews
 
 app = FastAPI()
 
