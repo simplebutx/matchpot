@@ -6,6 +6,7 @@ import MyPage from '@/features/mypage/pages/MyPage';
 import EventDetailPage from '@/features/events/pages/EventDetailPage';
 import ReviewCreatePage from '@/features/events/pages/ReviewCreatePage';
 import { Sidebar } from 'lucide-react';
+import DashBoardPage from './features/events/pages/DashBoardPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/events/:eventId" element={<EventDetailPage />} />
           <Route path="/events/:eventId/reviews/new" element={<ReviewCreatePage />} />
+          <Route path="/api/admin" element={<DashBoardPage />} />
         </Routes>
       </div>
 

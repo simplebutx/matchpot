@@ -36,11 +36,20 @@ public class AuthService implements UserDetailsService {
             throw new EmailNotVerifiedException();
         }
 
+        String assignedRole = "ROLE_USER"; // 기본값
+
+        if (joinDto.getRole() != null) {
+            assignedRole = switch (joinDto.getRole().toUpperCase()) {
+                case "ORGANIZER" -> "ROLE_ORGANIZER";
+                default -> "ROLE_USER"; // ADMIN을 써서 보내도 강제로 USER가 됩니다.
+            };
+        }
+
         User user = User.builder()
                 .email(joinDto.getEmail())
                 .password(passwordEncoder.encode(joinDto.getPassword()))
                 .displayName(joinDto.getDisplayName())
-                .role("ROLE_USER")
+                .role(assignedRole)
                 .build();
 
         userRepository.save(user);

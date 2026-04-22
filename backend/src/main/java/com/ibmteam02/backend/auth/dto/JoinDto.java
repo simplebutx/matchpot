@@ -11,4 +11,5 @@ public class JoinDto {
     private String email;
     private String password;
     private String displayName; //이름
+    private String role; //"ADMIN", "ORGANIZER", "USER"
 }

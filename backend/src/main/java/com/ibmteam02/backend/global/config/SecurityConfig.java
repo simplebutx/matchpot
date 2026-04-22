@@ -80,10 +80,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/email-send", "/api/email-verify", "/api/login", "/api/signup").permitAll()
-                        .requestMatchers("/api/me/**").authenticated()
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/ai/**").hasAnyRole("ORGANIZER", "ADMIN") // ai 리뷰 분석 주최자 접근 가능
+                        .requestMatchers("/api/me/**","/api/admin/**").authenticated()
                         .requestMatchers("/api/events").permitAll()
                         .requestMatchers("/api/events/searchTitle").permitAll()
-                        .requestMatchers("/api/ai/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

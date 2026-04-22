@@ -25,3 +25,5 @@ export const sendAuthEmail = async (email) => {
 export const verifyAuthCode = async (email, code) => {
   return request.post('/api/email-verify', { email, code });
 };
+
+
