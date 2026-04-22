@@ -5,7 +5,7 @@ import torch  # 파이토치 모델을 만들고 실행하는 딥러닝 엔진
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, pipeline
 # pipeline: HuggingFace가 만든 "모델 사용을 쉽게 해주는 묶음 도구"
 
-from preprocessing_service import preprocess_reviews
+from sentiment.preprocessing_service import preprocess_reviews
 
 # 감정 분류 모델 (긍정, 중립, 부정)
 SENTIMENT_MODEL_NAME = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
@@ -72,7 +72,7 @@ def analyze_sentiment_reviews(reviews: Iterable[dict]) -> dict:
         for label, score in analyzed_review["scores"].items():
             event_scores[label] += score  # 이벤트 단위 대표 감정을 위해 리뷰 점수 누적
 
-    final_sentiment = max(event_scores, key=event_scores.get)
+    final_sentiment = max(event_scores, key=event_scores.get)  # 최종 결과
 
     return {
         "eventId": event_id,
