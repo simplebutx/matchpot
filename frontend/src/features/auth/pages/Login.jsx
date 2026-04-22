@@ -21,6 +21,17 @@ function Login() {
       if (response) {
         toast.success('로그인 성공');
         localStorage.setItem('token', response);
+        
+        // JWT 토큰(response)을 해독해서 role 정보를 localStorage에 함께 저장합니다.
+        try {
+          const payloadBase64 = response.split('.')[1];
+          const decodedPayload = JSON.parse(atob(payloadBase64));
+          localStorage.setItem('role', decodedPayload.role || 'ROLE_USER');
+        } catch (e) {
+          console.error('토큰 파싱 실패:', e);
+          localStorage.setItem('role', 'ROLE_USER'); // 파싱 실패 시 기본값
+        }
+        
         navigate('/');
       }
     } catch (error) {

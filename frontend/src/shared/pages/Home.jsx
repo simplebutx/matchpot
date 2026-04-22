@@ -7,20 +7,44 @@ import EventListPage from '@/features/events/pages/EventListPage';
 import AddEventPage from '@/features/events/pages/AddEventPage';
 import EventManagement from '@/features/events/pages/EventManagement';
 import '@/shared/styles/HomePage.css';
+import DashBoardPage from '../../features/events/pages/DashBoardPage';
+import AiSolution from '../../features/events/pages/AiSolution';
 
 function Home() {
   const [activeTab, setActiveTab] = useState('apply');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const userRole = localStorage.getItem('role') || 'ROLE_USER';
   const pageTitle = getSidebarTitle(activeTab);
 
   const renderSection = () => {
+    if (activeTab === 'eventList') {
+      return <EventListPage />;
+    }
+
     if (activeTab === 'createEvent') {
       return <AddEventPage />;
     }
 
     if (activeTab === 'eventManagement') {
       return <EventManagement />;
+    }
+
+    if (activeTab === 'aiSolution') {
+      return <AiSolution />;
+    }
+
+    if (activeTab === 'adminDashboard') {
+      if (userRole !== 'ROLE_ADMIN') {
+        return (
+          <div style={{ padding: '20px', textAlign: 'center' }}>
+            <h2>🔒 접근 불가</h2>
+            <p>이곳은 관리자 전용 구역입니다</p>
+            <button onClick={() => setActiveTab('apply')}>홈으로 돌아가기</button>
+          </div>
+        );
+      }
+      return <DashBoardPage />;
     }
 
     return <EventListPage />;

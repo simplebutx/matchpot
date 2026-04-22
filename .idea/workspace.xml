@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="80fc2512-f5dd-4503-bac3-e9951a26c9aa" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/ibmteam02/backend/auth/dto/JoinDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/ibmteam02/backend/auth/dto/JoinDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/ibmteam02/backend/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/ibmteam02/backend/auth/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/features/auth/pages/Signup.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/features/auth/pages/Signup.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="3Ch87Oz1tXFhV0Rk4VNv6e9EHCC" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "feature/role",
+    "last_opened_file_path": "/Users/hayunju/Desktop/portfolio/new/ibmteam02"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="80fc2512-f5dd-4503-bac3-e9951a26c9aa" name="변경" comment="" />
+      <created>1776826273807</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776826273807</updated>
+    </task>
+    <servers />
+  </component>
+</project>

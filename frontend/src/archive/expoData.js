@@ -1,14 +1,13 @@
 import { Calendar, Cpu, LayoutDashboard, Vote } from 'lucide-react';
 
 export const menuItems = [
-  { id: 'apply', label: '행사 목록', icon: Calendar, adminOnly: false },
-  { id: 'createEvent', label: '행사 등록', icon: Vote, adminOnly: false },
-  { id: 'eventManagement', label: '행사 관리 및 리뷰 분석', icon: Cpu, adminOnly: false },
-  { id: 'aiSolution', label: 'AI 추천받기', icon: LayoutDashboard, adminOnly: false }
-  // { id: 'dashboard', label: '대시보드', icon: LayoutDashboard, adminOnly: true },
-  // { id: 'booth', label: '부스 배치', icon: Cpu, adminOnly: true },
-  // { id: 'vote', label: '행사 리뷰', icon: Vote, adminOnly: false },
-  // { id: 'board', label: '커뮤니티 보드', icon: MessageSquare, adminOnly: false },
+  { id: 'eventList', label: '행사 목록', icon: Calendar, allowedRoles: ['ROLE_USER', 'ROLE_ORGANIZER', 'ROLE_ADMIN'] },
+  { id: 'createEvent', label: '행사 등록', icon: Vote, allowedRoles: ['ROLE_ORGANIZER', 'ROLE_ADMIN'] },
+  { id: 'eventManagement', label: '행사 관리 및 리뷰 분석', icon: Cpu, allowedRoles: ['ROLE_ORGANIZER', 'ROLE_ADMIN'] },
+  { id: 'aiSolution', label: 'AI 추천받기', icon: LayoutDashboard, allowedRoles: ['ROLE_USER', 'ROLE_ORGANIZER', 'ROLE_ADMIN'] },
+  
+  // 관리자 대시보드 추가 (ROLE_ADMIN 전용)
+  { id: 'adminDashboard', label: '관리자 대시보드', icon: LayoutDashboard}
 ];
 
 export const inferenceData = [

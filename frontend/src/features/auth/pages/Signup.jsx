@@ -100,11 +100,11 @@ function Signup() {
       <form className="signup-form" onSubmit={handleSubmit}>
         <div className="signup-form__grid">
           <label>
-            이름
+            {formData.role === 'ORGANIZER' ? '업체명' : '이름'}
             <input
               name="displayName"
               type="text"
-              placeholder="홍길동"
+              placeholder={formData.role === 'ORGANIZER' ? '예) 코엑스, IBM' : '홍길동'}
               value={formData.displayName}
               onChange={handleChange}
               required
@@ -165,6 +165,32 @@ function Signup() {
             required
           />
         </label>
+
+        <label>
+            가입 유형
+            <div style={{ display: 'flex', gap: '20px', marginTop: '10px', marginBottom: '10px' }}>
+              <label style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', fontWeight: '500', fontSize: '15px' }}>
+                <input
+                  type="radio"
+                  name="role"
+                  value="USER"
+                  checked={formData.role === 'USER'}
+                  onChange={handleChange}
+                />
+                일반 사용자
+              </label>
+              <label style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', fontWeight: '500', fontSize: '15px' }}>
+                <input
+                  type="radio"
+                  name="role"
+                  value="ORGANIZER"
+                  checked={formData.role === 'ORGANIZER'}
+                  onChange={handleChange}
+                />
+                행사 주최자
+              </label>
+            </div>
+          </label>
 
         <button type="submit" className="signup-form__submit">
           회원가입하고 신청 시작하기
