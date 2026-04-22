@@ -2,7 +2,7 @@ import '@/features/events/styles/EventListPage.css';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllEvents, searchEventTitle } from '@/shared/api/eventApi';
-
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 const emptyEventsPage = {
   content: [],
@@ -58,11 +58,13 @@ function EventListPage() {
         <form onSubmit={handleSearch}>
           <input
             type="text"
-            placeholder="제목을 검색해보세요"
+            placeholder="search"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
-          <button type="submit">검색</button>
+          <button type="submit" aria-label="검색">
+            <Search size={20} />
+          </button>
         </form>
       </div>
       <div className="expo-apply__list">
@@ -110,9 +112,8 @@ function EventListPage() {
             disabled={events.first}
             onClick={() => setPage(prev => prev - 1)}
           >
-            이전
+            <ChevronLeft size={20} />
           </button>
-
           {[...Array(events.totalPages).keys()].map((num) => (
             <button
               key={num}
@@ -122,12 +123,11 @@ function EventListPage() {
               {num + 1}
             </button>
           ))}
-
           <button
             disabled={events.last}
             onClick={() => setPage(prev => prev + 1)}
           >
-            다음
+            <ChevronRight size={20} />
           </button>
         </div>
       )}

@@ -3,7 +3,8 @@ import { Calendar, Cpu, LayoutDashboard, Vote } from 'lucide-react';
 export const menuItems = [
   { id: 'apply', label: '행사 목록', icon: Calendar, adminOnly: false },
   { id: 'createEvent', label: '행사 등록', icon: Vote, adminOnly: false },
-  { id: 'eventManagement', label: '행사 관리 및 리뷰 분석', icon: Cpu, adminOnly: false }
+  { id: 'eventManagement', label: '행사 관리 및 리뷰 분석', icon: Cpu, adminOnly: false },
+  { id: 'aiSolution', label: 'AI 추천받기', icon: LayoutDashboard, adminOnly: false }
   // { id: 'dashboard', label: '대시보드', icon: LayoutDashboard, adminOnly: true },
   // { id: 'booth', label: '부스 배치', icon: Cpu, adminOnly: true },
   // { id: 'vote', label: '행사 리뷰', icon: Vote, adminOnly: false },
