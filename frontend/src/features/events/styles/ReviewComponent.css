@@ -99,6 +99,38 @@
   white-space: pre-line;
 }
 
+.review-list__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.review-list__action {
+  border: none;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.review-list__action:hover {
+  transform: translateY(-1px);
+}
+
+.review-list__action--edit {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.review-list__action--delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
 .review-list__empty {
   display: flex;
   align-items: center;

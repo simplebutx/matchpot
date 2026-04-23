@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import '@/features/events/styles/EventDetailPage.css';
-import ReviewComponent from '@/features/events/components/ReviewComponent';
 import toast from 'react-hot-toast';
+import ReviewComponent from '@/features/events/components/ReviewComponent';
 import { buyTicket, getEventDetail } from '@/shared/api/eventApi';
+import { formatEventDateTime } from '@/shared/utils/dateFormat';
+import '@/features/events/styles/EventDetailPage.css';
 
 function EventDetailPage() {
   const navigate = useNavigate();
@@ -37,19 +38,22 @@ function EventDetailPage() {
   const handleQuantity = (type) => {
     if (type === 'plus') {
       if (remainingTickets != null && reserveQuantity >= remainingTickets) {
-        toast.error('잔여 티켓 수를 초과할 수 없습니다.');
+        toast.error('남은 티켓 수량을 초과할 수 없습니다.');
         return;
       }
       setReserveQuantity((prev) => prev + 1);
       return;
     }
 
-    if (reserveQuantity <= 1) return;
+    if (reserveQuantity <= 1) {
+      return;
+    }
+
     setReserveQuantity((prev) => prev - 1);
   };
 
-  const handleReserveSubmit = async (e) => {
-    e.preventDefault();
+  const handleReserveSubmit = async (eventObject) => {
+    eventObject.preventDefault();
 
     try {
       await buyTicket(eventId, reserveQuantity);
@@ -57,8 +61,8 @@ function EventDetailPage() {
       setIsModalOpen(false);
       navigate('/mypage');
     } catch (error) {
-      toast.error('티켓 구매에 실패했습니다.');
       console.error(error);
+      toast.error('티켓 구매에 실패했습니다.');
     }
   };
 
@@ -91,8 +95,12 @@ function EventDetailPage() {
 
           <div className="event-detail__info">
             <p>
+              <strong>주최자</strong>
+              <span>{event?.authorName || '주최자 정보가 없습니다.'}</span>
+            </p>
+            <p>
               <strong>일시</strong>
-              <span>{event?.startAt || '일정 정보가 아직 없습니다.'}</span>
+              <span>{formatEventDateTime(event?.startAt)}</span>
             </p>
             <p>
               <strong>장소</strong>
@@ -132,9 +140,10 @@ function EventDetailPage() {
       </div>
 
       <ReviewComponent />
+
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="reserve-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="reserve-modal" onClick={(eventObject) => eventObject.stopPropagation()}>
             <h3>티켓 구매 확인</h3>
             <p className="reserve-modal__event-title">{event?.title}</p>
 
