@@ -70,6 +70,7 @@ function EventDetailPage() {
     return <div>로딩 중...</div>;
   }
 
+
   return (
     <section className="event-detail">
       <button

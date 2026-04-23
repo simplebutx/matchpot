@@ -38,6 +38,7 @@ public class AiService {
         }
     }
 
+
     public String analyzeEventSentiment(Long eventId) {
         Map<String, Object> response = analyzeReviews(eventId);
         Object data = response.get("data");
