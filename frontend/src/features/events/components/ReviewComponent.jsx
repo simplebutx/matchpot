@@ -9,6 +9,7 @@ import '@/features/events/styles/ReviewComponent.css';
 function ReviewComponent() {
   const { eventId } = useParams();
   const [reviews, setReviews] = useState([]);
+  const [eventSentiment, setEventSentiment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [editingReview, setEditingReview] = useState(null);
@@ -24,10 +25,12 @@ function ReviewComponent() {
 
     try {
       const data = await getEventReviews(eventId);
-      setReviews(Array.isArray(data) ? data : []);
+      setReviews(Array.isArray(data?.reviews) ? data.reviews : []);
+      setEventSentiment(data?.sentiment ?? null);
     } catch (error) {
       console.error('리뷰 목록 조회 실패', error);
       setReviews([]);
+      setEventSentiment(null);
     } finally {
       setLoading(false);
     }
@@ -84,6 +87,20 @@ function ReviewComponent() {
     });
   };
 
+  const formatSentimentLabel = (value) => {
+    if (!value) {
+      return '';
+    }
+
+    const labels = {
+      positive: '긍정',
+      neutral: '중립',
+      negative: '부정',
+    };
+
+    return labels[value] ?? value;
+  };
+
   const isOwnReview = (review) => {
     if (!token || !currentUser || currentUser.role !== 'ROLE_USER') {
       return false;
@@ -111,7 +128,7 @@ function ReviewComponent() {
     try {
       await deleteEventReview(eventId, reviewId);
       toast.success('리뷰가 삭제되었습니다.');
-      setReviews((prev) => prev.filter((review) => review.id !== reviewId));
+      await fetchReviews();
     } catch (error) {
       console.error('리뷰 삭제 실패', error);
       toast.error('리뷰 삭제에 실패했습니다.');
@@ -149,6 +166,14 @@ function ReviewComponent() {
           <div>
             <span className="review-list__eyebrow">REVIEWS</span>
             <h2 className="review-list__title">참여자 리뷰</h2>
+            {!loading && eventSentiment && (
+              <p className="review-list__sentiment">
+                전체 리뷰 분위기
+                <span className={`review-list__sentiment-badge review-list__sentiment-badge--${eventSentiment}`}>
+                  {formatSentimentLabel(eventSentiment)}
+                </span>
+              </p>
+            )}
           </div>
           {!loading && reviews.length > 0 && (
             <span className="review-list__count">{reviews.length}개</span>
