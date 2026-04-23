@@ -25,4 +25,15 @@ public class User {
     private String displayName;
 
     private String role;
+
+    public User(String email, String password, String displayName) {
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.role = "ROLE_USER";
+    }
+
+    public void updateRole(String role) {
+        this.role = role;
+    }
 }

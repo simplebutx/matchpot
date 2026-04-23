@@ -2,6 +2,7 @@ import '@/features/events/styles/EventManagement.css';
 import { useEffect, useState } from 'react';
 import { getMyEvents, updateEvent, deleteEvent } from '@/shared/api/eventApi';
 import toast from 'react-hot-toast';
+import PageSectionHeader from '@/shared/components/PageSectionHeader';
 
 function EventManagement() {
 
@@ -59,6 +60,10 @@ function EventManagement() {
 
   return (
     <div>
+      <PageSectionHeader
+        title="행사 관리 및 리뷰 분석"
+        description="등록한 행사 운영 현황을 관리하고 리뷰 흐름을 한눈에 확인해보세요."
+      />
       {/* 내 이벤트 목록 */}
       <section className="my-events-list">
         <h3 className="my-events-list__title">나의 행사 목록</h3>

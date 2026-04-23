@@ -2,7 +2,7 @@ package com.ibmteam02.backend.review.controller;
 
 import com.ibmteam02.backend.auth.domain.CustomUserDetails;
 import com.ibmteam02.backend.review.dto.ReviewCreateRequest;
-import com.ibmteam02.backend.review.dto.ReviewResponse;
+import com.ibmteam02.backend.review.dto.ReviewListResponse;
 import com.ibmteam02.backend.review.dto.ReviewUpdateRequest;
 import com.ibmteam02.backend.review.service.ReviewService;
 import jakarta.validation.Valid;
@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 public class ReviewController {
@@ -27,7 +25,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping("/api/events/{eventId}/reviews")
-    public List<ReviewResponse> getReviews(@PathVariable Long eventId) {
+    public ReviewListResponse getReviews(@PathVariable Long eventId) {
         return reviewService.getReviews(eventId);
     }
 

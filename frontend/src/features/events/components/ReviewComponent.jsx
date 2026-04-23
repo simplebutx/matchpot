@@ -1,36 +1,66 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import request from '@/shared/api/request';
+import toast from 'react-hot-toast';
+import { deleteEventReview, getEventReviews, updateEventReview } from '@/shared/api/eventApi';
+import { getMyPage } from '@/shared/api/authApi';
+import ReviewEditModal from '@/features/events/components/ReviewEditModal';
 import '@/features/events/styles/ReviewComponent.css';
 
 function ReviewComponent() {
   const { eventId } = useParams();
   const [reviews, setReviews] = useState([]);
+  const [eventSentiment, setEventSentiment] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [editingReview, setEditingReview] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const token = localStorage.getItem('token');
+
+  const fetchReviews = async () => {
+    if (!eventId) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const data = await getEventReviews(eventId);
+      setReviews(Array.isArray(data?.reviews) ? data.reviews : []);
+      setEventSentiment(data?.sentiment ?? null);
+    } catch (error) {
+      console.error('리뷰 목록 조회 실패', error);
+      setReviews([]);
+      setEventSentiment(null);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [aiResult, setAiResult] = useState(null);
 
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      if (!eventId) {
-        setLoading(false);
+    fetchReviews();
+  }, [eventId]);
+
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      if (!token) {
+        setCurrentUser(null);
         return;
       }
 
       try {
-        const data = await request.get(`/api/events/${eventId}/reviews`);
-        setReviews(Array.isArray(data) ? data : []);
+        const data = await getMyPage();
+        setCurrentUser(data ?? null);
       } catch (error) {
-        console.error('리뷰 목록 조회 실패', error);
-        setReviews([]);
-      } finally {
-        setLoading(false);
+        console.error('현재 사용자 정보 조회 실패', error);
+        setCurrentUser(null);
       }
     };
 
-    fetchReviews();
-  }, [eventId]);
+    fetchCurrentUser();
+  }, [token]);
 
   const renderStars = (rating = 0) =>
     Array.from({ length: 5 }, (_, index) => (
@@ -82,13 +112,97 @@ const handleAiAnalyze = async (eventId) => {
     setLoading(false); // 🌟 이걸 해야 "버튼 누르면..." 문구가 사라지고 결과창이 뜹니다!
   }
 };
+  const formatSentimentLabel = (value) => {
+    if (!value) {
+      return '';
+    }
+
+    const labels = {
+      positive: '긍정',
+      neutral: '중립',
+      negative: '부정',
+    };
+
+    return labels[value] ?? value;
+  };
+
+  const isOwnReview = (review) => {
+    if (!token || !currentUser || currentUser.role !== 'ROLE_USER') {
+      return false;
+    }
+
+    const hasMatchingUserId =
+      review.userId != null &&
+      currentUser.id != null &&
+      String(review.userId) === String(currentUser.id);
+
+    const hasMatchingAuthorName =
+      review.authorName &&
+      currentUser.displayName &&
+      String(review.authorName).trim() === String(currentUser.displayName).trim();
+
+    return hasMatchingUserId || hasMatchingAuthorName;
+  };
+
+  const handleDelete = async (reviewId) => {
+    const confirmed = window.confirm('이 리뷰를 삭제하시겠습니까?');
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteEventReview(eventId, reviewId);
+      toast.success('리뷰가 삭제되었습니다.');
+      await fetchReviews();
+    } catch (error) {
+      console.error('리뷰 삭제 실패', error);
+      toast.error('리뷰 삭제에 실패했습니다.');
+    }
+  };
+
+  const handleUpdate = async (payload) => {
+    if (!editingReview) {
+      return;
+    }
+
+    if (!payload.content) {
+      toast.error('리뷰 내용을 입력해 주세요.');
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await updateEventReview(eventId, editingReview.id, payload);
+      toast.success('리뷰가 수정되었습니다.');
+      setEditingReview(null);
+      await fetchReviews();
+    } catch (error) {
+      console.error('리뷰 수정 실패', error);
+      toast.error('리뷰 수정에 실패했습니다.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <section className="review-list">
-      <div className="review-list__header">
-        <div>
-          <span className="review-list__eyebrow">REVIEWS</span>
-          <h2 className="review-list__title">참여자 리뷰</h2>
+    <>
+      <section className="review-list">
+        <div className="review-list__header">
+          <div>
+            <span className="review-list__eyebrow">REVIEWS</span>
+            <h2 className="review-list__title">참여자 리뷰</h2>
+            {!loading && eventSentiment && (
+              <p className="review-list__sentiment">
+                전체 리뷰 분위기
+                <span className={`review-list__sentiment-badge review-list__sentiment-badge--${eventSentiment}`}>
+                  {formatSentimentLabel(eventSentiment)}
+                </span>
+              </p>
+            )}
+          </div>
+          {!loading && reviews.length > 0 && (
+            <span className="review-list__count">{reviews.length}개</span>
+          )}
         </div>
         {!loading && reviews.length > 0 && (
           <span className="review-list__count">{reviews.length}개</span>
@@ -178,16 +292,49 @@ const handleAiAnalyze = async (eventId) => {
                   <h3 className="review-list__author">{review.authorName}</h3>
                   <div className="review-list__rating">{renderStars(review.rating)}</div>
                 </div>
-                <time className="review-list__date" dateTime={review.createdAt}>
-                  {formatDate(review.createdAt)}
-                </time>
-              </div>
-              <p className="review-list__content">{review.content}</p>
-            </article>
-          ))}
-        </div>
-      )}
-    </section>
+
+                <div className="review-list__side">
+                  <time className="review-list__date" dateTime={review.updatedAt || review.createdAt}>
+                    {formatDate(review.updatedAt || review.createdAt)}
+                  </time>
+
+                  {isOwnReview(review) && (
+                    <div className="review-list__actions">
+                      <button
+                        type="button"
+                        className="review-list__action review-list__action--edit"
+                        onClick={() => setEditingReview(review)}
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        className="review-list__action review-list__action--delete"
+                        onClick={() => handleDelete(review.id)}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <ReviewEditModal
+        isOpen={Boolean(editingReview)}
+        review={editingReview}
+        submitting={isSubmitting}
+        onClose={() => {
+          if (!isSubmitting) {
+            setEditingReview(null);
+          }
+        }}
+        onSubmit={handleUpdate}
+      />
+    </>
   );
 }
 
