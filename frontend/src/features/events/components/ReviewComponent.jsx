@@ -163,35 +163,38 @@ function ReviewComponent() {
           <div className="review-list__items">
             {reviews.map((review) => (
               <article className="review-list__item" key={review.id}>
-                <div className="review-list__meta">
-                  <div>
+                <div className="review-list__body">
+                  <div className="review-list__meta">
                     <h3 className="review-list__author">{review.authorName}</h3>
                     <div className="review-list__rating">{renderStars(review.rating)}</div>
                   </div>
+                  <p className="review-list__content">{review.content}</p>
+                </div>
+
+                <div className="review-list__side">
                   <time className="review-list__date" dateTime={review.updatedAt || review.createdAt}>
                     {formatDate(review.updatedAt || review.createdAt)}
                   </time>
-                </div>
-                <p className="review-list__content">{review.content}</p>
 
-                {isOwnReview(review) && (
-                  <div className="review-list__actions">
-                    <button
-                      type="button"
-                      className="review-list__action review-list__action--edit"
-                      onClick={() => setEditingReview(review)}
-                    >
-                      수정
-                    </button>
-                    <button
-                      type="button"
-                      className="review-list__action review-list__action--delete"
-                      onClick={() => handleDelete(review.id)}
-                    >
-                      삭제
-                    </button>
-                  </div>
-                )}
+                  {isOwnReview(review) && (
+                    <div className="review-list__actions">
+                      <button
+                        type="button"
+                        className="review-list__action review-list__action--edit"
+                        onClick={() => setEditingReview(review)}
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        className="review-list__action review-list__action--delete"
+                        onClick={() => handleDelete(review.id)}
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  )}
+                </div>
               </article>
             ))}
           </div>

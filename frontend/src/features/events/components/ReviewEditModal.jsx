@@ -34,30 +34,29 @@ function ReviewEditModal({ isOpen, review, submitting, onClose, onSubmit }) {
             <span className="review-edit-modal__eyebrow">EDIT REVIEW</span>
             <h3 className="review-edit-modal__title">리뷰 수정</h3>
           </div>
-          <button type="button" className="review-edit-modal__close" onClick={onClose}>
-            닫기
-          </button>
         </div>
 
         <form className="review-edit-modal__form" onSubmit={handleSubmit}>
           <div className="review-edit-modal__section">
-            <label className="review-edit-modal__label">평점</label>
-            <div className="review-edit-modal__stars" role="radiogroup" aria-label="리뷰 평점 수정">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  className={
-                    value <= rating
-                      ? 'review-edit-modal__star is-active'
-                      : 'review-edit-modal__star'
-                  }
-                  onClick={() => setRating(value)}
-                  aria-label={`${value}점`}
-                >
-                  ★
-                </button>
-              ))}
+            <div className="review-edit-modal__label">평점</div>
+            <div className="review-edit-modal__section-body">
+              <div className="review-edit-modal__stars" role="radiogroup" aria-label="리뷰 평점 수정">
+                {[1, 2, 3, 4, 5].map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={
+                      value <= rating
+                        ? 'review-edit-modal__star is-active'
+                        : 'review-edit-modal__star'
+                    }
+                    onClick={() => setRating(value)}
+                    aria-label={`${value}점`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -65,16 +64,18 @@ function ReviewEditModal({ isOpen, review, submitting, onClose, onSubmit }) {
             <label htmlFor="review-edit-content" className="review-edit-modal__label">
               리뷰 내용
             </label>
-            <textarea
-              id="review-edit-content"
-              className="review-edit-modal__textarea"
-              value={content}
-              onChange={(event) => setContent(event.target.value)}
-              maxLength={1000}
-              rows={7}
-              placeholder="수정할 리뷰 내용을 입력해 주세요."
-            />
-            <p className="review-edit-modal__count">{content.length} / 1000</p>
+            <div className="review-edit-modal__section-body">
+              <textarea
+                id="review-edit-content"
+                className="review-edit-modal__textarea"
+                value={content}
+                onChange={(event) => setContent(event.target.value)}
+                maxLength={1000}
+                rows={7}
+                placeholder="수정할 리뷰 내용을 입력해 주세요."
+              />
+              <p className="review-edit-modal__count">{content.length} / 1000</p>
+            </div>
           </div>
 
           <div className="review-edit-modal__actions">
