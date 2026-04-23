@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '@/features/auth/components/AuthLayout';
 import { login } from '@/shared/api/authApi';
+import { API_BASE_URL } from '@/shared/api/request';
 import '@/features/auth/styles/Login.css';
 
 function parseJwtPayload(token) {
@@ -20,30 +21,27 @@ function parseJwtPayload(token) {
 }
 
 function Login() {
-
-  const navigate = useNavigate(); //
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await login({ email, password }); // response 전체를 받음
+      const response = await login({ email, password });
 
-      // 백엔드 응답 구조에 따라 다르지만 보통 response.accessToken 혹은 response에 토큰이 옴
       if (response) {
         toast.success('로그인 성공');
         localStorage.setItem('token', response);
-        
-        // JWT 토큰(response)을 해독해서 role 정보를 localStorage에 함께 저장합니다.
+
         try {
           const decodedPayload = parseJwtPayload(response);
           localStorage.setItem('role', decodedPayload.role || 'ROLE_USER');
-        } catch (e) {
-          console.error('토큰 파싱 실패:', e);
-          localStorage.setItem('role', 'ROLE_USER'); // 파싱 실패 시 기본값
+        } catch (error) {
+          console.error('토큰 파싱 실패:', error);
+          localStorage.setItem('role', 'ROLE_USER');
         }
-        
+
         navigate('/');
       }
     } catch (error) {
@@ -52,21 +50,18 @@ function Login() {
     }
   };
 
-
   function googleLogin() {
     try {
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-      if(!backendUrl) {
-        toast.error("구글 로그인 불가");
+      if (!API_BASE_URL) {
+        toast.error('구글 로그인 불가');
         return;
       }
 
-      const url = `${backendUrl.replace(/\/$/, "")}/oauth2/authorization/google`;
+      const url = `${API_BASE_URL.replace(/\/$/, '')}/oauth2/authorization/google`;
       window.location.assign(url);
-
-    } catch (e) {
-      toast.error("구글 로그인 실패");
+    } catch (error) {
+      console.error(error);
+      toast.error('구글 로그인 실패');
     }
   }
 
@@ -75,18 +70,28 @@ function Login() {
       title="로그인"
       description="이미 등록한 참가자라면 계정으로 빠르게 입장할 수 있어요."
       asideTitle="행사 계정으로 연결하고 개인 대시보드를 이어서 확인하세요."
-      asideDescription="신청 내역, 즐겨찾기 세션, 투표 기록까지 동일한 비주얼 언어 안에서 자연스럽게 이어집니다."
+      asideDescription="예매 내역, 즐겨찾기 이벤트, 투표 기록까지 동일한 비주얼 경험 안에서 자연스럽게 이어집니다."
       footerText="아직 계정이 없나요?"
       footerLink={{ to: '/signup', label: '회원가입' }}
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <label>
           이메일
-          <input type="email" placeholder="agent@expo.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input
+            type="email"
+            placeholder="agent@expo.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </label>
         <label>
           비밀번호
-          <input type="password" placeholder="비밀번호를 입력하세요" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </label>
         <div className="auth-form__row">
           <label className="auth-form__check">
@@ -95,10 +100,10 @@ function Login() {
           </label>
           <Link to="/mypage">미리보기</Link>
         </div>
-        
+
         <button type="submit" className="auth-form__submit">
           로그인하고 입장하기
-        </button> 
+        </button>
       </form>
       <button type="button" onClick={googleLogin}>구글로그인</button>
     </AuthLayout>
