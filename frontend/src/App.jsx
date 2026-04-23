@@ -12,6 +12,7 @@ import DashBoardPage from '@/features/events/pages/DashBoardPage';
 import Sidebar from '@/shared/components/Sidebar';
 import ProtectedRoute from '@/shared/components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
+import OAuthSuccessPage from './features/auth/components/OAuthSuccessPage';
 
 function App() {
   const location = useLocation();
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/events/:eventId" element={<EventDetailPage />} />
+        <Route path="/oauth-success" element={<OAuthSuccessPage />} />
 
         <Route element={<ProtectedRoute requireRole={['ROLE_USER', 'ROLE_ORGANIZER']} />}>
           <Route path="/mypage" element={<MyPage />} />

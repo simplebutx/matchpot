@@ -1,6 +1,8 @@
 package com.ibmteam02.backend.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ibmteam02.backend.auth.handler.OAuth2SuccessHandler;
+import com.ibmteam02.backend.auth.service.CustomOAuth2UserService;
 import com.ibmteam02.backend.auth.util.JwtFilter;
 import com.ibmteam02.backend.global.exception.ErrorResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Value("${app.frontend-url:http://localhost:5173}")
     private String frontendUrl;
@@ -72,6 +76,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler))
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -80,7 +87,7 @@ public class SecurityConfig {
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/oauth2/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/signup", "/api/login", "/api/email-send", "/api/email-verify").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/searchTitle", "/api/events/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events/*/reviews").permitAll()

@@ -5,6 +5,17 @@ spring:
   application:
     name: backend
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
+            client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT:587}
@@ -34,12 +45,18 @@ spring:
       hibernate:
         format_sql: false
 
+  
+
 app:
   frontend-url: ${FRONTEND_URL:https://matchpot.vercel.app/}
 
 jwt:
   secretKey: ${JWT_SECRET_KEY}
   expiration: ${JWT_EXPIRATION:3600000}
+
+ai:
+  service:
+    base-url: ${AI_SERVICE_BASE_URL:http://localhost:8000}
 
 cloud:
   aws:

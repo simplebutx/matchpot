@@ -53,6 +53,23 @@ function Login() {
   };
 
 
+  function googleLogin() {
+    try {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+      if(!backendUrl) {
+        toast.error("구글 로그인 불가");
+        return;
+      }
+
+      const url = `${backendUrl.replace(/\/$/, "")}/oauth2/authorization/google`;
+      window.location.assign(url);
+
+    } catch (e) {
+      toast.error("구글 로그인 실패");
+    }
+  }
+
   return (
     <AuthLayout
       title="로그인"
@@ -78,10 +95,12 @@ function Login() {
           </label>
           <Link to="/mypage">미리보기</Link>
         </div>
+        
         <button type="submit" className="auth-form__submit">
           로그인하고 입장하기
-        </button>
+        </button> 
       </form>
+      <button type="button" onClick={googleLogin}>구글로그인</button>
     </AuthLayout>
   );
 }
