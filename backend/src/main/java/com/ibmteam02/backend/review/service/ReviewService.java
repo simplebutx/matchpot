@@ -1,5 +1,6 @@
 package com.ibmteam02.backend.review.service;
 
+import com.ibmteam02.backend.ai.service.AiService;
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.repository.EventRepository;
 import com.ibmteam02.backend.global.exception.EventNotFoundException;
@@ -8,6 +9,7 @@ import com.ibmteam02.backend.global.exception.ReviewNotFoundException;
 import com.ibmteam02.backend.global.exception.UserNotFoundException;
 import com.ibmteam02.backend.review.domain.Review;
 import com.ibmteam02.backend.review.dto.ReviewCreateRequest;
+import com.ibmteam02.backend.review.dto.ReviewListResponse;
 import com.ibmteam02.backend.review.dto.ReviewResponse;
 import com.ibmteam02.backend.review.dto.ReviewUpdateRequest;
 import com.ibmteam02.backend.review.repository.ReviewRepository;
@@ -26,17 +28,21 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
+    private final AiService aiService;
 
     @Transactional(readOnly = true)
-    public List<ReviewResponse> getReviews(Long eventId) {
+    public ReviewListResponse getReviews(Long eventId) {
         if (!eventRepository.existsById(eventId)) {
             throw new EventNotFoundException();
         }
 
-        return reviewRepository.findAllByEventIdOrderByCreatedAtDesc(eventId)
+        List<ReviewResponse> reviews = reviewRepository.findAllByEventIdOrderByCreatedAtDesc(eventId)
                 .stream()
                 .map(ReviewResponse::from)
                 .toList();
+
+        String sentiment = reviews.isEmpty() ? null : aiService.analyzeEventSentiment(eventId);
+        return new ReviewListResponse(sentiment, reviews);
     }
 
     @Transactional
@@ -49,6 +55,7 @@ public class ReviewService {
 
         Review review = new Review(dto.rating(), dto.content(), event, user);
         reviewRepository.save(review);
+        triggerSentimentAnalysis(eventId);
     }
 
     @Transactional
@@ -61,6 +68,7 @@ public class ReviewService {
         }
 
         review.update(dto.rating(), dto.content());
+        triggerSentimentAnalysis(eventId);
     }
 
     @Transactional
@@ -73,5 +81,14 @@ public class ReviewService {
         }
 
         reviewRepository.delete(review);
+        triggerSentimentAnalysis(eventId);
+    }
+
+    private void triggerSentimentAnalysis(Long eventId) {
+        try {
+            aiService.analyzeReviews(eventId);
+        } catch (Exception ignored) {
+            // Keep review writes successful even if the AI service is temporarily unavailable.
+        }
     }
 }
