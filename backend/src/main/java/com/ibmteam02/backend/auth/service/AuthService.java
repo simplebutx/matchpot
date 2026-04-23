@@ -72,6 +72,6 @@ public class AuthService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("회원을 찾을 수 없습니다."));
 
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(user, null);
     }
 }
