@@ -17,9 +17,10 @@ function App() {
   const location = useLocation();
   const hideSidebarRoutes = ['/login', '/signup'];
   const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname);
+  const appClassName = shouldShowSidebar ? 'app-shell app-shell--gradient' : 'app-shell';
 
   return (
-    <>
+    <div className={appClassName}>
       {shouldShowSidebar && <Sidebar />}
       <Toaster position="top-center" containerStyle={{ top: shouldShowSidebar ? 80 : 16 }} />
       <Routes>
@@ -49,7 +50,7 @@ function App() {
           <Route path="/admin" element={<DashBoardPage />} />
         </Route>
       </Routes>
-    </>
+    </div>
   );
 }
 
