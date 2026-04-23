@@ -38,4 +38,6 @@ public class AiService {
             return Map.of("error", e.getMessage());
         }
     }
+
+
 }

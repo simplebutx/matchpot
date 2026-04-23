@@ -39,7 +39,7 @@ function EventManagement() {
       toast.error("수정 실패");
     }
   };
-  
+
   const handleDeleteClick = async (eventId, eventTitle) => {
     if (!window.confirm(`'${eventTitle}' 행사를 정말 삭제하시겠습니까?`)) return;
 
