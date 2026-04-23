@@ -66,6 +66,18 @@ export const buyTicket = (eventId, quantity) => {
   return request.post(`/api/events/${eventId}/tickets`, { quantity });
 };
 
+export const getEventReviews = (eventId) => {
+  return request.get(`/api/events/${eventId}/reviews`);
+};
+
+export const updateEventReview = (eventId, reviewId, payload) => {
+  return request.put(`/api/events/${eventId}/reviews/${reviewId}`, payload);
+};
+
+export const deleteEventReview = (eventId, reviewId) => {
+  return request.delete(`/api/events/${eventId}/reviews/${reviewId}`);
+};
+
 export const getMyTickets = () => {
   return request.get('/api/me/tickets');
 };

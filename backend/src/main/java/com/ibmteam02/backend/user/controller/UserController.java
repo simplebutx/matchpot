@@ -17,6 +17,11 @@ public class UserController {
     // 마이페이지
     @GetMapping("/api/me")
     public MyPageResponse getMyPage(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return new MyPageResponse(userDetails.getDisplayName(), userDetails.getUsername(), userDetails.getRole());
+        return new MyPageResponse(
+                userDetails.getId(),
+                userDetails.getDisplayName(),
+                userDetails.getUsername(),
+                userDetails.getRole()
+        );
     }
 }
