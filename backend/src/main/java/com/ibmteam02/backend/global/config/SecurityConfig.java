@@ -41,6 +41,7 @@ public class SecurityConfig {
         return new ObjectMapper();
     }
 
+    // 인증이 안된 사용자가 보호된 API에 접근 시
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint(ObjectMapper objectMapper) {
         return (request, response, authException) -> {
@@ -51,6 +52,7 @@ public class SecurityConfig {
         };
     }
 
+    // 인증은 되었지만 권한이 없는 사용자가 접근 시
     @Bean
     public AccessDeniedHandler accessDeniedHandler(ObjectMapper objectMapper) {
         return (request, response, accessDeniedException) -> {
@@ -79,12 +81,19 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/api/email-send", "/api/email-verify", "/api/login", "/api/signup").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/signup", "/api/login", "/api/email-send", "/api/email-verify").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/searchTitle", "/api/events/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/events/*/reviews").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/events/*/tickets").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/events/*/reviews").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT, "/api/events/*/reviews/*").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/events/*/reviews/*").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/me/tickets").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/me/tickets/*").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/me").hasAnyRole("USER", "ORGANIZER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/ai/**").hasAnyRole("ORGANIZER", "ADMIN") // ai 리뷰 분석 주최자 접근 가능
-                        .requestMatchers("/api/me/**","/api/admin/**").authenticated()
-                        .requestMatchers("/api/events").permitAll()
-                        .requestMatchers("/api/events/searchTitle").permitAll()
+                        .requestMatchers("/api/organizer/**", "/api/ai/**").hasRole("ORGANIZER")
+                        .requestMatchers("/api/me/**").hasAnyRole("USER", "ORGANIZER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
