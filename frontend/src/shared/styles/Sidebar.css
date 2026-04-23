@@ -48,8 +48,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 16px; 
-  flex: 1; 
+  gap: 16px;
+  flex: 1;
 }
 
 .expo-sidebar__item {
@@ -76,9 +76,10 @@
 .expo-sidebar__footer {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
-.expo-sidebar__mypage {
+.expo-sidebar__action {
   border-radius: 16px;
   padding: 8px 20px;
   font-weight: 700;
@@ -88,11 +89,22 @@
   gap: 8px;
   color: #ffffff;
   text-decoration: none;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   transition: opacity 0.2s ease;
 }
 
-.expo-sidebar__mypage:hover {
+.expo-sidebar__action:hover {
   opacity: 0.92;
+}
+
+.expo-sidebar__action--button {
+  cursor: pointer;
+  font: inherit;
+}
+
+.expo-sidebar__action--mypage {
+  border-color: transparent;
 }
 
 @media (max-width: 1100px) {
@@ -100,6 +112,7 @@
     width: 100%;
     padding: 0 20px;
   }
+
   .expo-sidebar__nav {
     display: none;
   }
