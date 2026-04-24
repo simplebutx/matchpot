@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import request from '@/shared/api/request';
 import { deleteEventReview, getEventReviews, updateEventReview } from '@/shared/api/eventApi';
 import { getMyPage } from '@/shared/api/authApi';
 import ReviewEditModal from '@/features/events/components/ReviewEditModal';
@@ -14,6 +15,8 @@ function ReviewComponent() {
   const [currentUser, setCurrentUser] = useState(null);
   const [editingReview, setEditingReview] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [aiResult, setAiResult] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const token = localStorage.getItem('token');
 
@@ -35,9 +38,6 @@ function ReviewComponent() {
       setLoading(false);
     }
   };
-
-  const [aiResult, setAiResult] = useState(null);
-
 
   useEffect(() => {
     fetchReviews();
@@ -90,28 +90,6 @@ function ReviewComponent() {
     });
   };
 
-const handleAiAnalyze = async (eventId) => {
-  setLoading(true);
-  try {
-    const response = await request.get(`/api/ai/analyze/summarize/${eventId}`);
-    
-    // 🌟 윤주님 환경에서는 response 자체가 우리가 찾던 데이터 객체입니다!
-    if (response && response.summary) {
-      const cleanData = {
-        ...response,
-        // '주 차 가' 처럼 벌어진 글자들을 '주차가'로 예쁘게 붙여줍니다.
-        summary: response.summary.replace(/\s+/g, ' ').trim()
-      };
-      
-      console.log("최종 저장 데이터:", cleanData);
-      setAiResult(cleanData); 
-    }
-  } catch (error) {
-    console.error("AI 분석 실패:", error);
-  } finally {
-    setLoading(false); // 🌟 이걸 해야 "버튼 누르면..." 문구가 사라지고 결과창이 뜹니다!
-  }
-};
   const formatSentimentLabel = (value) => {
     if (!value) {
       return '';
@@ -142,6 +120,27 @@ const handleAiAnalyze = async (eventId) => {
       String(review.authorName).trim() === String(currentUser.displayName).trim();
 
     return hasMatchingUserId || hasMatchingAuthorName;
+  };
+
+  const handleAiAnalyze = async () => {
+    if (!eventId) {
+      return;
+    }
+
+    try {
+      setIsAnalyzing(true);
+      const response = await request.get(`/api/ai/analyze/summarize/${eventId}`);
+
+      setAiResult({
+        summary: response?.summary?.replace(/\s+/g, ' ').trim() || '',
+        keywords: Array.isArray(response?.keywords) ? response.keywords : [],
+      });
+    } catch (error) {
+      console.error('AI 리뷰 요약 실패', error);
+      toast.error('AI 요약 생성에 실패했습니다.');
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleDelete = async (reviewId) => {
@@ -204,93 +203,90 @@ const handleAiAnalyze = async (eventId) => {
             <span className="review-list__count">{reviews.length}개</span>
           )}
         </div>
-        {!loading && reviews.length > 0 && (
-          <span className="review-list__count">{reviews.length}개</span>
-        )}
-      </div>
 
-      <div className="ai-summary-wrapper" style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '12px' }}>
-
-        {/* 1. 분석 실행 버튼 */}
-        <div style={{ marginBottom: '20px' }}>
-          <button
-            onClick={() => handleAiAnalyze(eventId)}
-            disabled={loading}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: loading ? '#ccc' : '#4A90E2',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer'
-            }}
-          >
-            {loading ? "🤖 AI가 리뷰 분석 중..." : "✨ AI 분석 리포트 생성"}
-          </button>
-        </div>
-
-        {/* 2. 결과가 있을 때만 보여주는 결과 창 */}
-        {aiResult && !loading && (
-          <div className="ai-result-content" style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '10px' }}>
-
-            <h4 style={{ color: '#333', marginBottom: '10px' }}>🤖 AI가 분석한 행사의 핵심</h4>
-
-            {/* 생성된 한 줄 평 (TextRank 결과) */}
-            <p
+        <div
+          className="ai-summary-wrapper"
+          style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '12px', marginBottom: '24px' }}
+        >
+          <div style={{ marginBottom: '20px' }}>
+            <button
+              type="button"
+              onClick={handleAiAnalyze}
+              disabled={isAnalyzing}
               style={{
-                fontSize: '1.1rem',
-                fontWeight: '500',
-                lineHeight: '1.6',
-                color: '#2c3e50',
-                whiteSpace: 'pre-line' // 🌟 줄바꿈 스타일 추가
+                padding: '10px 20px',
+                backgroundColor: isAnalyzing ? '#ccc' : '#4A90E2',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: isAnalyzing ? 'not-allowed' : 'pointer',
               }}
             >
-              "{aiResult.summary.replace(/\s+/g, ' ').trim()}"
-            </p>
-
-            {/* 키워드 태그 리스트 */}
-            <div style={{ marginTop: '15px' }}>
-              {aiResult.keywords && aiResult.keywords.map((tag, index) => (
-                <span
-                  key={index}
-                  style={{
-                    display: 'inline-block',
-                    backgroundColor: '#e1f5fe',
-                    color: '#0288d1',
-                    padding: '5px 12px',
-                    borderRadius: '20px',
-                    marginRight: '8px',
-                    fontSize: '0.85rem',
-                    fontWeight: 'bold'
-                  }}
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
+              {isAnalyzing ? 'AI가 리뷰 분석 중...' : 'AI 분석 리포트 생성'}
+            </button>
           </div>
-        )}
 
-        {/* 3. 데이터가 없을 때의 피드백 (선택사항) */}
-        {!aiResult && !loading && (
-          <p style={{ color: '#888', fontSize: '0.9rem' }}>
-            버튼을 누르면 AI가 최근 리뷰들을 분석하여 요약해 드립니다.
-          </p>
-        )}
-      </div>
+          {aiResult && !isAnalyzing && (
+            <div
+              className="ai-result-content"
+              style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '10px' }}
+            >
+              <h4 style={{ color: '#333', marginBottom: '10px' }}>AI가 분석한 행사 한줄 요약</h4>
+              <p
+                style={{
+                  fontSize: '1.1rem',
+                  fontWeight: '500',
+                  lineHeight: '1.6',
+                  color: '#2c3e50',
+                  whiteSpace: 'pre-line',
+                }}
+              >
+                "{aiResult.summary}"
+              </p>
 
-      {loading ? (
-        <div className="review-list__empty">리뷰를 불러오는 중입니다...</div>
-      ) : reviews.length === 0 ? (
-        <div className="review-list__empty">아직 등록된 리뷰가 없습니다.</div>
-      ) : (
-        <div className="review-list__items">
-          {reviews.map((review) => (
-            <article className="review-list__item" key={review.id}>
-              <div className="review-list__meta">
-                <div>
-                  <h3 className="review-list__author">{review.authorName}</h3>
-                  <div className="review-list__rating">{renderStars(review.rating)}</div>
+              <div style={{ marginTop: '15px' }}>
+                {aiResult.keywords.map((tag, index) => (
+                  <span
+                    key={`${tag}-${index}`}
+                    style={{
+                      display: 'inline-block',
+                      backgroundColor: '#e1f5fe',
+                      color: '#0288d1',
+                      padding: '5px 12px',
+                      borderRadius: '20px',
+                      marginRight: '8px',
+                      fontSize: '0.85rem',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {!aiResult && !isAnalyzing && (
+            <p style={{ color: '#888', fontSize: '0.9rem' }}>
+              버튼을 누르면 AI가 최근 리뷰를 분석해서 요약과 키워드를 보여줍니다.
+            </p>
+          )}
+        </div>
+
+        {loading ? (
+          <div className="review-list__empty">리뷰를 불러오는 중입니다...</div>
+        ) : reviews.length === 0 ? (
+          <div className="review-list__empty">아직 등록된 리뷰가 없습니다.</div>
+        ) : (
+          <div className="review-list__items">
+            {reviews.map((review) => (
+              <article className="review-list__item" key={review.id}>
+                <div className="review-list__body">
+                  <div className="review-list__meta">
+                    <h3 className="review-list__author">{review.authorName}</h3>
+                    <div className="review-list__rating">{renderStars(review.rating)}</div>
+                  </div>
+                  <p className="review-list__content">{review.content}</p>
                 </div>
 
                 <div className="review-list__side">
