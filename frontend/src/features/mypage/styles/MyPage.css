@@ -1,7 +1,7 @@
 .mypage {
   min-height: 100vh;
   padding: 56px 20px 100px;
-  background: #ffffff;
+  background: transparent;
   color: #111111;
 }
 
@@ -53,7 +53,7 @@
   min-width: 120px;
   padding: 14px 22px;
   border: 1px solid #111111;
-  background: #ffffff;
+  background: transparent;
   color: #111111;
   text-decoration: none;
   text-align: center;
@@ -131,9 +131,8 @@
 }
 
 .mypage__tickets {
-  margin-top: 60px;
-  border-top: 1px solid #111111;
-  padding-top: 22px;
+  margin-top: 46px;
+  padding-top: 0;
 }
 
 .mypage__section-header {

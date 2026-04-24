@@ -27,6 +27,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const response = await login({ email, password });
 
@@ -46,14 +47,14 @@ function Login() {
       }
     } catch (error) {
       console.error(error);
-      toast.error('로그인에 실패했습니다. 아이디와 비밀번호를 확인하세요.');
+      toast.error('로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.');
     }
   };
 
-  function googleLogin() {
+  const googleLogin = () => {
     try {
       if (!API_BASE_URL) {
-        toast.error('구글 로그인 불가');
+        toast.error('구글 로그인 주소를 찾을 수 없습니다.');
         return;
       }
 
@@ -61,20 +62,21 @@ function Login() {
       window.location.assign(url);
     } catch (error) {
       console.error(error);
-      toast.error('구글 로그인 실패');
+      toast.error('구글 로그인에 실패했습니다.');
     }
-  }
+  };
 
   return (
     <AuthLayout
+      compact
       title="로그인"
-      description="이미 등록한 참가자라면 계정으로 빠르게 입장할 수 있어요."
-      asideTitle="행사 계정으로 연결하고 개인 대시보드를 이어서 확인하세요."
-      asideDescription="예매 내역, 즐겨찾기 이벤트, 투표 기록까지 동일한 비주얼 경험 안에서 자연스럽게 이어집니다."
+      description="이미 등록된 참가자라면 계정으로 빠르게 입장할 수 있어요."
+      asideTitle=""
+      asideDescription=""
       footerText="아직 계정이 없나요?"
       footerLink={{ to: '/signup', label: '회원가입' }}
     >
-      <form className="auth-form" onSubmit={handleSubmit}>
+      <form className="auth-form auth-form--mono" onSubmit={handleSubmit}>
         <label>
           이메일
           <input
@@ -84,6 +86,7 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </label>
+
         <label>
           비밀번호
           <input
@@ -93,6 +96,7 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
+
         <div className="auth-form__row">
           <label className="auth-form__check">
             <input type="checkbox" />
@@ -105,7 +109,10 @@ function Login() {
           로그인하고 입장하기
         </button>
       </form>
-      <button type="button" onClick={googleLogin}>구글로그인</button>
+
+      <button type="button" className="auth-form__secondary" onClick={googleLogin}>
+        구글로 로그인
+      </button>
     </AuthLayout>
   );
 }

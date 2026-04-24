@@ -1,5 +1,5 @@
 .auth-layout {
-  min-height: 100vh;
+  min-height: calc(100vh - 64px);
   display: grid;
   grid-template-columns: minmax(320px, 1fr) minmax(420px, 620px);
   background:
@@ -13,7 +13,7 @@
 }
 
 .auth-layout__branding {
-  color: #fff;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -97,8 +97,46 @@
   font-weight: 800;
 }
 
+.auth-layout--compact {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 56px;
+  background: #ffffff;
+}
+
+.auth-layout--compact .auth-layout__panel {
+  width: min(100%, 560px);
+  padding: 40px 44px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  backdrop-filter: none;
+  box-shadow: 14px 14px 0 rgba(17, 17, 17, 0.08);
+}
+
+.auth-layout--compact .auth-layout__panel-header {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #111111;
+}
+
+.auth-layout--compact .auth-layout__panel-header p,
+.auth-layout--compact .auth-layout__footer {
+  color: #4b5563;
+}
+
+.auth-layout--compact .auth-layout__panel-header h2 {
+  color: #111111;
+}
+
+.auth-layout--compact .auth-layout__home-link,
+.auth-layout--compact .auth-layout__footer a {
+  color: #111111;
+}
+
 @media (max-width: 960px) {
   .auth-layout {
+    min-height: auto;
     grid-template-columns: 1fr;
     background:
       radial-gradient(circle at top left, rgba(79, 70, 229, 0.16), transparent 35%),
@@ -108,5 +146,16 @@
   .auth-layout__branding,
   .auth-layout__panel {
     padding: 32px 24px;
+  }
+
+  .auth-layout--compact {
+    min-height: calc(100vh - 64px);
+    padding: 24px 16px 40px;
+  }
+
+  .auth-layout--compact .auth-layout__panel {
+    width: 100%;
+    padding: 28px 22px;
+    box-shadow: 8px 8px 0 rgba(17, 17, 17, 0.08);
   }
 }

@@ -1,6 +1,30 @@
-import { Brain, Calendar, Cpu, LayoutDashboard, LogIn, LogOut, UserCircle2, Vote } from 'lucide-react';
+import { Calendar, Cpu, LayoutDashboard, LogIn, LogOut, UserCircle2, Vote } from 'lucide-react';
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import '@/shared/styles/Sidebar.css';
+
+function MatchPotLogo() {
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden="true" className="expo-sidebar__logo-mark">
+      <circle cx="11" cy="12" r="5.5" fill="currentColor" />
+      <circle cx="29" cy="28" r="5.5" fill="currentColor" />
+      <path
+        d="M14.5 15.5C17.5 18.5 22.5 21.5 25.5 24.5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20 10.5H30.5V21"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function parseJwtPayload(token) {
   const payload = token?.split('.')[1];
@@ -23,6 +47,11 @@ function parseJwtPayload(token) {
 
 function getCurrentUserRole() {
   const token = localStorage.getItem('token');
+  if (!token) {
+    localStorage.removeItem('role');
+    return null;
+  }
+
   const decodedPayload = parseJwtPayload(token);
   const tokenRole = decodedPayload?.role;
 
@@ -31,8 +60,10 @@ function getCurrentUserRole() {
     return tokenRole;
   }
 
-  return localStorage.getItem('role') || 'ROLE_USER';
+  return localStorage.getItem('role');
 }
+
+const guestMenus = [{ to: '/', label: '행사 목록', icon: Calendar }];
 
 const userMenus = [
   { to: '/', label: '행사 목록', icon: Calendar },
@@ -57,8 +88,9 @@ function Sidebar() {
   const isLoggedIn = Boolean(token);
   const userRole = getCurrentUserRole();
 
-  const menus =
-    userRole === 'ROLE_ADMIN'
+  const menus = !isLoggedIn
+    ? guestMenus
+    : userRole === 'ROLE_ADMIN'
       ? adminMenus
       : userRole === 'ROLE_ORGANIZER'
         ? organizerMenus
@@ -72,18 +104,18 @@ function Sidebar() {
     return location.pathname === path;
   };
 
-  function handleLogout() {
+  const handleLogout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     navigate('/login');
-  }
+  };
 
   return (
     <aside className="expo-sidebar">
       <Link to="/" className="expo-sidebar__logo">
         <div className="expo-sidebar__logo-icon">
-          <Brain size={24} />
+          <MatchPotLogo />
         </div>
         <div>
           <h1>MatchPot</h1>

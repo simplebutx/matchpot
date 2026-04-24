@@ -38,9 +38,10 @@ function EventDetailPage() {
   const handleQuantity = (type) => {
     if (type === 'plus') {
       if (remainingTickets != null && reserveQuantity >= remainingTickets) {
-        toast.error('남은 티켓 수량을 초과할 수 없습니다.');
+        toast.error('현재 남은 수량을 초과할 수 없습니다.');
         return;
       }
+
       setReserveQuantity((prev) => prev + 1);
       return;
     }
@@ -52,17 +53,15 @@ function EventDetailPage() {
     setReserveQuantity((prev) => prev - 1);
   };
 
-  const handleReserveSubmit = async (eventObject) => {
-    eventObject.preventDefault();
-
+  const handleReserveSubmit = async () => {
     try {
       await buyTicket(eventId, reserveQuantity);
-      toast.success('티켓 구매가 완료되었습니다.');
+      toast.success('티켓 예매가 완료되었습니다.');
       setIsModalOpen(false);
       navigate('/mypage');
     } catch (error) {
       console.error(error);
-      toast.error('티켓 구매에 실패했습니다.');
+      toast.error('티켓 예매에 실패했습니다.');
     }
   };
 
@@ -70,14 +69,9 @@ function EventDetailPage() {
     return <div>로딩 중...</div>;
   }
 
-
   return (
     <section className="event-detail">
-      <button
-        type="button"
-        className="event-detail__back"
-        onClick={() => navigate(-1)}
-      >
+      <button type="button" className="event-detail__back" onClick={() => navigate(-1)}>
         목록으로 돌아가기
       </button>
 
@@ -95,29 +89,28 @@ function EventDetailPage() {
           <h1 className="event-detail__title">{event?.title || `이벤트 ${eventId}`}</h1>
 
           <div className="event-detail__info">
-            <p>
+            <div className="event-detail__info-row">
               <strong>주최자</strong>
               <span>{event?.authorName || '주최자 정보가 없습니다.'}</span>
-            </p>
-            <p>
+            </div>
+            <div className="event-detail__info-row">
               <strong>일시</strong>
               <span>{formatEventDateTime(event?.startAt)}</span>
-            </p>
-            <p>
+            </div>
+            <div className="event-detail__info-row">
               <strong>장소</strong>
               <span>{event?.location || '장소 정보가 아직 없습니다.'}</span>
-            </p>
-            <p>
-              <strong>잔여 좌석</strong>
+            </div>
+            <div className="event-detail__info-row">
+              <strong>남은 좌석</strong>
               <span>{remainingTickets != null ? `${remainingTickets}개` : '확인 불가'}</span>
-            </p>
+            </div>
           </div>
 
           <div className="event-detail__description">
+            <span className="event-detail__section-label">DESCRIPTION</span>
             <h2>이벤트 소개</h2>
-            <p>
-              {event?.description || '이벤트 상세 설명이 아직 등록되지 않았습니다.'}
-            </p>
+            <p>{event?.description || '이벤트 상세 설명이 아직 등록되지 않았습니다.'}</p>
           </div>
 
           <div className="event-detail__actions">
@@ -127,7 +120,7 @@ function EventDetailPage() {
               onClick={() => setIsModalOpen(true)}
               disabled={isSoldOut}
             >
-              {isSoldOut ? 'SOLD OUT' : '티켓 예약하기'}
+              {isSoldOut ? 'SOLD OUT' : '티켓 예매하기'}
             </button>
             <button
               type="button"
@@ -145,13 +138,18 @@ function EventDetailPage() {
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="reserve-modal" onClick={(eventObject) => eventObject.stopPropagation()}>
-            <h3>티켓 구매 확인</h3>
+            <span className="reserve-modal__eyebrow">RESERVATION</span>
+            <h3>티켓 예매 확인</h3>
             <p className="reserve-modal__event-title">{event?.title}</p>
 
             <div className="quantity-selector">
-              <button type="button" onClick={() => handleQuantity('minus')}>-</button>
+              <button type="button" onClick={() => handleQuantity('minus')}>
+                -
+              </button>
               <span className="quantity-number">{reserveQuantity}</span>
-              <button type="button" onClick={() => handleQuantity('plus')}>+</button>
+              <button type="button" onClick={() => handleQuantity('plus')}>
+                +
+              </button>
             </div>
 
             <div className="reserve-total">
@@ -160,8 +158,12 @@ function EventDetailPage() {
             </div>
 
             <div className="modal-actions">
-              <button className="confirm-btn" onClick={handleReserveSubmit}>예약하기</button>
-              <button className="cancel-btn" onClick={() => setIsModalOpen(false)}>취소</button>
+              <button className="confirm-btn" onClick={handleReserveSubmit}>
+                예매하기
+              </button>
+              <button className="cancel-btn" onClick={() => setIsModalOpen(false)}>
+                취소
+              </button>
             </div>
           </div>
         </div>

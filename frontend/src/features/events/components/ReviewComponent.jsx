@@ -78,7 +78,6 @@ function ReviewComponent() {
     }
 
     const date = new Date(value);
-
     if (Number.isNaN(date.getTime())) {
       return value;
     }
@@ -165,7 +164,7 @@ function ReviewComponent() {
     }
 
     if (!payload.content) {
-      toast.error('리뷰 내용을 입력해 주세요.');
+      toast.error('리뷰 내용을 입력해주세요.');
       return;
     }
 
@@ -199,77 +198,42 @@ function ReviewComponent() {
               </p>
             )}
           </div>
-          {!loading && reviews.length > 0 && (
-            <span className="review-list__count">{reviews.length}개</span>
-          )}
+          {!loading && reviews.length > 0 && <span className="review-list__count">{reviews.length}개</span>}
         </div>
 
-        <div
-          className="ai-summary-wrapper"
-          style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '12px', marginBottom: '24px' }}
-        >
-          <div style={{ marginBottom: '20px' }}>
+        <div className="review-list__summary">
+          <div className="review-list__summary-head">
             <button
               type="button"
+              className="review-list__summary-button"
               onClick={handleAiAnalyze}
               disabled={isAnalyzing}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: isAnalyzing ? '#ccc' : '#4A90E2',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                cursor: isAnalyzing ? 'not-allowed' : 'pointer',
-              }}
             >
-              {isAnalyzing ? 'AI가 리뷰 분석 중...' : 'AI 분석 리포트 생성'}
+              {isAnalyzing ? 'AI 분석 중...' : 'AI 분석 리포트 생성'}
             </button>
           </div>
 
-          {aiResult && !isAnalyzing && (
-            <div
-              className="ai-result-content"
-              style={{ backgroundColor: '#f9f9f9', padding: '15px', borderRadius: '10px' }}
-            >
-              <h4 style={{ color: '#333', marginBottom: '10px' }}>AI가 분석한 행사 한줄 요약</h4>
-              <p
-                style={{
-                  fontSize: '1.1rem',
-                  fontWeight: '500',
-                  lineHeight: '1.6',
-                  color: '#2c3e50',
-                  whiteSpace: 'pre-line',
-                }}
-              >
-                "{aiResult.summary}"
-              </p>
+          {aiResult && !isAnalyzing ? (
+            <div className="review-list__summary-result">
+              <h4 className="review-list__summary-title">AI가 분석한 행사 한줄 요약</h4>
+              <p className="review-list__summary-text">"{aiResult.summary}"</p>
 
-              <div style={{ marginTop: '15px' }}>
-                {aiResult.keywords.map((tag, index) => (
-                  <span
-                    key={`${tag}-${index}`}
-                    style={{
-                      display: 'inline-block',
-                      backgroundColor: '#e1f5fe',
-                      color: '#0288d1',
-                      padding: '5px 12px',
-                      borderRadius: '20px',
-                      marginRight: '8px',
-                      fontSize: '0.85rem',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
+              {aiResult.keywords.length > 0 && (
+                <div className="review-list__summary-keywords">
+                  {aiResult.keywords.map((tag, index) => (
+                    <span key={`${tag}-${index}`} className="review-list__summary-keyword">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
-
-          {!aiResult && !isAnalyzing && (
-            <p style={{ color: '#888', fontSize: '0.9rem' }}>
-              버튼을 누르면 AI가 최근 리뷰를 분석해서 요약과 키워드를 보여줍니다.
-            </p>
+          ) : (
+            !isAnalyzing && (
+              <p className="review-list__summary-placeholder">
+                버튼을 누르면 AI가 최근 리뷰를 분석해서 요약과 키워드를 보여줍니다.
+              </p>
+            )
           )}
         </div>
 

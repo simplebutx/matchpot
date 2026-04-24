@@ -24,11 +24,17 @@
 .expo-sidebar__logo-icon {
   width: 34px;
   height: 34px;
-  border-radius: 10px;
+  border-radius: 12px;
   display: grid;
   place-items: center;
   background: #ffffff;
   color: #000000;
+}
+
+.expo-sidebar__logo-mark {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 .expo-sidebar__logo h1 {

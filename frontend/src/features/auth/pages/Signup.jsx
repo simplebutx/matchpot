@@ -21,20 +21,19 @@ const getErrorMessage = (error, fallbackMessage) => {
 
 function Signup() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     displayName: '',
+    role: 'USER',
   });
-
   const [code, setCode] = useState('');
   const [isSent, setIsSent] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -90,48 +89,49 @@ function Signup() {
 
   return (
     <AuthLayout
+      compact
       title="회원가입"
-      description="Agent Expo 2026에 처음 오셨다면 계정을 만들고 참가 신청을 시작해보세요."
-      asideTitle="AI 행사 경험을 위한 개인용 프로필을 만들고 맞춤 일정을 받아보세요."
-      asideDescription="참가 목적, 관심 세션, 네트워킹 선호도를 기반으로 개인화된 추천을 받을 수 있습니다."
+      description="새 계정을 만들고 MatchPot 참가 흐름을 시작해보세요."
+      asideTitle=""
+      asideDescription=""
       footerText="이미 계정이 있나요?"
       footerLink={{ to: '/login', label: '로그인' }}
     >
       <form className="signup-form" onSubmit={handleSubmit}>
-        <div className="signup-form__grid">
-          <label>
-            {formData.role === 'ORGANIZER' ? '업체명' : '이름'}
+        <label>
+          {formData.role === 'ORGANIZER' ? '단체명' : '이름'}
+          <input
+            name="displayName"
+            type="text"
+            placeholder={formData.role === 'ORGANIZER' ? '예: IBM Expo Team' : '이름을 입력하세요'}
+            value={formData.displayName}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <div className="signup-form__email-group">
+          <label className="signup-form__field">
+            이메일
             <input
-              name="displayName"
-              type="text"
-              placeholder={formData.role === 'ORGANIZER' ? '예) 코엑스, IBM' : '홍길동'}
-              value={formData.displayName}
+              name="email"
+              type="email"
+              placeholder="agent@expo.com"
+              value={formData.email}
               onChange={handleChange}
+              readOnly={isVerified}
               required
             />
           </label>
-        </div>
-
-        <label>
-          이메일
-          <input
-            name="email"
-            type="email"
-            placeholder="agent@expo.com"
-            value={formData.email}
-            onChange={handleChange}
-            readOnly={isVerified}
-            required
-          />
-          <button type="button" onClick={handleSendEmail} disabled={isVerified}>
+          <button type="button" className="signup-form__action" onClick={handleSendEmail} disabled={isVerified}>
             {isSent ? '재발송' : '인증요청'}
           </button>
-        </label>
+        </div>
 
         {isSent && !isVerified && (
-          <label>
-            인증번호
-            <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="signup-form__email-group signup-form__email-group--verify">
+            <label className="signup-form__field">
+              인증번호
               <input
                 type="text"
                 placeholder="6자리 인증번호"
@@ -139,20 +139,14 @@ function Signup() {
                 onChange={(e) => setCode(e.target.value)}
                 required
               />
-              <button
-                type="button"
-                onClick={handleVerifyCode}
-                className="verify-button"
-              >
-                인증확인
-              </button>
-            </div>
-          </label>
+            </label>
+            <button type="button" className="signup-form__action" onClick={handleVerifyCode}>
+              인증확인
+            </button>
+          </div>
         )}
 
-        {isVerified && (
-          <p style={{ color: 'green', fontSize: '12px' }}>이메일 인증 완료</p>
-        )}
+        {isVerified && <p className="signup-form__status">이메일 인증이 완료되었습니다.</p>}
 
         <label>
           비밀번호
@@ -166,34 +160,32 @@ function Signup() {
           />
         </label>
 
-        <label>
-            가입 유형
-            <div style={{ display: 'flex', gap: '20px', marginTop: '10px', marginBottom: '10px' }}>
-              <label style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', fontWeight: '500', fontSize: '15px' }}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="USER"
-                  checked={formData.role === 'USER'}
-                  onChange={handleChange}
-                />
-                일반 사용자
-              </label>
-              <label style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px', fontWeight: '500', fontSize: '15px' }}>
-                <input
-                  type="radio"
-                  name="role"
-                  value="ORGANIZER"
-                  checked={formData.role === 'ORGANIZER'}
-                  onChange={handleChange}
-                />
-                행사 주최자
-              </label>
-            </div>
+        <fieldset className="signup-form__role-group">
+          <legend>가입 유형</legend>
+          <label className="signup-form__role-option">
+            <input
+              type="radio"
+              name="role"
+              value="USER"
+              checked={formData.role === 'USER'}
+              onChange={handleChange}
+            />
+            일반 사용자
           </label>
+          <label className="signup-form__role-option">
+            <input
+              type="radio"
+              name="role"
+              value="ORGANIZER"
+              checked={formData.role === 'ORGANIZER'}
+              onChange={handleChange}
+            />
+            행사 주최자
+          </label>
+        </fieldset>
 
         <button type="submit" className="signup-form__submit">
-          회원가입하고 신청 시작하기
+          회원가입하고 시작하기
         </button>
       </form>
     </AuthLayout>

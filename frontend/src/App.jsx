@@ -16,9 +16,9 @@ import OAuthSuccessPage from './features/auth/components/OAuthSuccessPage';
 
 function App() {
   const location = useLocation();
-  const hideSidebarRoutes = ['/login', '/signup'];
-  const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname);
-  const appClassName = shouldShowSidebar ? 'app-shell app-shell--gradient' : 'app-shell';
+  const shouldShowSidebar = true;
+  const appClassName =
+    shouldShowSidebar && location.pathname !== '/login' ? 'app-shell app-shell--gradient' : 'app-shell';
 
   return (
     <div className={appClassName}>
