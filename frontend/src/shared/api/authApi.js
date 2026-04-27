@@ -5,7 +5,9 @@ export const signup = async (joinData) => {
 };
 
 export const login = async (loginData) => {
-  const token = await request.post('/api/login', loginData);
+  const token = await request.post('/api/login', loginData, {
+    skipAuthRedirect: true,
+  });
 
   if (token) {
     localStorage.setItem('token', token);
@@ -16,6 +18,10 @@ export const login = async (loginData) => {
 
 export const getMyPage = () => {
   return request.get('/api/me');
+};
+
+export const getAdminUsers = () => {
+  return request.get('/api/admin/users');
 };
 
 export const sendAuthEmail = async (email) => {
