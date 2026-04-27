@@ -18,7 +18,14 @@ function ReviewComponent() {
   const [aiResult, setAiResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const token = localStorage.getItem('token');
+const token = localStorage.getItem('token');
+const storedRole = localStorage.getItem('role');
+
+const isAdmin =
+  storedRole === 'ROLE_ADMIN' ||
+  storedRole === 'ADMIN' ||
+  currentUser?.role === 'ROLE_ADMIN' ||
+  currentUser?.role === 'ADMIN';
 
   const fetchReviews = async () => {
     if (!eventId) {
@@ -121,6 +128,8 @@ function ReviewComponent() {
     return hasMatchingUserId || hasMatchingAuthorName;
   };
 
+  const canDeleteReview = (review) => isAdmin || isOwnReview(review);
+
   const handleAiAnalyze = async () => {
     if (!eventId) {
       return;
@@ -149,7 +158,12 @@ function ReviewComponent() {
     }
 
     try {
-      await deleteEventReview(eventId, reviewId);
+      if (isAdmin) {
+        await request.delete(`/api/admin/reviews/${reviewId}`);
+      } else {
+        await deleteEventReview(eventId, reviewId);
+      }
+
       toast.success('리뷰가 삭제되었습니다.');
       await fetchReviews();
     } catch (error) {
@@ -258,22 +272,26 @@ function ReviewComponent() {
                     {formatDate(review.updatedAt || review.createdAt)}
                   </time>
 
-                  {isOwnReview(review) && (
+                  {(isOwnReview(review) || isAdmin) && (
                     <div className="review-list__actions">
-                      <button
-                        type="button"
-                        className="review-list__action review-list__action--edit"
-                        onClick={() => setEditingReview(review)}
-                      >
-                        수정
-                      </button>
-                      <button
-                        type="button"
-                        className="review-list__action review-list__action--delete"
-                        onClick={() => handleDelete(review.id)}
-                      >
-                        삭제
-                      </button>
+                      {isOwnReview(review) && (
+                        <button
+                          type="button"
+                          className="review-list__action review-list__action--edit"
+                          onClick={() => setEditingReview(review)}
+                        >
+                          수정
+                        </button>
+                      )}
+                      {canDeleteReview(review) && (
+                        <button
+                          type="button"
+                          className="review-list__action review-list__action--delete"
+                          onClick={() => handleDelete(review.id)}
+                        >
+                          삭제
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>

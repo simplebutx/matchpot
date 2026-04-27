@@ -20,6 +20,10 @@ export const getMyPage = () => {
   return request.get('/api/me');
 };
 
+export const getAdminUsers = () => {
+  return request.get('/api/admin/users');
+};
+
 export const sendAuthEmail = async (email) => {
   return request.post('/api/email-send', { email });
 };

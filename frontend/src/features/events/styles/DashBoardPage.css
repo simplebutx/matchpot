@@ -1,0 +1,125 @@
+.admin-dashboard {
+  min-height: 100vh;
+  padding: 52px 20px 100px;
+  color: #111111;
+}
+
+.admin-dashboard__shell {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.admin-dashboard__header {
+  padding-bottom: 28px;
+  border-bottom: 1px solid #111111;
+}
+
+.admin-dashboard__eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.admin-dashboard__header h1,
+.admin-dashboard__section-header h2 {
+  margin: 0;
+  color: #111111;
+  font-weight: 900;
+}
+
+.admin-dashboard__header h1 {
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 1.06;
+}
+
+.admin-dashboard__header p {
+  max-width: 720px;
+  margin: 16px 0 0;
+  color: #444444;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.admin-dashboard__sections {
+  display: grid;
+  gap: 48px;
+  margin-top: 42px;
+}
+
+.admin-dashboard__section-header {
+  margin-bottom: 18px;
+}
+
+.admin-dashboard__section-header h2 {
+  font-size: 30px;
+}
+
+.admin-dashboard__table-wrap {
+  border: 1px solid #111111;
+  overflow-x: auto;
+  background: transparent;
+}
+
+.admin-dashboard__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 760px;
+}
+
+.admin-dashboard__table thead th {
+  padding: 18px 20px;
+  border-bottom: 1px solid #111111;
+  background: #111111;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.admin-dashboard__table tbody td {
+  padding: 18px 20px;
+  border-top: 1px solid #111111;
+  color: #111111;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.admin-dashboard__table tbody tr:first-child td {
+  border-top: none;
+}
+
+.admin-dashboard__table tbody td + td,
+.admin-dashboard__table thead th + th {
+  border-left: 1px solid #111111;
+}
+
+.admin-dashboard__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  margin-top: 32px;
+  border: 1px solid #111111;
+  color: #555555;
+  font-size: 15px;
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    padding: 28px 16px 60px;
+  }
+
+  .admin-dashboard__sections {
+    gap: 36px;
+    margin-top: 32px;
+  }
+
+  .admin-dashboard__section-header h2 {
+    font-size: 24px;
+  }
+}
