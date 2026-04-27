@@ -25,7 +25,8 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && shouldRedirectOnUnauthorized) {
+       const shouldRedirectOnUnauthorized = !error.config?.skipAuthRedirect;
       toast.error('세션이 만료되었습니다. 다시 로그인해주세요.');
       localStorage.removeItem('token');
       localStorage.removeItem('accessToken');
