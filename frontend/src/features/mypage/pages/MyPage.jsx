@@ -83,7 +83,7 @@ function MyPage() {
             <span className="mypage__eyebrow">MY PAGE</span>
             <h1 className="mypage__title">내 정보</h1>
             <p className="mypage__description">
-              계정 정보와 예약한 행사 티켓을 한 번에 확인할 수 있습니다.
+              계정 정보를 확인할 수 있습니다.
             </p>
           </div>
 
