@@ -7,6 +7,7 @@ import ReviewCreatePage from '@/features/events/pages/ReviewCreatePage';
 import EventListPage from '@/features/events/pages/EventListPage';
 import AddEventPage from '@/features/events/pages/AddEventPage';
 import EventManagement from '@/features/events/pages/EventManagement';
+import EventAnalyticsPage from '@/features/events/pages/EventAnalyticsPage';
 import AiSolution from '@/features/events/pages/AiSolution';
 import DashBoardPage from '@/features/events/pages/DashBoardPage';
 import Sidebar from '@/shared/components/Sidebar';
@@ -46,6 +47,7 @@ function App() {
         <Route element={<ProtectedRoute requireRole='ROLE_ORGANIZER' />}>
           <Route path="/events/new" element={<AddEventPage />} />
           <Route path="/events/manage" element={<EventManagement />} />
+          <Route path="/events/:eventId/analytics" element={<EventAnalyticsPage />} />
         </Route>
 
         <Route element={<ProtectedRoute requireRole="ROLE_ADMIN" />}>

@@ -1,222 +1,313 @@
-.add-event {
-  background-color: #ffffff !important;
-}
-
-.add-event-container {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 0;
-  /* 배경색 빼고 여백만 유지 */
-}
-
-.add-event__form {
+.event-management {
+  min-height: 100vh;
+  padding: 56px 20px 100px;
   background: transparent;
+  color: #111111;
 }
 
-.add-event__form input:focus,
-.add-event__form textarea:focus {
-  outline: none;
-  border-color: #000;
-  /* 포커스 시 검은색으로 강조 */
+.event-management__hero,
+.event-management__section {
+  max-width: 1200px;
+  margin: 0 auto;
 }
-/*수정버튼 모달창*/
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+
+.event-management__hero {
+  padding-bottom: 28px;
+  border-bottom: 1px solid #111111;
+}
+
+.event-management__eyebrow,
+.event-management__section-label,
+.edit-modal__eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: #000000;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.event-management__title {
+  margin: 0;
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.05;
+  font-weight: 900;
+  word-break: keep-all;
+}
+
+.event-management__description {
+  max-width: 640px;
+  margin: 18px 0 0;
+  color: #555555;
+  font-size: 17px;
+  line-height: 1.8;
+  word-break: keep-all;
+}
+
+.event-management__section {
+  margin-top: 36px;
+}
+
+.event-management__section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 24px;
+}
+
+.event-management__section-head h2 {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.event-management__section-head p {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+}
+
+.event-management__grid {
+  display: grid;
+  gap: 24px;
+}
+
+.event-management-card {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  border: 1px solid #111111;
+  background: rgba(255, 255, 255, 0.38);
+  box-shadow: 14px 14px 0 rgba(17, 17, 17, 0.08);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.event-management-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 18px 18px 0 rgba(17, 17, 17, 0.1);
+}
+
+.event-management-card__media {
+  aspect-ratio: 1 / 1;
+  height: 100%;
+}
+
+.event-management-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.event-management-card__body {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+}
+
+.event-management-card__top {
+  display: grid;
+  gap: 12px;
+}
+
+.event-management-card__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  width: fit-content;
+  border: 1px solid #111111;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.event-management-card__status.is-open {
+  background: #111111;
+  color: #ffffff;
+}
+
+.event-management-card__status.is-closed {
+  background: transparent;
+  color: #111111;
+}
+
+.event-management-card__title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.event-management-card__location {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+}
+
+.event-management-card__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, 180px));
+  gap: 12px;
+  justify-content: start;
+}
+
+.event-management-card__action,
+.save-btn,
+.cancel-btn {
+  min-height: 48px;
+  border: 1px solid #111111;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.event-management-card__action:hover,
+.save-btn:hover,
+.cancel-btn:hover {
+  transform: translateY(-1px);
+}
+
+.event-management-card__action {
+  background: transparent;
+  color: #111111;
+}
+
+.event-management-card__action.is-primary,
+.save-btn {
+  background: #111111;
+  color: #ffffff;
+}
+
+.event-management__empty {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 180px;
+  border-top: 1px solid #111111;
+  border-bottom: 1px solid #111111;
+  color: #666666;
+  font-size: 15px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .edit-modal {
-  background: #fff;
-  padding: 2.5rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 700px;
+  width: min(100%, 720px);
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  padding: 28px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
 }
 
 .edit-modal h3 {
-  margin-bottom: 1.5rem;
-  font-size: 1.3rem;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+  margin: 0 0 20px;
+  font-size: 28px;
+  font-weight: 900;
 }
 
 .edit-modal__form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+  display: grid;
+  gap: 18px;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  border: 1px solid #111111;
+  padding: 14px 16px;
+  font: inherit;
+  background: #ffffff;
+}
+
+.form-group textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  margin-top: 2rem;
+  margin-top: 12px;
 }
 
-.save-btn {
-  background: #007bff;
-  color: #fff;
-  padding: 0.8rem 1.5rem;
-  border-radius: 6px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
+.save-btn,
+.cancel-btn {
+  min-width: 120px;
 }
 
 .cancel-btn {
-  background: #f1f1f1;
-  color: #555;
-  padding: 0.8rem 1.5rem;
-  border-radius: 6px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
+  background: #ffffff;
+  color: #111111;
 }
 
+@media (max-width: 768px) {
+  .event-management {
+    padding: 36px 16px 72px;
+  }
 
-/* 내가 예약한 티켓 */
-.add-event .reserved-tickets {
-  margin-top: 2rem;
+  .event-management__section-head,
+  .modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .event-management__section-head {
+    align-items: start;
+  }
+
+  .event-management-card {
+    grid-template-columns: 1fr;
+  }
+
+  .event-management-card__media {
+    max-width: 180px;
+    margin: 20px 20px 0;
+  }
+
+  .event-management-card__body {
+    gap: 16px;
+  }
+
+  .event-management-card__actions,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .edit-modal {
+    padding: 22px 20px;
+  }
 }
-
-.add-event .ticket-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1rem;
-}
-
-.add-event .ticket-card {
-  display: flex;
-  background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.add-event .ticket-card__image img {
-  width: 100px;
-  height: 100%;
-  object-fit: cover;
-}
-
-.add-event .ticket-card__info {
-  padding: 1rem;
-  flex: 1;
-}
-
-.add-event .ticket-card__info h4 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.1rem;
-}
-
-.add-event .ticket-card__info p {
-  font-size: 0.85rem;
-  color: #666;
-  margin: 2px 0;
-}
-
-.add-event .ticket-card__quantity {
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid #eee;
-  font-size: 0.9rem;
-}
-
-.add-event .ticket-card__quantity strong {
-  color: #007bff;
-}
-
-/* 목록 섹션 */
-.my-events-list {
-  margin-top: 5rem;
-  padding-top: 3rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-.my-events-list__title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: #111;
-}
-
-.my-events-list__table-container {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-}
-
-.my-events-list__table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.my-events-list__table th {
-  background: #f8fafc;
-  padding: 1rem;
-  font-size: 0.85rem;
-  color: #64748b;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.my-events-list__table td {
-  padding: 1.25rem 1rem;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 0.95rem;
-  vertical-align: middle;
-}
-
-/* 행사 정보 셀 (이미지+텍스트) */
-.event-info-cell {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.event-info-cell img {
-  width: 60px;
-  height: 40px;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-.event-info-cell div {
-  display: flex;
-  flex-direction: column;
-}
-
-.event-info-cell strong {
-  color: #1e293b;
-  font-size: 1rem;
-}
-
-.event-info-cell span {
-  font-size: 0.8rem;
-  color: #94a3b8;
-}
-
-/* 상태 배지 */
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.status-badge.RECRUITING { background: #eef2ff; color: #4f46e5; }
-.status-badge.CLOSED { background: #f1f5f9; color: #64748b; }
-

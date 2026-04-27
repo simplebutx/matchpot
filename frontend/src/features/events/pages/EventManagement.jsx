@@ -1,48 +1,60 @@
-import '@/features/events/styles/EventManagement.css';
 import { useEffect, useState } from 'react';
-import { getMyEvents, updateEvent, deleteEvent } from '@/shared/api/eventApi';
 import toast from 'react-hot-toast';
-import PageSectionHeader from '@/shared/components/PageSectionHeader';
+import { useNavigate } from 'react-router-dom';
+import { deleteEvent, getMyEvents, updateEvent } from '@/shared/api/eventApi';
+import '@/features/events/styles/EventManagement.css';
+
+function getEventStatusMeta(status) {
+  if (status === 'RECRUITING') {
+    return { label: '모집중', className: 'is-open' };
+  }
+
+  return { label: '마감', className: 'is-closed' };
+}
 
 function EventManagement() {
-
+  const navigate = useNavigate();
   const [myEvents, setMyEvents] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
 
-  //나의 이벤트 목록 조회
   const fetchMyEvents = async () => {
     try {
       const response = await getMyEvents();
-      if (response?.content) {
-        setMyEvents(response.content);
-      }
+      setMyEvents(Array.isArray(response?.content) ? response.content : []);
     } catch (error) {
-      console.error("목록 로드 실패:", error);
+      console.error('목록 로드 실패:', error);
+      toast.error('행사 목록을 불러오지 못했습니다.');
     }
   };
 
-  //이벤트 수정하기 모달창 open
-  const handleEditClick = (event) => {
-    setEditingEvent({ ...event });
+  useEffect(() => {
+    fetchMyEvents();
+  }, []);
+
+  const handleEditClick = (eventObject) => {
+    setEditingEvent({ ...eventObject });
     setIsModalOpen(true);
   };
 
-  //이벤트 수정하기
-  const handleUpdateSubmit = async (e) => {
-    e.preventDefault();
+  const handleUpdateSubmit = async (event) => {
+    event.preventDefault();
+
     try {
       await updateEvent(editingEvent.id, editingEvent);
-      toast.success("수정 완료");
+      toast.success('수정 완료');
       setIsModalOpen(false);
       fetchMyEvents();
     } catch (error) {
-      toast.error("수정 실패");
+      console.error('수정 실패:', error);
+      toast.error('수정에 실패했습니다.');
     }
   };
 
   const handleDeleteClick = async (eventId, eventTitle) => {
-    if (!window.confirm(`'${eventTitle}' 행사를 정말 삭제하시겠습니까?`)) return;
+    if (!window.confirm(`'${eventTitle}' 행사를 정말 삭제하시겠습니까?`)) {
+      return;
+    }
 
     try {
       await deleteEvent(eventId);
@@ -54,81 +66,113 @@ function EventManagement() {
     }
   };
 
-  useEffect(() => {
-    fetchMyEvents();
-  }, []);
-
   return (
-    <div>
-      <PageSectionHeader
-        title="행사 관리 및 리뷰 분석"
-        description="등록한 행사 운영 현황을 관리하고 리뷰 흐름을 한눈에 확인해보세요."
-      />
-      {/* 내 이벤트 목록 */}
-      <section className="my-events-list">
-        <h3 className="my-events-list__title">나의 행사 목록</h3>
-        <div className="my-events-list__table-container">
-          <table className="my-events-list__table">
-            <thead>
-              <tr>
-                <th>행사 정보</th>
-                <th>모집 기간</th>
-                <th>가격</th>
-                <th>티켓 현황</th>
-                <th>상태</th>
-                <th>관리</th>
-              </tr>
-            </thead>
-            <tbody>
-              {myEvents.length > 0 ? (
-                myEvents.map((event) => (
-                  <tr key={event.id}>
-                    <td className="event-info-cell">
-                      <img src={event.imageKey || '/default.png'} alt="thumb" />
-                      <div>
-                        <strong>{event.title}</strong>
-                        <span>{event.location}</span>
-                      </div>
-                    </td>
-                    <td>
-                      {event.recruitStartAt?.split('T')[0]} ~ <br />
-                      {event.recruitEndAt?.split('T')[0]}
-                    </td>
-                    <td>{event.price === 0 ? '무료' : `₩${event.price?.toLocaleString()}`}</td>
-                    <td>{event.maxTickets}매</td>
-                    <td>
-                      <span className={`status-badge ${event.status}`}>
-                        {event.status === 'RECRUITING' ? '모집중' : '마감'}
-                      </span>
-                    </td>
-                    <td className="actions-cell">
-                      <button className="edit-link" onClick={() => handleEditClick(event)}>수정</button>
-                      <button className="delete-link" onClick={() => handleDeleteClick(event.id, event.title)}>삭제</button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" className="no-data">등록된 행사가 없습니다.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
-
+    <section className="event-management">
+      <header className="event-management__hero">
+        <div className="event-management__hero-copy">
+          <span className="event-management__eyebrow">EVENT CONTROL</span>
+          <h1 className="event-management__title">행사 관리</h1>
+          <p className="event-management__description">
+            등록한 행사 원본으로 바로 이동하고, 필요한 작업만 빠르게 이어가세요.
+          </p>
         </div>
+      </header>
+
+      <section className="event-management__section">
+        <div className="event-management__section-head">
+          <div>
+            <span className="event-management__section-label">MY EVENTS</span>
+            <h2>내가 등록한 행사</h2>
+          </div>
+          <p>{myEvents.length}개 행사</p>
+        </div>
+
+        {myEvents.length > 0 ? (
+          <div className="event-management__grid">
+            {myEvents.map((eventObject) => {
+              const statusMeta = getEventStatusMeta(eventObject.status);
+
+              return (
+                <article
+                  key={eventObject.id}
+                  className="event-management-card"
+                  onClick={() => navigate(`/events/${eventObject.id}`, { state: { event: eventObject } })}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      navigate(`/events/${eventObject.id}`, { state: { event: eventObject } });
+                    }
+                  }}
+                >
+                  <div className="event-management-card__media">
+                    <img src={eventObject.imageKey || '/default.png'} alt={eventObject.title} />
+                  </div>
+
+                  <div className="event-management-card__body">
+                    <div className="event-management-card__top">
+                      <span className={`event-management-card__status ${statusMeta.className}`}>
+                        {statusMeta.label}
+                      </span>
+                      <h3 className="event-management-card__title">{eventObject.title}</h3>
+                      <p className="event-management-card__location">{eventObject.location || '장소 미정'}</p>
+                    </div>
+
+                    <div className="event-management-card__actions">
+                      <button
+                        type="button"
+                        className="event-management-card__action is-secondary"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleEditClick(eventObject);
+                        }}
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        className="event-management-card__action is-secondary"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleDeleteClick(eventObject.id, eventObject.title);
+                        }}
+                      >
+                        삭제
+                      </button>
+                      <button
+                        type="button"
+                        className="event-management-card__action is-primary"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          navigate(`/events/${eventObject.id}/analytics`, { state: { event: eventObject } });
+                        }}
+                      >
+                        분석 대시보드
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="event-management__empty">등록한 행사가 없습니다.</div>
+        )}
       </section>
 
-      {isModalOpen && editingEvent && (
+      {isModalOpen && editingEvent ? (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="edit-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="edit-modal" onClick={(event) => event.stopPropagation()}>
+            <span className="edit-modal__eyebrow">EDIT EVENT</span>
             <h3>행사 정보 수정</h3>
+
             <form onSubmit={handleUpdateSubmit} className="edit-modal__form">
               <div className="form-group">
                 <label>행사명</label>
                 <input
                   value={editingEvent.title || ''}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, title: e.target.value })}
+                  onChange={(event) => setEditingEvent({ ...editingEvent, title: event.target.value })}
                 />
               </div>
 
@@ -138,7 +182,7 @@ function EventManagement() {
                   <input
                     type="datetime-local"
                     value={editingEvent.startAt?.substring(0, 16) || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, startAt: e.target.value })}
+                    onChange={(event) => setEditingEvent({ ...editingEvent, startAt: event.target.value })}
                   />
                 </div>
                 <div className="form-group">
@@ -146,24 +190,25 @@ function EventManagement() {
                   <input
                     type="datetime-local"
                     value={editingEvent.endAt?.substring(0, 16) || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, endAt: e.target.value })}
+                    onChange={(event) => setEditingEvent({ ...editingEvent, endAt: event.target.value })}
                   />
                 </div>
               </div>
+
               <div className="form-group">
                 <label>장소</label>
                 <input
                   type="text"
                   value={editingEvent.location || ''}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, location: e.target.value })}
+                  onChange={(event) => setEditingEvent({ ...editingEvent, location: event.target.value })}
                 />
               </div>
+
               <div className="form-group">
                 <label>설명</label>
                 <textarea
-                  type="text"
                   value={editingEvent.description || ''}
-                  onChange={(e) => setEditingEvent({ ...editingEvent, description: e.target.value })}
+                  onChange={(event) => setEditingEvent({ ...editingEvent, description: event.target.value })}
                 />
               </div>
 
@@ -173,7 +218,7 @@ function EventManagement() {
                   <input
                     type="number"
                     value={editingEvent.price || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, price: e.target.value })}
+                    onChange={(event) => setEditingEvent({ ...editingEvent, price: event.target.value })}
                   />
                 </div>
                 <div className="form-group">
@@ -181,7 +226,7 @@ function EventManagement() {
                   <input
                     type="number"
                     value={editingEvent.maxTickets || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, maxTickets: e.target.value })}
+                    onChange={(event) => setEditingEvent({ ...editingEvent, maxTickets: event.target.value })}
                   />
                 </div>
               </div>
@@ -192,7 +237,7 @@ function EventManagement() {
                   <input
                     type="datetime-local"
                     value={editingEvent.recruitStartAt?.substring(0, 16) || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, recruitStartAt: e.target.value })}
+                    onChange={(event) => setEditingEvent({ ...editingEvent, recruitStartAt: event.target.value })}
                   />
                 </div>
                 <div className="form-group">
@@ -200,21 +245,22 @@ function EventManagement() {
                   <input
                     type="datetime-local"
                     value={editingEvent.recruitEndAt?.substring(0, 16) || ''}
-                    onChange={(e) => setEditingEvent({ ...editingEvent, recruitEndAt: e.target.value })}
+                    onChange={(event) => setEditingEvent({ ...editingEvent, recruitEndAt: event.target.value })}
                   />
                 </div>
               </div>
+
               <div className="modal-actions">
                 <button type="submit" className="save-btn">수정 완료</button>
-                <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>취소</button>
+                <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>
+                  취소
+                </button>
               </div>
             </form>
           </div>
         </div>
-      )}
-
-
-    </div>
+      ) : null}
+    </section>
   );
 }
 
