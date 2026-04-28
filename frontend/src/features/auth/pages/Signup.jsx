@@ -106,6 +106,7 @@ function Signup() {
             placeholder={formData.role === 'ORGANIZER' ? '예: IBM Expo Team' : '이름을 입력하세요'}
             value={formData.displayName}
             onChange={handleChange}
+            autoComplete='off'
             required
           />
         </label>
@@ -120,6 +121,7 @@ function Signup() {
               value={formData.email}
               onChange={handleChange}
               readOnly={isVerified}
+              autoComplete='off'
               required
             />
           </label>
@@ -157,6 +159,7 @@ function Signup() {
             value={formData.password}
             onChange={handleChange}
             required
+            autoComplete='off'
           />
         </label>
 

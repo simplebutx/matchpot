@@ -83,6 +83,7 @@ function Login() {
             type="email"
             placeholder="agent@expo.com"
             value={email}
+            autoComplete='off'
             onChange={(e) => setEmail(e.target.value)}
           />
         </label>
@@ -93,6 +94,7 @@ function Login() {
             type="password"
             placeholder="비밀번호를 입력하세요"
             value={password}
+            autoComplete='off'
             onChange={(e) => setPassword(e.target.value)}
           />
         </label>
