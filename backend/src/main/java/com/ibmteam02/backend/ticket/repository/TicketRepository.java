@@ -14,4 +14,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT SUM(t.quantity) FROM Ticket t WHERE t.event.id = :eventId")
     Integer sumQuantityByEventId(@Param("eventId") Long eventId);
+
+    @Query("SELECT t FROM Ticket t JOIN FETCH t.event WHERE t.user.id = :userId")
+    List<Ticket> findAllByUserIdWithEvent(@Param("userId") Long userId);
 }

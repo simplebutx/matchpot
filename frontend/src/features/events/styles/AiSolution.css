@@ -1,0 +1,96 @@
+/* Recommend.module.css */
+.recommendContainer {
+  margin-top: 40px;
+  padding: 25px;
+  background-color: #f8f9fa;
+  border-radius: 15px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.title {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loadingText {
+  color: #666;
+  font-style: italic;
+  padding: 20px 0;
+}
+
+.eventScrollWrapper {
+  display: flex;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 10px 5px 15px 5px;
+  /* 가로 스크롤바 예쁘게 만들기 */
+}
+
+.eventScrollWrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.eventScrollWrapper::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 10px;
+}
+
+.eventCard {
+  min-width: 220px;
+  max-width: 220px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eventCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+}
+
+.imagePlaceholder {
+  height: 130px;
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.eventImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardBody {
+  padding: 15px;
+}
+
+.eventTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+  /* 제목이 길면 말줄임표 처리 */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.categoryTag {
+  font-size: 0.75rem;
+  color: #4a90e2;
+  background-color: #ebf3ff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
