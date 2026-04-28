@@ -143,7 +143,7 @@ function AddEventPage() {
                     </label>
                     <input
                       id="event-start-date"
-                      type="date"
+                      type="datetime-local"
                       name="startDate"
                       value={form.startDate}
                       onChange={handleChange}

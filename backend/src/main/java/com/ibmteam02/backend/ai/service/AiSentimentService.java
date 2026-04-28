@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class AiService {
+public class AiSentimentService {
 
     private final RestTemplate restTemplate;
     private final ReviewRepository reviewRepository;

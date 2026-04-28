@@ -1,6 +1,6 @@
 package com.ibmteam02.backend.review.service;
 
-import com.ibmteam02.backend.ai.service.AiService;
+import com.ibmteam02.backend.ai.service.AiSentimentService;
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.repository.EventRepository;
 import com.ibmteam02.backend.global.exception.EventNotFoundException;
@@ -29,7 +29,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
-    private final AiService aiService;
+    private final AiSentimentService aiSentimentService;
 
     @Transactional(readOnly = true)
     public ReviewListResponse getReviews(Long eventId) {
@@ -42,10 +42,10 @@ public class ReviewService {
                 .map(ReviewResponse::from)
                 .toList();
 
-        String sentiment = reviews.isEmpty() ? null : aiService.analyzeEventSentiment(eventId);
+        String sentiment = reviews.isEmpty() ? null : aiSentimentService.analyzeEventSentiment(eventId);
         Map<String, Double> sentimentPercentages = reviews.isEmpty()
                 ? Map.of("positive", 0.0, "neutral", 0.0, "negative", 0.0)
-                : aiService.analyzeEventSentimentPercentages(eventId);
+                : aiSentimentService.analyzeEventSentimentPercentages(eventId);
 
         return new ReviewListResponse(sentiment, sentimentPercentages, reviews);
     }
@@ -91,7 +91,7 @@ public class ReviewService {
 
     private void triggerSentimentAnalysis(Long eventId) {
         try {
-            aiService.analyzeReviews(eventId);
+            aiSentimentService.analyzeReviews(eventId);
         } catch (Exception ignored) {
             // Keep review writes successful even if the AI service is temporarily unavailable.
         }

@@ -1,6 +1,6 @@
 package com.ibmteam02.backend.admin.service;
 
-import com.ibmteam02.backend.ai.service.AiService;
+import com.ibmteam02.backend.ai.service.AiSentimentService;
 import com.ibmteam02.backend.global.exception.ReviewNotFoundException;
 import com.ibmteam02.backend.review.domain.Review;
 import com.ibmteam02.backend.review.repository.ReviewRepository;
@@ -19,7 +19,7 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
-    private final AiService aiService;
+    private final AiSentimentService aiSentimentService;
 
     @Transactional(readOnly = true)
     public List<AdminUserSummaryResponse> getAdminUserSummaries() {
@@ -42,7 +42,7 @@ public class AdminService {
         reviewRepository.delete(review);
 
         try {
-            aiService.analyzeReviews(eventId);
+            aiSentimentService.analyzeReviews(eventId);
         } catch (Exception ignored) {
             // Keep admin delete successful even if the AI service is temporarily unavailable.
         }

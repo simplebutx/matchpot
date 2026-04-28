@@ -1,6 +1,6 @@
 package com.ibmteam02.backend.event.service;
 
-import com.ibmteam02.backend.ai.service.AiService;
+import com.ibmteam02.backend.ai.service.AiSentimentService;
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.dto.EventCreateRequest;
 import com.ibmteam02.backend.event.dto.EventDetailResponse;
@@ -33,7 +33,7 @@ public class EventService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final TicketRepository ticketRepository;
-    private final AiService aiService;
+    private final AiSentimentService aiSentimentService;
 
     @Value("${cloud.aws.s3.base-url}")
     private String s3BaseUrl;
@@ -75,7 +75,7 @@ public class EventService {
 
             int maxTickets = event.getMaxTickets() != null ? event.getMaxTickets() : 0;
             int remainingTickets = maxTickets - soldCount;
-            Map<String, Double> sentimentRates = aiService.analyzeEventSentimentPercentages(event.getId());
+            Map<String, Double> sentimentRates = aiSentimentService.analyzeEventSentimentPercentages(event.getId());
 
             return new EventListResponse(
                     event.getId(),

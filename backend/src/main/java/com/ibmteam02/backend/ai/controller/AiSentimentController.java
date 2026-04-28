@@ -1,6 +1,6 @@
 package com.ibmteam02.backend.ai.controller;
 
-import com.ibmteam02.backend.ai.service.AiService;
+import com.ibmteam02.backend.ai.service.AiSentimentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +13,12 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/ai")
-public class AiController {
+public class AiSentimentController {
 
-    private final AiService aiService;
+    private final AiSentimentService aiSentimentService;
 
     @GetMapping("/analyze/{eventId}")
     public ResponseEntity<Map<String, Object>> analyzeReviews(@PathVariable Long eventId) {
-        return ResponseEntity.ok(aiService.analyzeReviews(eventId));
+        return ResponseEntity.ok(aiSentimentService.analyzeReviews(eventId));
     }
 }
