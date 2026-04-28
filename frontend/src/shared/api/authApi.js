@@ -1,11 +1,11 @@
 import request from './request';
 
 export const signup = async (joinData) => {
-  return request.post('/api/signup', joinData);
+  return request.post('/api/auth/signup', joinData);
 };
 
 export const login = async (loginData) => {
-  const token = await request.post('/api/login', loginData, {
+  const token = await request.post('/api/auth/login', loginData, {
     skipAuthRedirect: true,
   });
 
@@ -25,11 +25,11 @@ export const getAdminUsers = () => {
 };
 
 export const sendAuthEmail = async (email) => {
-  return request.post('/api/email-send', { email });
+  return request.post('/api/auth/email-send', { email });
 };
 
 export const verifyAuthCode = async (email, code) => {
-  return request.post('/api/email-verify', { email, code });
+  return request.post('/api/auth/email-verify', { email, code });
 };
 
 

@@ -88,7 +88,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/oauth2/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/signup", "/api/login", "/api/email-send", "/api/email-verify").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login", "/api/auth/email-send", "/api/auth/email-verify").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events", "/api/events/searchTitle", "/api/events/*").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/events/*/reviews").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/events/*/tickets").hasRole("USER")

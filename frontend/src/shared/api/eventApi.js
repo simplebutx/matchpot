@@ -1,11 +1,11 @@
 import request from './request';
 
 export const signup = (joinData) => {
-  return request.post('/api/signup', joinData);
+  return request.post('/api/auth/signup', joinData);
 };
 
 export const login = (loginData) => {
-  return request.post('/api/login', loginData);
+  return request.post('/api/auth/login', loginData);
 };
 
 //전체 이벤트 목록 조회
