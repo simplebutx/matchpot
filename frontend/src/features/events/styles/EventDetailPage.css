@@ -199,6 +199,14 @@
   font-weight: 900;
 }
 
+.reserve-modal > p:not(.reserve-modal__event-title) {
+  margin: 18px 0 0;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
 .reserve-modal__event-title {
   margin: 14px 0 0;
   font-size: 16px;
@@ -247,6 +255,14 @@
   margin: 28px 0;
 }
 
+.reserve-quantity {
+  display: inline-grid;
+  grid-template-columns: 48px 72px 48px;
+  align-items: center;
+  justify-content: start;
+  margin: 28px 0 0;
+}
+
 .quantity-selector button {
   width: 48px;
   height: 48px;
@@ -264,9 +280,39 @@
   color: #ffffff;
 }
 
+.reserve-quantity button {
+  width: 48px;
+  height: 48px;
+  border: 1px solid #111111;
+  background: #ffffff;
+  color: #111111;
+  font: inherit;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.reserve-quantity button:hover {
+  transform: translateY(-1px);
+  background: #111111;
+  color: #ffffff;
+}
+
 .quantity-number {
   min-width: 72px;
   text-align: center;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.reserve-quantity span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-top: 1px solid #111111;
+  border-bottom: 1px solid #111111;
   font-size: 28px;
   font-weight: 900;
 }
@@ -294,6 +340,31 @@
   display: flex;
   gap: 12px;
   margin-top: 24px;
+}
+
+.reserve-modal__actions button:not(.confirm-btn):not(.cancel-btn) {
+  flex: 1;
+  min-height: 52px;
+  border: 1px solid #111111;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s ease, background-color 0.18s ease, color 0.18s ease;
+}
+
+.reserve-modal__actions button:not(.confirm-btn):not(.cancel-btn):first-child {
+  background: #111111;
+  color: #ffffff;
+}
+
+.reserve-modal__actions button:not(.confirm-btn):not(.cancel-btn):last-child {
+  background: #ffffff;
+  color: #111111;
+}
+
+.reserve-modal__actions button:not(.confirm-btn):not(.cancel-btn):hover {
+  transform: translateY(-1px);
 }
 
 .confirm-btn,
