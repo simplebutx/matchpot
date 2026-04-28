@@ -13,4 +13,5 @@ public class AiSummarizeResponse {
     private Long eventId;
     private String summary;
     private List<String> keywords;
+    private String improvement;
 }

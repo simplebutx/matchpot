@@ -154,6 +154,7 @@
   font-size: 14px;
 }
 
+
 .event-management-card__actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(140px, 180px));

@@ -37,6 +37,15 @@ function renderStars(averageRating) {
   ));
 }
 
+function formatSentimentRate(value) {
+  const numericValue = Number(value);
+  if (Number.isNaN(numericValue)) {
+    return 0;
+  }
+
+  return Math.round(numericValue);
+}
+
 function EventAnalyticsPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -45,8 +54,14 @@ function EventAnalyticsPage() {
   const [event, setEvent] = useState(location.state?.event ?? null);
   const [reviews, setReviews] = useState([]);
   const [sentiment, setSentiment] = useState(null);
+  const [sentimentPercentages, setSentimentPercentages] = useState({
+    positive: 0,
+    neutral: 0,
+    negative: 0,
+  });
   const [aiSummary, setAiSummary] = useState('');
   const [keywords, setKeywords] = useState([]);
+  const [improvement, setImprovement] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
@@ -58,8 +73,14 @@ function EventAnalyticsPage() {
         setEvent(eventResponse ?? null);
         setReviews(Array.isArray(reviewResponse?.reviews) ? reviewResponse.reviews : []);
         setSentiment(reviewResponse?.sentiment ?? null);
+        setSentimentPercentages({
+          positive: reviewResponse?.sentimentPercentages?.positive ?? 0,
+          neutral: reviewResponse?.sentimentPercentages?.neutral ?? 0,
+          negative: reviewResponse?.sentimentPercentages?.negative ?? 0,
+        });
         setAiSummary('');
         setKeywords([]);
+        setImprovement('');
       } catch (error) {
         console.error('분석 대시보드 로드 실패:', error);
         toast.error('분석 대시보드를 불러오지 못했습니다.');
@@ -82,6 +103,7 @@ function EventAnalyticsPage() {
 
       setAiSummary(response?.summary?.replace(/\s+/g, ' ').trim() || '');
       setKeywords(Array.isArray(response?.keywords) ? response.keywords.slice(0, 3) : []);
+      setImprovement(response?.improvement?.replace(/\s+/g, ' ').trim() || '');
     } catch (error) {
       console.error('AI 요약 생성 실패:', error);
       toast.error('AI 분석 결과를 불러오지 못했습니다.');
@@ -179,6 +201,10 @@ function EventAnalyticsPage() {
             <span className="event-analytics-page__card-label">SENTIMENT</span>
             <span className={`event-analytics-page__sentiment ${sentimentMeta.className}`}>{sentimentMeta.label}</span>
             <p className="event-analytics-page__meta-text">전체 리뷰 감성 흐름</p>
+            <p className="event-analytics-page__sentiment-breakdown">
+              긍정 {formatSentimentRate(sentimentPercentages.positive)}% · 중립 {formatSentimentRate(sentimentPercentages.neutral)}% · 부정{' '}
+              {formatSentimentRate(sentimentPercentages.negative)}%
+            </p>
           </article>
         </section>
 
@@ -200,6 +226,7 @@ function EventAnalyticsPage() {
             {aiSummary && !isAnalyzing ? (
               <>
                 <p className="event-analytics-page__summary-text">{aiSummary}</p>
+                {improvement && <p className="event-analytics-page__improvement">{improvement}</p>}
 
                 <div className="event-analytics-page__keywords">
                   {keywords.length > 0 ? (
@@ -212,7 +239,7 @@ function EventAnalyticsPage() {
             ) : (
               !isAnalyzing && (
                 <p className="event-analytics-page__summary-text event-analytics-page__summary-text--placeholder">
-                  버튼을 누르면 AI가 리뷰 데이터를 분석해서 요약과 키워드를 보여줍니다.
+                  버튼을 누르면 AI가 리뷰 데이터를 분석해서 요약과 키워드, 개선점을 보여줍니다.
                 </p>
               )
             )}

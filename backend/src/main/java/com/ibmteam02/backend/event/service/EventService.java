@@ -1,5 +1,6 @@
 package com.ibmteam02.backend.event.service;
 
+import com.ibmteam02.backend.ai.service.AiService;
 import com.ibmteam02.backend.event.domain.Event;
 import com.ibmteam02.backend.event.dto.EventCreateRequest;
 import com.ibmteam02.backend.event.dto.EventDetailResponse;
@@ -22,8 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +33,7 @@ public class EventService {
     private final UserRepository userRepository;
     private final S3Service s3Service;
     private final TicketRepository ticketRepository;
+    private final AiService aiService;
 
     @Value("${cloud.aws.s3.base-url}")
     private String s3BaseUrl;
@@ -62,10 +63,8 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    //나의 이벤트 리스트 조회
     @Transactional(readOnly = true)
     public Page<EventListResponse> getEventList(Long userId, Pageable pageable) {
-
         Page<Event> eventPage = eventRepository.findAllByUserId(userId, pageable);
 
         return eventPage.map(event -> {
@@ -76,6 +75,7 @@ public class EventService {
 
             int maxTickets = event.getMaxTickets() != null ? event.getMaxTickets() : 0;
             int remainingTickets = maxTickets - soldCount;
+            Map<String, Double> sentimentRates = aiService.analyzeEventSentimentPercentages(event.getId());
 
             return new EventListResponse(
                     event.getId(),
@@ -91,12 +91,14 @@ public class EventService {
                     remainingTickets,
                     event.getStatus(),
                     buildImageUrl(event.getImageKey()),
-                    event.getUser().getDisplayName()
+                    event.getUser().getDisplayName(),
+                    sentimentRates.getOrDefault("positive", 0.0),
+                    sentimentRates.getOrDefault("neutral", 0.0),
+                    sentimentRates.getOrDefault("negative", 0.0)
             );
         });
     }
 
-    //이벤트 수정
     @Transactional
     public void updateEvent(Long eventId, EventUpdateRequest dto, Long userId) {
         Event event = eventRepository.findById(eventId)
@@ -121,7 +123,6 @@ public class EventService {
         );
     }
 
-    //이벤트 삭제
     @Transactional
     public void deleteEvent(Long eventId, Long userId) {
         Event event = eventRepository.findById(eventId)
@@ -134,29 +135,30 @@ public class EventService {
         eventRepository.delete(event);
     }
 
-    //모든 이벤트 조회
     public Page<EventListResponse> getAllEvents(Pageable pageable) {
         Page<Event> eventPage = eventRepository.findAllByOrderByCreatedAtDesc(pageable);
 
         return eventPage.map(event -> new EventListResponse(
-                        event.getId(),
-                        event.getTitle(),
-                        event.getDescription(),
-                        event.getLocation(),
-                        event.getStartAt(),
-                        event.getEndAt(),
-                        event.getRecruitStartAt(),
-                        event.getRecruitEndAt(),
-                        event.getPrice(),
-                        event.getMaxTickets(),
-                        event.getMaxTickets(),
-                        event.getStatus(),
-                        buildImageUrl(event.getImageKey()),
-                        event.getUser().getDisplayName()
-                ));
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getLocation(),
+                event.getStartAt(),
+                event.getEndAt(),
+                event.getRecruitStartAt(),
+                event.getRecruitEndAt(),
+                event.getPrice(),
+                event.getMaxTickets(),
+                event.getMaxTickets(),
+                event.getStatus(),
+                buildImageUrl(event.getImageKey()),
+                event.getUser().getDisplayName(),
+                0.0,
+                0.0,
+                0.0
+        ));
     }
 
-    //이벤트 상세보기
     public EventDetailResponse getEventDetail(Long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
@@ -199,7 +201,6 @@ public class EventService {
         return s3BaseUrl + imageKey;
     }
 
-    //이벤트 제목 검색
     public Page<EventListResponse> searchEventTitle(String keyword, Pageable pageable) {
         if (keyword == null || keyword.trim().isEmpty()) {
             return Page.empty(pageable);
@@ -221,7 +222,10 @@ public class EventService {
                 event.getMaxTickets(),
                 event.getStatus(),
                 buildImageUrl(event.getImageKey()),
-                event.getUser().getDisplayName()
+                event.getUser().getDisplayName(),
+                0.0,
+                0.0,
+                0.0
         ));
     }
 }

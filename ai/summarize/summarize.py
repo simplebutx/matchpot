@@ -12,9 +12,11 @@ def _summary_prompt() -> str:
     return (
         "너는 행사 리뷰를 요약하는 한국어 분석기다.\n"
         "입력된 리뷰 전체를 읽고 참가자 경험의 핵심만 간결하게 정리해라.\n"
+        "리뷰에서 드러나는 불편사항이나 보완할 점이 있으면 개선점도 함께 정리해라.\n"
         "반드시 아래 JSON 형식으로만 답변해라.\n"
-        '{"summary":"한 문장 또는 두 문장 요약","keywords":["키워드1","키워드2","키워드3"]}\n'
-        "summary는 자연스러운 한국어로 작성하고, keywords는 중복 없는 짧은 핵심어 3개로 제한해라."
+        '{"summary":"한 문장 또는 두 문장 요약","keywords":["키워드1","키워드2","키워드3"],"improvement":"개선점 : ..."}\n'
+        "summary는 자연스러운 한국어로 작성하고, keywords는 중복 없는 짧은 핵심어 3개로 제한해라.\n"
+        "improvement는 반드시 '개선점 : '으로 시작하고, 개선할 내용이 없으면 '개선점 : 특별한 개선점은 보이지 않습니다.'로 작성해라."
     )
 
 
@@ -25,8 +27,7 @@ def _preprocess_text(text: str) -> str:
     cleaned_text = re.sub(r"\s+", " ", cleaned_text).strip()
     return cleaned_text[:MAX_INPUT_CHARS]
 
-
-# 응답 문자열에서 JSON 데이터를 깨내서 Python dict로 변환
+# AI 응답 문자열에서 JSON 데이터를 꺼내서 python dict로 변환
 def _extract_json_block(content: str) -> dict | None:
     if not content:
         return None
@@ -46,7 +47,7 @@ def _extract_json_block(content: str) -> dict | None:
         return None
 
 
-# OpenAI에 요청보내고, 결과 정리해서 반환
+# OpenAi에 요청보내고 응답 받기
 async def _generate_summary(cleaned_text: str) -> dict[str, object]:
     if not cleaned_text:
         raise HTTPException(status_code=400, detail="Review text is empty.")
@@ -62,9 +63,15 @@ async def _generate_summary(cleaned_text: str) -> dict[str, object]:
 
     summary = str(parsed.get("summary", "")).strip()
     keywords = parsed.get("keywords", [])
+    improvement = str(parsed.get("improvement", "")).strip()
 
     if not summary:
         raise HTTPException(status_code=502, detail="AI service returned an empty summary.")
+
+    if not improvement:
+        improvement = "개선점 : 특별한 개선점은 보이지 않습니다."
+    elif not improvement.startswith("개선점 : "):
+        improvement = f"개선점 : {improvement}"
 
     if not isinstance(keywords, list):
         keywords = []
@@ -78,9 +85,10 @@ async def _generate_summary(cleaned_text: str) -> dict[str, object]:
     return {
         "summary": summary,
         "keywords": normalized_keywords[:3],
+        "improvement": improvement,
     }
 
-# 라우터에서 호출하는 함수
+# 컨트롤러 호출 함수
 async def analyze_summarize_logic(allText):
     cleaned_text = _preprocess_text(allText)
     return await _generate_summary(cleaned_text)

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +43,11 @@ public class ReviewService {
                 .toList();
 
         String sentiment = reviews.isEmpty() ? null : aiService.analyzeEventSentiment(eventId);
-        return new ReviewListResponse(sentiment, reviews);
+        Map<String, Double> sentimentPercentages = reviews.isEmpty()
+                ? Map.of("positive", 0.0, "neutral", 0.0, "negative", 0.0)
+                : aiService.analyzeEventSentimentPercentages(eventId);
+
+        return new ReviewListResponse(sentiment, sentimentPercentages, reviews);
     }
 
     @Transactional

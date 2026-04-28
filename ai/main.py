@@ -33,6 +33,7 @@ class AiSummarizeResponse(BaseModel):
     eventId: int
     summary: str
     keywords: List[str]
+    improvement: str
 
 
 @app.post("/internal/reviews/analyze", response_model=ReviewAnalyzeResponse)
@@ -49,4 +50,5 @@ async def analyze_summarize(data: AiSummarizeRequest):
         eventId=data.eventId,
         summary=result["summary"],
         keywords=result["keywords"],
+        improvement=result["improvement"],
     )

@@ -73,7 +73,7 @@ function EventManagement() {
           <span className="event-management__eyebrow">EVENT CONTROL</span>
           <h1 className="event-management__title">행사 관리</h1>
           <p className="event-management__description">
-            등록한 행사 원본으로 바로 이동하고, 필요한 작업만 빠르게 이어가세요.
+            등록한 행사 목록으로 바로 이동하고, 필요한 작업만 빠르게 이어갈 수 있어요.
           </p>
         </div>
       </header>
@@ -222,7 +222,7 @@ function EventManagement() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>판매 티켓 수</label>
+                  <label>판매 좌석 수</label>
                   <input
                     type="number"
                     value={editingEvent.maxTickets || ''}

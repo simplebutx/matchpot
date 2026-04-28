@@ -206,6 +206,14 @@
   color: #555555;
 }
 
+.event-analytics-page__sentiment-breakdown {
+  margin: 0;
+  color: #444444;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.7;
+}
+
 .event-analytics-page__detail-grid {
   display: grid;
   grid-template-columns: 1.3fr 1fr;
@@ -253,6 +261,13 @@
   color: #333333;
   line-height: 1.8;
   font-size: 16px;
+}
+
+.event-analytics-page__improvement {
+  margin: -4px 0 0;
+  color: #555555;
+  line-height: 1.8;
+  font-size: 15px;
 }
 
 .event-analytics-page__summary-text--placeholder {

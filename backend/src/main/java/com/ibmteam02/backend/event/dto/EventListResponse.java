@@ -25,6 +25,9 @@ public class EventListResponse {
     private Status status;
     private String imageKey;
     private String authorName;
+    private Double positiveRate;
+    private Double neutralRate;
+    private Double negativeRate;
 
     public EventListResponse(
             Long id,
@@ -40,7 +43,10 @@ public class EventListResponse {
             Integer remainingTickets,
             Status status,
             String imageKey,
-            String authorName
+            String authorName,
+            Double positiveRate,
+            Double neutralRate,
+            Double negativeRate
     ) {
         this.id = id;
         this.title = title;
@@ -56,6 +62,9 @@ public class EventListResponse {
         this.status = status;
         this.imageKey = imageKey;
         this.authorName = authorName;
+        this.positiveRate = positiveRate;
+        this.neutralRate = neutralRate;
+        this.negativeRate = negativeRate;
     }
 
     public EventListResponse(Event event) {
@@ -73,6 +82,9 @@ public class EventListResponse {
         this.status = event.getStatus();
         this.imageKey = event.getImageKey();
         this.authorName = event.getUser().getDisplayName();
+        this.positiveRate = 0.0;
+        this.neutralRate = 0.0;
+        this.negativeRate = 0.0;
     }
 
     public static EventListResponse from(Event event, Integer remainingTickets) {
