@@ -5,7 +5,9 @@ export const signup = async (joinData) => {
 };
 
 export const login = async (loginData) => {
-  const token = await request.post('/api/login', loginData);
+  const token = await request.post('/api/login', loginData, {
+    skipAuthRedirect: true,
+  });
 
   if (token) {
     localStorage.setItem('token', token);

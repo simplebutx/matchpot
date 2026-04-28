@@ -1,6 +1,7 @@
 fastapi==0.136.0
 uvicorn==0.45.0
 pydantic==2.13.3
+httpx==0.28.1
 torch==2.11.0
 transformers==5.5.4
 sentencepiece==0.2.1
