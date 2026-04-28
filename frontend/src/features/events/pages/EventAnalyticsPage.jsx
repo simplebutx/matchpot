@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import request from '@/shared/api/request';
-import { getEventDetail, getEventReviews } from '@/shared/api/eventApi';
-import { formatEventDateTime } from '@/shared/utils/dateFormat';
+
 import '@/features/events/styles/EventAnalyticsPage.css';
+import { getEventDetail, getEventReviews } from '@/shared/api/eventApi';
+import request from '@/shared/api/request';
+import { formatEventDateTime } from '@/shared/utils/dateFormat';
+import { getEventStatusMeta } from '@/shared/utils/eventStatus';
 
 function getSentimentMeta(sentiment) {
   const sentimentMap = {
@@ -14,14 +16,6 @@ function getSentimentMeta(sentiment) {
   };
 
   return sentimentMap[sentiment] ?? { label: '미분류', className: 'is-unknown' };
-}
-
-function getEventStatusMeta(status) {
-  if (status === 'RECRUITING') {
-    return { label: '모집중', className: 'is-open' };
-  }
-
-  return { label: '마감', className: 'is-closed' };
 }
 
 function renderStars(averageRating) {
@@ -148,7 +142,7 @@ function EventAnalyticsPage() {
             <span className="event-analytics-page__eyebrow">ANALYTICS</span>
             <h1 className="event-analytics-page__title">{event?.title || `행사 ${eventId}`}</h1>
             <p className="event-analytics-page__description">
-              예매 현황과 참가자 리뷰를 한눈에 보고, 다음 운영 액션까지 빠르게 판단할 수 있는 화면입니다.
+              예매 전환과 참가자 리뷰를 함께 보고, 다음 운영 액션까지 빠르게 판단할 수 있는 화면입니다.
             </p>
           </div>
 

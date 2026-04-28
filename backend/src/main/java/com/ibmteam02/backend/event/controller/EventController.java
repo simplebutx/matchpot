@@ -53,10 +53,12 @@ public class EventController {
     }
 
     //이벤트 수정하기
-    @PutMapping("/api/organizer/events/{eventId}")
-    public ResponseEntity<Void> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateRequest dto,
-                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        eventService.updateEvent(eventId, dto, userDetails.getId());
+    @PutMapping(value = "/api/organizer/events/{eventId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateEvent(@PathVariable Long eventId,
+                                            @RequestPart("dto") EventUpdateRequest dto,
+                                            @RequestPart(value = "image", required = false) MultipartFile image,
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
+        eventService.updateEvent(eventId, dto, image, userDetails.getId());
         return ResponseEntity.noContent().build();
     }
 

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import request from '@/shared/api/request';
-import { deleteEventReview, getEventReviews, updateEventReview } from '@/shared/api/eventApi';
-import { getMyPage } from '@/shared/api/authApi';
+import { useParams } from 'react-router-dom';
+
 import ReviewEditModal from '@/features/events/components/ReviewEditModal';
 import '@/features/events/styles/ReviewComponent.css';
+import { getMyPage } from '@/shared/api/authApi';
+import { deleteEventReview, getEventReviews, updateEventReview } from '@/shared/api/eventApi';
+import request from '@/shared/api/request';
 
 function ReviewComponent() {
   const { eventId } = useParams();
@@ -18,14 +19,14 @@ function ReviewComponent() {
   const [aiResult, setAiResult] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-const token = localStorage.getItem('token');
-const storedRole = localStorage.getItem('role');
+  const token = localStorage.getItem('token');
+  const storedRole = localStorage.getItem('role');
 
-const isAdmin =
-  storedRole === 'ROLE_ADMIN' ||
-  storedRole === 'ADMIN' ||
-  currentUser?.role === 'ROLE_ADMIN' ||
-  currentUser?.role === 'ADMIN';
+  const isAdmin =
+    storedRole === 'ROLE_ADMIN' ||
+    storedRole === 'ADMIN' ||
+    currentUser?.role === 'ROLE_ADMIN' ||
+    currentUser?.role === 'ADMIN';
 
   const fetchReviews = async () => {
     if (!eventId) {
@@ -178,7 +179,7 @@ const isAdmin =
     }
 
     if (!payload.content) {
-      toast.error('리뷰 내용을 입력해주세요.');
+      toast.error('리뷰 내용을 입력해 주세요.');
       return;
     }
 
@@ -229,7 +230,7 @@ const isAdmin =
 
           {aiResult && !isAnalyzing ? (
             <div className="review-list__summary-result">
-              <h4 className="review-list__summary-title">AI가 분석한 행사 한줄 요약</h4>
+              <h4 className="review-list__summary-title">AI가 분석한 행사 체험 요약</h4>
               <p className="review-list__summary-text">"{aiResult.summary}"</p>
 
               {aiResult.keywords.length > 0 && (

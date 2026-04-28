@@ -100,12 +100,20 @@ public class EventService {
     }
 
     @Transactional
-    public void updateEvent(Long eventId, EventUpdateRequest dto, Long userId) {
+    public void updateEvent(Long eventId, EventUpdateRequest dto, MultipartFile image, Long userId) throws IOException {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
 
         if (!event.getUser().getId().equals(userId)) {
             throw new NoPermissionException("작성자만 수정할 수 있습니다.");
+        }
+
+        String imageKey = event.getImageKey();
+        if (Boolean.TRUE.equals(dto.removeImage())) {
+            imageKey = null;
+        }
+        if (image != null && !image.isEmpty()) {
+            imageKey = s3Service.uploadImage(image);
         }
 
         event.update(
@@ -119,7 +127,7 @@ public class EventService {
                 dto.price(),
                 dto.maxTickets(),
                 dto.status(),
-                dto.imageKey()
+                imageKey
         );
     }
 

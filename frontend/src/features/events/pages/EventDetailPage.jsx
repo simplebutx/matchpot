@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
 import ReviewComponent from '@/features/events/components/ReviewComponent';
+import '@/features/events/styles/EventDetailPage.css';
 import { buyTicket, getEventDetail } from '@/shared/api/eventApi';
 import { formatEventDateTime } from '@/shared/utils/dateFormat';
-import '@/features/events/styles/EventDetailPage.css';
+import { formatEventStatusLabel } from '@/shared/utils/eventStatus';
 
 function EventDetailPage() {
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ function EventDetailPage() {
         </div>
 
         <div className="event-detail__content">
-          <span className="event-detail__status">{event?.status || '진행 예정'}</span>
+          <span className="event-detail__status">{formatEventStatusLabel(event?.status)}</span>
           <h1 className="event-detail__title">{event?.title || `이벤트 ${eventId}`}</h1>
 
           <div className="event-detail__info">
@@ -138,30 +140,24 @@ function EventDetailPage() {
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="reserve-modal" onClick={(eventObject) => eventObject.stopPropagation()}>
-            <span className="reserve-modal__eyebrow">RESERVATION</span>
-            <h3>티켓 예매 확인</h3>
-            <p className="reserve-modal__event-title">{event?.title}</p>
+            <h3>티켓 예매</h3>
+            <p>{event?.title}</p>
 
-            <div className="quantity-selector">
+            <div className="reserve-quantity">
               <button type="button" onClick={() => handleQuantity('minus')}>
                 -
               </button>
-              <span className="quantity-number">{reserveQuantity}</span>
+              <span>{reserveQuantity}</span>
               <button type="button" onClick={() => handleQuantity('plus')}>
                 +
               </button>
             </div>
 
-            <div className="reserve-total">
-              <span>총 결제 금액</span>
-              <strong>{((event?.price ?? 0) * reserveQuantity).toLocaleString()}원</strong>
-            </div>
-
-            <div className="modal-actions">
-              <button className="confirm-btn" onClick={handleReserveSubmit}>
-                예매하기
+            <div className="reserve-modal__actions">
+              <button type="button" onClick={handleReserveSubmit}>
+                예매 확정
               </button>
-              <button className="cancel-btn" onClick={() => setIsModalOpen(false)}>
+              <button type="button" onClick={() => setIsModalOpen(false)}>
                 취소
               </button>
             </div>

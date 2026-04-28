@@ -8,11 +8,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @NoArgsConstructor
 @Getter
 public class Event {
+
+    private static final ZoneId KOREA_ZONE = ZoneId.of("Asia/Seoul");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,5 +75,19 @@ public class Event {
         this.maxTickets = maxTickets;
         this.status = status;
         this.imageKey = imageKey;
+    }
+
+    public Status getStatus() {
+        LocalDateTime now = LocalDateTime.now(KOREA_ZONE);
+
+        if (endAt != null && !now.isBefore(endAt)) {
+            return Status.ENDED;
+        }
+
+        if (recruitEndAt != null && !now.isBefore(recruitEndAt)) {
+            return Status.CLOSED;
+        }
+
+        return Status.RECRUITING;
     }
 }

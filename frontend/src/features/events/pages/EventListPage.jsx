@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+
+import '@/features/events/styles/EventListPage.css';
 import { getAllEvents, searchEventTitle } from '@/shared/api/eventApi';
 import PageSectionHeader from '@/shared/components/PageSectionHeader';
 import { formatEventCardDateTime } from '@/shared/utils/dateFormat';
-import '@/features/events/styles/EventListPage.css';
+import { formatEventStatusLabel } from '@/shared/utils/eventStatus';
 
 const emptyEventsPage = {
   content: [],
@@ -25,9 +27,7 @@ function EventListPage() {
     const fetchEventList = async () => {
       try {
         setLoading(true);
-        const data = keyword.trim()
-          ? await searchEventTitle(keyword, page)
-          : await getAllEvents(page);
+        const data = keyword.trim() ? await searchEventTitle(keyword, page) : await getAllEvents(page);
 
         setEvents(data ?? emptyEventsPage);
       } catch (error) {
@@ -55,7 +55,7 @@ function EventListPage() {
     <>
       <PageSectionHeader
         title="행사 목록"
-        description="현재 등록된 행사를 한눈에 확인하고 원하는 행사를 빠르게 찾아보세요."
+        description="현재 등록된 행사를 둘러보고 원하는 행사를 빠르게 찾아보세요."
       />
 
       <section className="expo-apply">
@@ -79,18 +79,14 @@ function EventListPage() {
           ) : (
             events.content.map((event) => (
               <article className="expo-event-card" key={event.id}>
-                <Link
-                  to={`/events/${event.id}`}
-                  state={{ event }}
-                  className="expo-event-card__link"
-                >
+                <Link to={`/events/${event.id}`} state={{ event }} className="expo-event-card__link">
                   <div className="expo-event-card__img-wrapper">
                     <img
                       src={event.imageKey || 'https://via.placeholder.com/150'}
                       alt={event.title}
                       className="expo-event-card__img"
                     />
-                    <span className="expo-event-card__chip">{event.status}</span>
+                    <span className="expo-event-card__chip">{formatEventStatusLabel(event.status)}</span>
                   </div>
 
                   <div className="expo-event-card__content">
@@ -99,11 +95,9 @@ function EventListPage() {
                     </div>
 
                     <div className="expo-event-card__meta">
-                      <p className="expo-event-card__date">
-                        일시: {formatEventCardDateTime(event.startAt)}
-                      </p>
+                      <p className="expo-event-card__date">일시: {formatEventCardDateTime(event.startAt)}</p>
                       <p className="expo-event-card__location">장소: {event.location}</p>
-                      <p className="expo-event-card__date">잔여 좌석: {event.remainingTickets}개</p>
+                      <p className="expo-event-card__date">남은 좌석: {event.remainingTickets}개</p>
                     </div>
                   </div>
                 </Link>
@@ -114,10 +108,7 @@ function EventListPage() {
 
         {events?.totalPages > 0 && (
           <div className="expo-pagination">
-            <button
-              disabled={events.first}
-              onClick={() => setPage((prev) => prev - 1)}
-            >
+            <button disabled={events.first} onClick={() => setPage((prev) => prev - 1)}>
               <ChevronLeft size={20} />
             </button>
 
@@ -131,10 +122,7 @@ function EventListPage() {
               </button>
             ))}
 
-            <button
-              disabled={events.last}
-              onClick={() => setPage((prev) => prev + 1)}
-            >
+            <button disabled={events.last} onClick={() => setPage((prev) => prev + 1)}>
               <ChevronRight size={20} />
             </button>
           </div>

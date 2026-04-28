@@ -55,7 +55,18 @@ export const createEvent = (formData, imageFile) => {
 };
 
 export const updateEvent = (eventId, updateData) => {
-  return request.put(`/api/organizer/events/${eventId}`, updateData);
+  const data = new FormData();
+
+  data.append(
+    'dto',
+    new Blob([JSON.stringify(updateData.form)], { type: 'application/json' })
+  );
+
+  if (updateData.imageFile) {
+    data.append('image', updateData.imageFile);
+  }
+
+  return request.put(`/api/organizer/events/${eventId}`, data);
 };
 
 export const deleteEvent = (eventId) => {
