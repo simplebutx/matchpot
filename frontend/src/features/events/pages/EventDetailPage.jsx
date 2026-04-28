@@ -36,11 +36,13 @@ function EventDetailPage() {
 
   const remainingTickets = event?.remainingTickets;
   const isSoldOut = remainingTickets != null && remainingTickets <= 0;
+  const unitPrice = Number(event?.price ?? 0);
+  const totalPrice = unitPrice * reserveQuantity;
 
   const handleQuantity = (type) => {
     if (type === 'plus') {
       if (remainingTickets != null && reserveQuantity >= remainingTickets) {
-        toast.error('현재 남은 수량을 초과할 수 없습니다.');
+        toast.error('남은 좌석 수를 초과할 수 없습니다.');
         return;
       }
 
@@ -140,24 +142,41 @@ function EventDetailPage() {
       {isModalOpen && (
         <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
           <div className="reserve-modal" onClick={(eventObject) => eventObject.stopPropagation()}>
+            <span className="reserve-modal__eyebrow">TICKET RESERVATION</span>
             <h3>티켓 예매</h3>
-            <p>{event?.title}</p>
+            <p className="reserve-modal__event-title">{event?.title}</p>
 
-            <div className="reserve-quantity">
-              <button type="button" onClick={() => handleQuantity('minus')}>
+            <div className="reserve-modal__meta">
+              <div className="reserve-modal__meta-item">
+                <span>남은 좌석</span>
+                <strong>{remainingTickets != null ? `${remainingTickets}개` : '확인 불가'}</strong>
+              </div>
+              <div className="reserve-modal__meta-item">
+                <span>1매 가격</span>
+                <strong>{unitPrice.toLocaleString()}원</strong>
+              </div>
+            </div>
+
+            <div className="quantity-selector">
+              <button type="button" onClick={() => handleQuantity('minus')} aria-label="수량 감소">
                 -
               </button>
-              <span>{reserveQuantity}</span>
-              <button type="button" onClick={() => handleQuantity('plus')}>
+              <span className="quantity-number">{reserveQuantity}</span>
+              <button type="button" onClick={() => handleQuantity('plus')} aria-label="수량 증가">
                 +
               </button>
             </div>
 
+            <div className="reserve-total">
+              <span>총 결제 금액</span>
+              <strong>{totalPrice.toLocaleString()}원</strong>
+            </div>
+
             <div className="reserve-modal__actions">
-              <button type="button" onClick={handleReserveSubmit}>
+              <button type="button" className="confirm-btn" onClick={handleReserveSubmit}>
                 예매 확정
               </button>
-              <button type="button" onClick={() => setIsModalOpen(false)}>
+              <button type="button" className="cancel-btn" onClick={() => setIsModalOpen(false)}>
                 취소
               </button>
             </div>
