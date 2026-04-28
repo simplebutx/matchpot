@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class AiSummarizeRequest {
+@AllArgsConstructor
+public class AiSummarizeResponse {
     private Long eventId;
-    private String allText;
+    private String summary;
+    private List<String> keywords;
 }
