@@ -53,7 +53,8 @@ public class AiSummarizeService {
             return new AiSummarizeResponse(
                     eventId,
                     body.getSummary(),
-                    body.getKeywords() == null ? List.of() : body.getKeywords()
+                    body.getKeywords() == null ? List.of() : body.getKeywords(),
+                    body.getImprovement()
             );
         } catch (Exception e) {
             return fallbackResponse(eventId, UNAVAILABLE_SUMMARY);
@@ -61,6 +62,6 @@ public class AiSummarizeService {
     }
 
     private AiSummarizeResponse fallbackResponse(Long eventId, String summary) {
-        return new AiSummarizeResponse(eventId, summary, List.of());
+        return new AiSummarizeResponse(eventId, summary, List.of(), "개선점 : 현재 AI 분석 기능을 사용할 수 없습니다.");
     }
 }

@@ -152,7 +152,7 @@ const isAdmin =
   };
 
   const handleDelete = async (reviewId) => {
-    const confirmed = window.confirm('이 리뷰를 삭제하시겠습니까?');
+    const confirmed = window.confirm('이 리뷰를 정말 삭제하시겠습니까?');
     if (!confirmed) {
       return;
     }

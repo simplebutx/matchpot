@@ -2,30 +2,6 @@ import { Calendar, Cpu, LayoutDashboard, LogIn, LogOut, UserCircle2, Vote } from
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import '@/shared/styles/Sidebar.css';
 
-function MatchPotLogo() {
-  return (
-    <svg viewBox="0 0 40 40" aria-hidden="true" className="expo-sidebar__logo-mark">
-      <circle cx="11" cy="12" r="5.5" fill="currentColor" />
-      <circle cx="29" cy="28" r="5.5" fill="currentColor" />
-      <path
-        d="M14.5 15.5C17.5 18.5 22.5 21.5 25.5 24.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M20 10.5H30.5V21"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="3.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 function parseJwtPayload(token) {
   const payload = token?.split('.')[1];
   if (!payload) {
@@ -115,7 +91,7 @@ function Sidebar() {
     <aside className="expo-sidebar">
       <Link to="/" className="expo-sidebar__logo">
         <div className="expo-sidebar__logo-icon">
-          <MatchPotLogo />
+          <img src="/matchpot-logo.svg" alt="MatchPot logo" className="expo-sidebar__logo-mark" />
         </div>
         <div>
           <h1>MatchPot</h1>
