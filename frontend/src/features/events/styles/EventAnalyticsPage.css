@@ -219,10 +219,33 @@
   padding: 24px;
 }
 
+.event-analytics-page__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .event-analytics-page__panel h2 {
   margin: 0;
   font-size: 28px;
   font-weight: 900;
+}
+
+.event-analytics-page__summary-button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #111111;
+  background: #111111;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.event-analytics-page__summary-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 .event-analytics-page__summary-text {
@@ -230,6 +253,10 @@
   color: #333333;
   line-height: 1.8;
   font-size: 16px;
+}
+
+.event-analytics-page__summary-text--placeholder {
+  color: #666666;
 }
 
 .event-analytics-page__keywords {
@@ -295,6 +322,11 @@
 @media (max-width: 768px) {
   .event-analytics-page {
     padding: 36px 16px 72px;
+  }
+
+  .event-analytics-page__panel-head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .event-analytics-page__ticket-stats,

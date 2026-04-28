@@ -13,7 +13,7 @@ function getSentimentMeta(sentiment) {
     negative: { label: '부정', className: 'is-negative' },
   };
 
-  return sentimentMap[sentiment] ?? { label: '미분석', className: 'is-unknown' };
+  return sentimentMap[sentiment] ?? { label: '미분류', className: 'is-unknown' };
 }
 
 function getEventStatusMeta(status) {
@@ -48,23 +48,18 @@ function EventAnalyticsPage() {
   const [aiSummary, setAiSummary] = useState('');
   const [keywords, setKeywords] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const [eventResponse, reviewResponse, summaryResponse] = await Promise.all([
-          getEventDetail(eventId),
-          getEventReviews(eventId),
-          request.get(`/api/ai/analyze/summarize/${eventId}`),
-        ]);
+        const [eventResponse, reviewResponse] = await Promise.all([getEventDetail(eventId), getEventReviews(eventId)]);
 
         setEvent(eventResponse ?? null);
         setReviews(Array.isArray(reviewResponse?.reviews) ? reviewResponse.reviews : []);
         setSentiment(reviewResponse?.sentiment ?? null);
-        setAiSummary(
-          summaryResponse?.summary?.replace(/\s+/g, ' ').trim() || '아직 분석된 리뷰가 없습니다.'
-        );
-        setKeywords(Array.isArray(summaryResponse?.keywords) ? summaryResponse.keywords.slice(0, 3) : []);
+        setAiSummary('');
+        setKeywords([]);
       } catch (error) {
         console.error('분석 대시보드 로드 실패:', error);
         toast.error('분석 대시보드를 불러오지 못했습니다.');
@@ -75,6 +70,25 @@ function EventAnalyticsPage() {
 
     fetchAnalytics();
   }, [eventId]);
+
+  const handleAiAnalyze = async () => {
+    if (!eventId) {
+      return;
+    }
+
+    try {
+      setIsAnalyzing(true);
+      const response = await request.get(`/api/ai/analyze/summarize/${eventId}`);
+
+      setAiSummary(response?.summary?.replace(/\s+/g, ' ').trim() || '');
+      setKeywords(Array.isArray(response?.keywords) ? response.keywords.slice(0, 3) : []);
+    } catch (error) {
+      console.error('AI 요약 생성 실패:', error);
+      toast.error('AI 분석 결과를 불러오지 못했습니다.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const analytics = useMemo(() => {
     const reviewCount = reviews.length;
@@ -112,7 +126,7 @@ function EventAnalyticsPage() {
             <span className="event-analytics-page__eyebrow">ANALYTICS</span>
             <h1 className="event-analytics-page__title">{event?.title || `행사 ${eventId}`}</h1>
             <p className="event-analytics-page__description">
-              예매 현황과 참가자 리뷰를 함께 읽고, 다음 운영 액션까지 빠르게 판단할 수 있는 화면입니다.
+              예매 현황과 참가자 리뷰를 한눈에 보고, 다음 운영 액션까지 빠르게 판단할 수 있는 화면입니다.
             </p>
           </div>
 
@@ -144,7 +158,7 @@ function EventAnalyticsPage() {
                 <strong>{soldTickets}석</strong>
               </div>
               <div>
-                <span>잔여 좌석</span>
+                <span>남은 좌석</span>
                 <strong>{remainingTickets}석</strong>
               </div>
               <div>
@@ -171,16 +185,37 @@ function EventAnalyticsPage() {
         <section className="event-analytics-page__detail-grid">
           <article className="event-analytics-page__panel">
             <span className="event-analytics-page__card-label">AI SUMMARY</span>
-            <h2>AI 한줄 요약</h2>
-            <p className="event-analytics-page__summary-text">{aiSummary}</p>
-
-            <div className="event-analytics-page__keywords">
-              {keywords.length > 0 ? (
-                keywords.map((keyword, index) => <span key={`${keyword}-${index}`}>#{keyword}</span>)
-              ) : (
-                <span className="event-analytics-page__keyword-empty">표시할 키워드가 없습니다.</span>
-              )}
+            <div className="event-analytics-page__panel-head">
+              <h2>AI 리뷰 요약</h2>
+              <button
+                type="button"
+                className="event-analytics-page__summary-button"
+                onClick={handleAiAnalyze}
+                disabled={isAnalyzing}
+              >
+                {isAnalyzing ? 'AI 분석 중...' : 'AI 분석 리포트 생성'}
+              </button>
             </div>
+
+            {aiSummary && !isAnalyzing ? (
+              <>
+                <p className="event-analytics-page__summary-text">{aiSummary}</p>
+
+                <div className="event-analytics-page__keywords">
+                  {keywords.length > 0 ? (
+                    keywords.map((keyword, index) => <span key={`${keyword}-${index}`}>#{keyword}</span>)
+                  ) : (
+                    <span className="event-analytics-page__keyword-empty">표시할 키워드가 없습니다.</span>
+                  )}
+                </div>
+              </>
+            ) : (
+              !isAnalyzing && (
+                <p className="event-analytics-page__summary-text event-analytics-page__summary-text--placeholder">
+                  버튼을 누르면 AI가 리뷰 데이터를 분석해서 요약과 키워드를 보여줍니다.
+                </p>
+              )
+            )}
           </article>
 
           <article className="event-analytics-page__panel">

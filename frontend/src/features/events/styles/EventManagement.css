@@ -75,7 +75,8 @@
 
 .event-management-card {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: stretch;
   border: 1px solid #111111;
   background: rgba(255, 255, 255, 0.38);
   box-shadow: 14px 14px 0 rgba(17, 17, 17, 0.08);
@@ -90,8 +91,11 @@
 }
 
 .event-management-card__media {
-  aspect-ratio: 1 / 1;
+  width: 220px;
+  min-width: 220px;
   height: 100%;
+  overflow: hidden;
+  border-right: 1px solid #111111;
 }
 
 .event-management-card__media img {
@@ -103,6 +107,8 @@
 
 .event-management-card__body {
   display: grid;
+  min-width: 0;
+  align-content: space-between;
   gap: 20px;
   padding: 24px;
 }
@@ -294,8 +300,13 @@
   }
 
   .event-management-card__media {
-    max-width: 180px;
-    margin: 20px 20px 0;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: 220px;
+    margin: 0;
+    border-right: none;
+    border-bottom: 1px solid #111111;
   }
 
   .event-management-card__body {
