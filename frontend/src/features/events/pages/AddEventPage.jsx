@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { createEvent } from '@/shared/api/eventApi';
+
 import '@/features/events/styles/AddEventPage.css';
+import { createEvent } from '@/shared/api/eventApi';
 
 function AddEventPage() {
   const [form, setForm] = useState({
     title: '',
-    startDate: '',
-    endDate: '',
+    startAt: '',
+    endAt: '',
     description: '',
     location: '',
     maxTickets: '',
     price: '',
-    startAt: '',
-    endAt: '',
+    recruitStartAt: '',
+    recruitEndAt: '',
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -24,31 +25,37 @@ function AddEventPage() {
   };
 
   const handleFileChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      setImageFile(file);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (!event.target.files || !event.target.files[0]) {
+      return;
     }
+
+    const file = event.target.files[0];
+    setImageFile(file);
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
   };
+
+  const withSeconds = (value) => (value ? `${value}:00` : '');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formattedForm = {
-      ...form,
-      startAt: form.startAt ? `${form.startAt}:00` : '',
-      endAt: form.endAt ? `${form.endAt}:00` : '',
-    };
-
-    if (!form.title || !form.startAt) {
-      toast.error('행사명과 모집 시작 일시는 필수입니다.');
+    if (!form.title || !form.startAt || !form.endAt || !form.recruitStartAt || !form.recruitEndAt) {
+      toast.error('행사 일정과 모집 일정은 모두 입력해야 합니다.');
       return;
     }
+
+    const formattedForm = {
+      ...form,
+      startAt: withSeconds(form.startAt),
+      endAt: withSeconds(form.endAt),
+      recruitStartAt: withSeconds(form.recruitStartAt),
+      recruitEndAt: withSeconds(form.recruitEndAt),
+    };
 
     try {
       await createEvent(formattedForm, imageFile);
@@ -56,14 +63,14 @@ function AddEventPage() {
 
       setForm({
         title: '',
-        startDate: '',
-        endDate: '',
+        startAt: '',
+        endAt: '',
         description: '',
         location: '',
         maxTickets: '',
         price: '',
-        startAt: '',
-        endAt: '',
+        recruitStartAt: '',
+        recruitEndAt: '',
       });
       setImageFile(null);
       setImagePreview(null);
@@ -81,7 +88,7 @@ function AddEventPage() {
             <span className="add-event__eyebrow">EXPO APPLY</span>
             <h1 className="add-event__title">행사 등록</h1>
             <p className="add-event__description">
-              새로운 행사를 등록하고 일정, 장소, 티켓 정보를 한 번에 설정해보세요.
+              새로운 행사를 등록하고 일정, 장소, 티켓 정보를 한 번에 정리해보세요.
             </p>
           </div>
         </header>
@@ -106,8 +113,8 @@ function AddEventPage() {
                   <img src={imagePreview} alt="행사 미리보기" className="add-event__preview" />
                 ) : (
                   <div className="add-event__upload-placeholder">
-                    <strong>클릭하여 이미지 업로드</strong>
-                    <span>JPG, PNG, GIF (Max 5MB)</span>
+                    <strong>클릭해서 이미지 업로드</strong>
+                    <span>JPG, PNG, GIF</span>
                   </div>
                 )}
               </label>
@@ -139,26 +146,26 @@ function AddEventPage() {
                 <div className="add-event__field-grid">
                   <div className="add-event__field">
                     <label htmlFor="event-start-date" className="add-event__label">
-                      행사 시작 날짜
+                      행사 시작 일시
                     </label>
                     <input
                       id="event-start-date"
                       type="datetime-local"
-                      name="startDate"
-                      value={form.startDate}
+                      name="startAt"
+                      value={form.startAt}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="add-event__field">
                     <label htmlFor="event-end-date" className="add-event__label">
-                      행사 종료 날짜
+                      행사 종료 일시
                     </label>
                     <input
                       id="event-end-date"
-                      type="date"
-                      name="endDate"
-                      value={form.endDate}
+                      type="datetime-local"
+                      name="endAt"
+                      value={form.endAt}
                       onChange={handleChange}
                       required
                     />
@@ -187,7 +194,7 @@ function AddEventPage() {
                     name="description"
                     value={form.description}
                     onChange={handleChange}
-                    placeholder="참가자들에게 행사를 상세히 설명해 주세요"
+                    placeholder="참가자에게 보여줄 행사 설명을 입력하세요"
                     rows={5}
                   />
                 </div>
@@ -195,7 +202,7 @@ function AddEventPage() {
                 <div className="add-event__field-grid">
                   <div className="add-event__field">
                     <label htmlFor="event-price" className="add-event__label">
-                      판매 가격 (KRW)
+                      티켓 가격 (KRW)
                     </label>
                     <input
                       id="event-price"
@@ -207,7 +214,7 @@ function AddEventPage() {
                   </div>
                   <div className="add-event__field">
                     <label htmlFor="event-max-tickets" className="add-event__label">
-                      판매 티켓 수
+                      총 티켓 수량
                     </label>
                     <input
                       id="event-max-tickets"
@@ -222,27 +229,27 @@ function AddEventPage() {
 
                 <div className="add-event__field-grid">
                   <div className="add-event__field">
-                    <label htmlFor="event-start-at" className="add-event__label">
+                    <label htmlFor="event-recruit-start-at" className="add-event__label">
                       모집 시작 일시
                     </label>
                     <input
-                      id="event-start-at"
-                      name="startAt"
+                      id="event-recruit-start-at"
+                      name="recruitStartAt"
                       type="datetime-local"
-                      value={form.startAt}
+                      value={form.recruitStartAt}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="add-event__field">
-                    <label htmlFor="event-end-at" className="add-event__label">
+                    <label htmlFor="event-recruit-end-at" className="add-event__label">
                       모집 종료 일시
                     </label>
                     <input
-                      id="event-end-at"
-                      name="endAt"
+                      id="event-recruit-end-at"
+                      name="recruitEndAt"
                       type="datetime-local"
-                      value={form.endAt}
+                      value={form.recruitEndAt}
                       onChange={handleChange}
                       required
                     />
