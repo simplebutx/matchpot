@@ -92,4 +92,14 @@ public class EventListResponse {
         response.remainingTickets = remainingTickets;
         return response;
     }
+
+    public static EventListResponse forRecommendation(Event event, String imageUrl) {
+        EventListResponse response = new EventListResponse(event);
+        response.remainingTickets = event.getMaxTickets();
+        response.imageKey = imageUrl;
+        response.positiveRate = 0.0;
+        response.neutralRate = 0.0;
+        response.negativeRate = 0.0;
+        return response;
+    }
 }
