@@ -160,9 +160,14 @@
   cursor: pointer;
 }
 
+.mypage__ticket-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
 .mypage__ticket-image img {
   width: 100%;
-  height: 150px;
+  height: 100%;
   object-fit: cover;
   display: block;
   border: 1px solid #111111;

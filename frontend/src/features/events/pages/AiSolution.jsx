@@ -39,7 +39,7 @@ function AiSolution() {
         description="관심사를 분석해 어울리는 행사를 추천해드립니다."
       />
 
-      <div className="expo-apply__list" style={{ marginTop: '20px' }}>
+      <div className="expo-apply__list ai-recommend-section__list" style={{ marginTop: '20px' }}>
         {isRecLoading ? (
           <div className="loading-box" style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '50px' }}>
             <h3>AI가 예매 이력을 바탕으로 추천 행사를 가져오는 중입니다.</h3>
